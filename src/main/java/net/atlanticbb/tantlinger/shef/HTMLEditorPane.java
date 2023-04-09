@@ -97,7 +97,7 @@ public class HTMLEditorPane extends JPanel
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.shef");
     
-    private static final String INVALID_TAGS[] = {"html", "head", "body", "title"};
+    private static final String[] INVALID_TAGS = {"html", "head", "body", "title"};
 
     private JEditorPane wysEditor;
     private SourceCodeEditor srcEditor;
@@ -510,8 +510,7 @@ public class HTMLEditorPane extends JPanel
         if (!show) {  //set the tab height to zero to hide them from the panel
             tabs.setUI(new BasicTabbedPaneUI() {  
                 @Override  
-                protected int calculateTabAreaHeight(int tab_placement, int run_count, int max_tab_height) {  
-
+                protected int calculateTabAreaHeight(int tab_placement, int run_count, int max_tab_height) {
                         return 0;  
                 }  
             });  
@@ -603,7 +602,6 @@ public class HTMLEditorPane extends JPanel
             wysEditor.setText("");
             insertHTML(wysEditor, topText, 0);            
             CompoundUndoManager.discardAllEdits(wysEditor.getDocument());
-            
         }
         else 
         {           
@@ -628,12 +626,10 @@ public class HTMLEditorPane extends JPanel
     	String topText = removeInvalidTags(text);  
         
         if(tabs.getSelectedIndex() == 0)
-        {           
-                      
+        {
             wysEditor.setText("");
             insertHTML(wysEditor, topText, 0);            
             CompoundUndoManager.discardAllEdits(wysEditor.getDocument());
-            
         }
         else 
         {
@@ -651,8 +647,7 @@ public class HTMLEditorPane extends JPanel
     	String topText;
     	if(tabs.getSelectedIndex() == 0)
         {           
-           topText = removeInvalidTags(wysEditor.getText());          
-            
+           topText = removeInvalidTags(wysEditor.getText());
         }
         else 
         {           
@@ -724,10 +719,6 @@ public class HTMLEditorPane extends JPanel
         actionList.putContextValueForAll(HTMLTextEditAction.EDITOR, focusedEditor);
         actionList.updateEnabledForAll();
     }
-    
-    
-    
-    
     
     
     private class CaretHandler implements CaretListener
