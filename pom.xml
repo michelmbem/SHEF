@@ -9,16 +9,15 @@
     <version>1.0</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>net.sf.jtidy</groupId>
+            <groupId>com.github.jtidy</groupId>
             <artifactId>jtidy</artifactId>
-            <version>r938</version>
+            <version>1.0.5</version>
         </dependency>
         <!-- À installer manuellement dans le depôt maven local -->
         <dependency>
@@ -47,7 +46,6 @@
                         <phase>initialize</phase>
                         <configuration>
                             <file>${project.basedir}/lib/novaworx-syntax-0.0.7.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
                             <groupId>novaworx</groupId>
                             <artifactId>novaworx-syntax</artifactId>
                             <version>0.0.7</version>
@@ -63,7 +61,6 @@
                         <phase>initialize</phase>
                         <configuration>
                             <file>${project.basedir}/lib/sam.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
                             <groupId>sam</groupId>
                             <artifactId>sam</artifactId>
                             <version>1.0</version>
@@ -102,5 +99,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
