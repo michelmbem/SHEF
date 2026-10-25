@@ -562,7 +562,7 @@ public class HTMLEditorPane extends JPanel
        
         ed.setContentType("text/html"); 
         
-        insertHTML(ed, "<div></div>", 0);        
+        insertHTML(ed, "<div></div>", 0);
                 
         ed.addCaretListener(caretHandler);
         ed.addFocusListener(focusHandler);
