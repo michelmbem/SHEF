@@ -27,6 +27,9 @@ jobs:
           server-username: CLOUDSMITH_USER
           server-password: CLOUDSMITH_API_KEY
 
+      - name: Deploy dependencies to local repository
+        run: mvn --batch-mode initialize
+
       - name: Publish to Cloudsmith
         run: mvn --batch-mode clean deploy -Dmaven.test.skip=true
         env:
