@@ -34,7 +34,7 @@ import org.bushe.swing.action.ActionUIFactory;
  * @author Bob Tantlinger
  *
  */
-public class UIUtils
+public final class UIUtils
 {
     
     /**
@@ -62,11 +62,15 @@ public class UIUtils
      * Misc icons that are unsized
      */
     public static final String MISC = "images/misc/";
+
+    /**
+     * No instance creation
+     */
+    private UIUtils() {}
     
     /**
      * Gets the icon in the specified package with the specified name.
-     * 
-     * A package might be UIUtils.X16, UIUtils.X32, etc
+     * <p>A package might be UIUtils.X16, UIUtils.X32, etc</p>
      * 
      * @param _package
      * @param iconName
@@ -74,8 +78,7 @@ public class UIUtils
      */
     public static ImageIcon getIcon(String _package, String iconName)
     {
-        if(!_package.endsWith("/"))
-            _package += "/";
+        if(!_package.endsWith("/")) _package += "/";
         return getIcon(_package + iconName);
     }
     
@@ -97,12 +100,8 @@ public class UIUtils
      */
     public static ImageIcon createImageIcon(String path)
     {
-        
         URL u = Thread.currentThread().getContextClassLoader().getResource(path);
-        //URL u = ClassLoader.getSystemResource(path);//UIUtils.class.getResource(path);
-        if(u == null)
-            return null;
-        return new ImageIcon(u);
+        return u == null ? null : new ImageIcon(u);
     }
     
     /**

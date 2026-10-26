@@ -1,20 +1,6 @@
 package net.atlanticbb.tantlinger.io;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,28 +18,22 @@ public class IOUtils
     private static final NullCopyMonitor nullMon = new NullCopyMonitor();
     
     
-    private static void getDirectoryContents(List onlyFiles, File rootdir)
+    private static void getDirectoryContents(List<File> onlyFiles, File rootdir)
     {
-        File[] list = rootdir.listFiles();
-        for(int i = 0; i < list.length; i++)
-        {
-            File eachFile = (java.io.File)list[i];
-            if(eachFile.isDirectory())
-            {
-                getDirectoryContents(onlyFiles, eachFile);
-            }
-            else if(eachFile.isFile())
-            {
-                onlyFiles.add(eachFile);
+        for (File file : rootdir.listFiles()) {
+            if (file.isDirectory()) {
+                getDirectoryContents(onlyFiles, file);
+            } else if (file.isFile()) {
+                onlyFiles.add(file);
             }
         }
     }
 
     public static File[] getDirectoryContents(File rootdir)
     {
-        List list = new ArrayList();
-        getDirectoryContents(list, rootdir);
-        return (File[])list.toArray(new File[list.size()]);
+        List<File> files = new ArrayList<>();
+        getDirectoryContents(files, rootdir);
+        return files.toArray(File[]::new);
     }
     
     public static String sanitize(String x)
@@ -86,12 +66,8 @@ public class IOUtils
     public static String getExtension(File f)
     {
         String name = f.getName();
-        
-        int i = name.lastIndexOf(".");        
-        if(i == -1 || i == name.length() - 1)
-            return "";        
-        
-        return name.substring(i + 1, name.length());
+        int i = name.lastIndexOf(".");
+        return i < 0 || i >= name.length() - 1 ? "" : name.substring(i + 1);
     }
     
     /**
@@ -103,12 +79,9 @@ public class IOUtils
     public static String getName(File f)
     {
         String name = f.getName();
-        
-        int i = name.lastIndexOf(".");        
-        if(i == -1)
-            return name;        
-        
-        return name.substring(0, i);
+        int i = name.lastIndexOf(".");
+        return i < 0 ? name : name.substring(0, i);
+
     }
     
     /**
@@ -136,7 +109,7 @@ public class IOUtils
             }
             else
             {
-                String num = name.substring(dashPos + 1, name.length());
+                String num = name.substring(dashPos + 1);
                 String temp = name.substring(0, dashPos);
                 try
                 {
@@ -150,7 +123,7 @@ public class IOUtils
             }
                 
             String uniqueName = name;
-            if(!ext.equals(""))
+            if(!ext.isEmpty())
                 uniqueName = uniqueName + "." + ext;
             
             String parent = "";
@@ -231,7 +204,7 @@ public class IOUtils
      * @throws IOException
      */
     public static void copy(File src, File dst, boolean overwrite)
-    throws FileNotFoundException, IOException
+            throws FileNotFoundException, IOException
     {
         copy(src, dst, nullMon, overwrite);
     }
