@@ -1,54 +1,21 @@
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.actions.*;
 
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.ComponentView;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
+import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.ObjectView;
-
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.actions.DecoratedTextAction;
-//import net.atlanticbb.tantlinger.ui.text.actions.EnterKeyAction;
-import net.atlanticbb.tantlinger.ui.text.actions.EnterKeyAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
-import net.atlanticbb.tantlinger.ui.text.actions.RemoveAction;
-import net.atlanticbb.tantlinger.ui.text.actions.TabAction;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.*;
 
 /**
  * An HTML Wysiwyg editor kit which can properly draw borderless tables
@@ -63,18 +30,25 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      * 
      */
     private static final long serialVersionUID = 1L;
-    private ViewFactory wysFactory = new WysiwygHTMLFactory();
-    private ArrayList monitoredViews = new ArrayList();    
-    private MouseInputAdapter resizeHandler = new ResizeHandler();
+    public static final String INSERT_BREAK = "insert-break";
+    public static final String DELETE_PREVIOUS = "delete-previous";
+    public static final String DELETE_NEXT = "delete-next";
+    public static final String INSERT_TAB = "insert-tab";
+    public static final String PASTE_FROM_CLIPBOARD = "paste-from-clipboard";
+    public static final String TAB_BACKWARD = "tab-backward";
+    private final ViewFactory wysFactory = new WysiwygHTMLFactory();
+    private final java.util.List<View> monitoredViews = new ArrayList<>();
+    private final MouseInputAdapter resizeHandler = new ResizeHandler();
         
-    private Map editorToActionsMap = new HashMap();
-    private KeyStroke tabBackwardKS = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
+    private final Map<JEditorPane, Map<String, Action>> editorToActionsMap = new HashMap<>();
+    private final KeyStroke tabBackwardKS = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
         
     public WysiwygHTMLEditorKit()
     {
         super();        
     }
-    
+
+    @Override
     public Document createDefaultDocument()
     {
         HTMLDocument doc = (HTMLDocument)super.createDefaultDocument();
@@ -85,103 +59,92 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         
         return doc;
     }
-    
+
+    @Override
     public void install(JEditorPane ed)
     {       
         super.install(ed);
-        if(editorToActionsMap.containsKey(ed))
-            return; //already installed
+        if(editorToActionsMap.containsKey(ed)) return; //already installed
         
         ed.addMouseListener(resizeHandler);
         ed.addMouseMotionListener(resizeHandler);
         
-        //install wysiwyg actions into the ActionMap for the editor being installed
-        Map actions = new HashMap();
+        //install WYSIWYG actions into the ActionMap for the editor being installed
+        Map<String, Action> actions = new HashMap<>();
         InputMap inputMap = ed.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap actionMap = ed.getActionMap();
         
-        Action delegate = actionMap.get("insert-break");        
+        Action delegate = actionMap.get(INSERT_BREAK);
         Action action = new EnterKeyAction(delegate);
-        actions.put("insert-break", action);
-        actionMap.put("insert-break", action);
+        actions.put(INSERT_BREAK, action);
+        actionMap.put(INSERT_BREAK, action);
         
-        delegate = actionMap.get("delete-previous");        
+        delegate = actionMap.get(DELETE_PREVIOUS);
         action = new RemoveAction(RemoveAction.BACKSPACE, delegate);
-        actions.put("delete-previous", action);
-        actionMap.put("delete-previous", action);
+        actions.put(DELETE_PREVIOUS, action);
+        actionMap.put(DELETE_PREVIOUS, action);
         
-        delegate = actionMap.get("delete-next");        
+        delegate = actionMap.get(DELETE_NEXT);
         action = new RemoveAction(RemoveAction.DELETE, delegate);
-        actions.put("delete-next", action);
-        actionMap.put("delete-next", action);
+        actions.put(DELETE_NEXT, action);
+        actionMap.put(DELETE_NEXT, action);
         
-        delegate = actionMap.get("insert-tab");        
+        delegate = actionMap.get(INSERT_TAB);
         action = new TabAction(TabAction.FORWARD, delegate);
-        actions.put("insert-tab", action);
-        actionMap.put("insert-tab", action);
+        actions.put(INSERT_TAB, action);
+        actionMap.put(INSERT_TAB, action);
         
-        delegate = actionMap.get("paste-from-clipboard");
+        delegate = actionMap.get(PASTE_FROM_CLIPBOARD);
         HTMLTextEditAction hteAction = new net.atlanticbb.tantlinger.ui.text.actions.PasteAction();
         hteAction.putContextValue(HTMLTextEditAction.EDITOR, ed);
-        actions.put("paste-from-clipboard", delegate);
-        actionMap.put("paste-from-clipboard", hteAction);
+        actions.put(PASTE_FROM_CLIPBOARD, delegate);
+        actionMap.put(PASTE_FROM_CLIPBOARD, hteAction);
                 
-        inputMap.put(tabBackwardKS, "tab-backward");//install tab backwards keystroke              
+        inputMap.put(tabBackwardKS, TAB_BACKWARD);//install tab backwards keystroke
         action = new TabAction(TabAction.BACKWARD, delegate);
-        actions.put("tab-backward", action);
-        actionMap.put("tab-backward", action);
+        actions.put(TAB_BACKWARD, action);
+        actionMap.put(TAB_BACKWARD, action);
         
         editorToActionsMap.put(ed, actions);
     }
-    
+
+    @Override
     public void deinstall(JEditorPane ed)
     {        
         super.deinstall(ed);
-        if(!editorToActionsMap.containsKey(ed))
-            return; //not installed installed        
+        if(!editorToActionsMap.containsKey(ed)) return; //not installed
+
         ed.removeMouseListener(resizeHandler);
         ed.removeMouseMotionListener(resizeHandler);
         
         //restore actions to their original state        
         ActionMap actionMap = ed.getActionMap();
-        Map actions = (Map)editorToActionsMap.get(ed);
+        Map<String, Action> actions = editorToActionsMap.get(ed);
         
-        Action curAct = actionMap.get("insert-break");
-        if(curAct == actions.get("insert-break"))
-        {           
-            actionMap.put("insert-break", ((DecoratedTextAction)curAct).getDelegate());
-        }
+        Action curAct = actionMap.get(INSERT_BREAK);
+        if(curAct == actions.get(INSERT_BREAK))
+            actionMap.put(INSERT_BREAK, ((DecoratedTextAction) curAct).getDelegate());
         
-        curAct = actionMap.get("delete-previous");        
-        if(curAct == actions.get("delete-previous"))
-        {           
-            actionMap.put("delete-previous", ((DecoratedTextAction)curAct).getDelegate());
-        }
+        curAct = actionMap.get(DELETE_PREVIOUS);
+        if(curAct == actions.get(DELETE_PREVIOUS))
+            actionMap.put(DELETE_PREVIOUS, ((DecoratedTextAction) curAct).getDelegate());
         
-        curAct = actionMap.get("delete-next"); 
-        if(curAct == actions.get("delete-next"))
-        {           
-            actionMap.put("delete-next", ((DecoratedTextAction)curAct).getDelegate());
-        }        
+        curAct = actionMap.get(DELETE_NEXT);
+        if(curAct == actions.get(DELETE_NEXT))
+            actionMap.put(DELETE_NEXT, ((DecoratedTextAction) curAct).getDelegate());
         
-        curAct = actionMap.get("insert-tab");        
-        if(curAct == actions.get("insert-tab"))
-        {           
-            actionMap.put("insert-tab", ((DecoratedTextAction)curAct).getDelegate());
-        }
+        curAct = actionMap.get(INSERT_TAB);
+        if(curAct == actions.get(INSERT_TAB))
+            actionMap.put(INSERT_TAB, ((DecoratedTextAction) curAct).getDelegate());
         
-        curAct = actionMap.get("paste-from-clipboard");
+        curAct = actionMap.get(PASTE_FROM_CLIPBOARD);
         if(curAct instanceof net.atlanticbb.tantlinger.ui.text.actions.PasteAction)
-        {
-            actionMap.put("paste-from-clipboard", (Action)actions.get("paste-from-clipboard"));
-        }
+            actionMap.put(PASTE_FROM_CLIPBOARD, actions.get(PASTE_FROM_CLIPBOARD));
                 
-        curAct = actionMap.get("tab-backward");
-        if(curAct == actions.get("insert-tab"))
-        {           
-            actionMap.remove("tab-backward");
-            //inputMap.remove(tabBackwardKS);//remove backwards keystroke
-        }   
+        curAct = actionMap.get(TAB_BACKWARD);
+        //inputMap.remove(tabBackwardKS);//remove backwards keystroke
+        if(curAct == actions.get(INSERT_TAB))
+            actionMap.remove(TAB_BACKWARD);
         
         editorToActionsMap.remove(ed);
     }    
@@ -191,6 +154,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      * of any models that are produced by this kit.
      * @return the factory
      */
+    @Override
     public ViewFactory getViewFactory()
     {        
         return wysFactory;
@@ -202,6 +166,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      */
     public class WysiwygHTMLFactory extends HTMLFactory
     {
+        @Override
         public View create(Element elem)
         {            
             Object o = elem.getAttributes().getAttribute(StyleConstants.NameAttribute);
@@ -211,7 +176,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                 if(kind == HTML.Tag.TABLE)                
                 {                                      
                     ResizableView v = new ResizableView(
-                        new BorderlessTableView(super.create(elem)));
+                            new BorderlessTableView(super.create(elem)));
                     monitoredViews.add(v);
                     return v;
                 }
@@ -227,11 +192,12 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                 }
                 else if(kind == HTML.Tag.OBJECT)
                 {
-                    ObjectView ov = new ObjectView(elem)
+                    return new ObjectView(elem)
                     {
                         //make a nicer looking representation for <object>.
                         //The default is a crappy red JLabel with "??" as the text
-                        protected Component createComponent() 
+                        @Override
+                        protected Component createComponent()
                         {                            
                             Component comp = super.createComponent();
                             if(comp instanceof JLabel)
@@ -251,7 +217,6 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                             return comp;
                         }  
                     };
-                    return ov;
                 }
                 else if((kind instanceof HTML.UnknownTag) ||
                    (kind == HTML.Tag.TITLE) ||
@@ -281,8 +246,9 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         boolean dragStarted;
         //need down flag for Java 1.4 - mouseMoved gets called during a drag
         boolean mouseDown; 
-        int dragDir = -1;        
-        
+        int dragDir = -1;
+
+        @Override
         public void mousePressed(MouseEvent e)
         {      
             mouseDown = true;
@@ -306,7 +272,8 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             
             e.getComponent().repaint();
         }
-        
+
+        @Override
         public void mouseMoved(MouseEvent e)
         {            
             if(!mouseDown)
@@ -319,7 +286,8 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                 setCursorForDir(v.getHandleForPoint(e.getPoint()), c);  
             }
         }
-        
+
+        @Override
         public void mouseDragged(MouseEvent e)
         {            
             dragStarted = dragDir != -1;
@@ -375,7 +343,8 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                         
             e.getComponent().repaint();
         }
-        
+
+        @Override
         public void mouseReleased(MouseEvent e)
         {            
             mouseDown = false;
@@ -384,8 +353,8 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             {
                 Element elem = v.getElement();
                 SimpleAttributeSet sas = new SimpleAttributeSet(elem.getAttributes());
-                Integer w = new Integer(v.getSelectionBounds().width);
-                Integer h = new Integer(v.getSelectionBounds().height);
+                Integer w = v.getSelectionBounds().width;
+                Integer h = v.getSelectionBounds().height;
                 
                 if(elem.getName().equals("table"))//resize the table
                 {                   
@@ -400,7 +369,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                     sas.addAttribute(HTML.Attribute.WIDTH, w);
                     sas.addAttribute(HTML.Attribute.HEIGHT, h);                    
                     String html = "<img";
-                    for(Enumeration ee = sas.getAttributeNames(); ee.hasMoreElements();)
+                    for(Enumeration<?> ee = sas.getAttributeNames(); ee.hasMoreElements();)
                     {
                         Object name = ee.nextElement();
                         if(!(name.toString().equals("name") || name.toString().equals("a")))
@@ -409,10 +378,10 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                             html += " " + name + "=\"" + val + "\"";
                         }
                     }
-                    html += ">"; 
+                    html += ">";
                     
                     if(sas.isDefined(HTML.Tag.A))                    
-                        html = "<a " + sas.getAttribute(HTML.Tag.A) + ">" + html + "</a>";                    
+                        html = "<a " + sas.getAttribute(HTML.Tag.A) + ">" + html + "</a>";
                     replace(elem, html);
                 }
                 
@@ -452,9 +421,9 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
          */
         private void updateMonitoredViews(HTMLDocument doc)
         {        
-            for(Iterator it = monitoredViews.iterator(); it.hasNext();)
+            for(Iterator<View> it = monitoredViews.iterator(); it.hasNext();)
             {            
-                View v = (View)it.next();            
+                View v = it.next();
                 Element vElem = v.getElement();
                 if(vElem.getName().equals("img"))
                 {
@@ -482,10 +451,9 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
          */
         private ResizableView getSelectedView()
         {
-            for(Iterator it = monitoredViews.iterator(); it.hasNext();)
-            {
-                ResizableView v = (ResizableView)it.next();
-                if(v.isSelectionEnabled())
+            for (View monitoredView : monitoredViews) {
+                ResizableView v = (ResizableView) monitoredView;
+                if (v.isSelectionEnabled())
                     return v;
             }
             
@@ -518,7 +486,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      * 
      * @author Bob Tantlinger
      */
-    private class ResizableView extends DelegateView
+    private static class ResizableView extends DelegateView
     {
         public static final int NW = 0;
         public static final int NE = 1;
@@ -547,6 +515,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         /* (non-Javadoc)
          * @see javax.swing.text.View#insertUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
          */
+        @Override
         public void insertUpdate(DocumentEvent e, Shape a, ViewFactory f)
         {
             setSelectionEnabled(false);    
@@ -556,6 +525,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         /* (non-Javadoc)
          * @see javax.swing.text.View#changedUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
          */
+        @Override
         public void changedUpdate(DocumentEvent e, Shape a, ViewFactory f)
         {
             setSelectionEnabled(false); 
@@ -565,6 +535,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         /* (non-Javadoc)
          * @see javax.swing.text.View#removeUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
          */
+        @Override
         public void removeUpdate(DocumentEvent e, Shape a, ViewFactory f)
         {
             setSelectionEnabled(false);            
@@ -616,7 +587,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         {
             if(isSelectionEnabled())
             {            
-                Rectangle r[] = computeHandles(selBounds);
+                Rectangle[] r = computeHandles(selBounds);
                 for(int i = 0; i < r.length; i++)
                     if(r[i].contains(p))
                         return i;
@@ -634,15 +605,15 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             g.setColor(Color.DARK_GRAY);
             g.drawRect(selBounds.x, selBounds.y, selBounds.width, selBounds.height);
             
-            Rectangle h[] = computeHandles(selBounds);
-            for(int i = 0; i < h.length; i++)        
-                g.fillRect(h[i].x, h[i].y, h[i].width, h[i].height);        
+            Rectangle[] h = computeHandles(selBounds);
+            for (Rectangle rectangle : h)
+                g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
             g.setColor(cached);            
         }
         
         private Rectangle[] computeHandles(Rectangle sel)
         {
-            Rectangle r[] = new Rectangle[8];
+            Rectangle[] r = new Rectangle[8];
             int sq = 8;
             r[NW] = new Rectangle(sel.x, sel.y, sq, sq);
             r[NE] = new Rectangle(sel.x + sel.width - sq, sel.y, sq, sq);
@@ -669,7 +640,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      * @author Bob Tantlinger
      *
      */
-    private class BorderlessTableView extends DelegateView
+    private static class BorderlessTableView extends DelegateView
     {
         public BorderlessTableView(View delegate)
         {
@@ -684,7 +655,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             {           
                 //draw the table background color if set 
                 //we need to do this for Java 1.5, otherwise
-                //the bgcolor doesnt get painted for some reason
+                //the bgcolor doesn't get painted for some reason
                 Color bgColor = getTableBgcolor();
                 if(bgColor != null)
                 {
@@ -700,7 +671,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
                 //set up the graphics object to draw dotted lines
                 Graphics2D g2 = (Graphics2D)g;
                 Stroke cachedStroke = g2.getStroke();
-                float dash[] = {3.0f};
+                float[] dash = {3.0f};
                 BasicStroke stroke = new BasicStroke(
                     1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 
                     10f, dash, 0.0f);
@@ -732,26 +703,20 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
         {
             AttributeSet atr = getElement().getAttributes();
             Object o = atr.getAttribute(HTML.Attribute.BGCOLOR);
-            if(o != null)
-            {
-                Color c = HTMLUtils.stringToColor(o.toString());
-                return c;
-            }
-            
-            return null;
+            return o != null ? HTMLUtils.stringToColor(o.toString()) : null;
+
         }
         
         private boolean shouldDrawDottedBorder()
         {
             AttributeSet atr = getElement().getAttributes();
             boolean isBorderAttr = hasBorderAttr(atr);
-            return (!isBorderAttr) || isBorderAttr && 
-                atr.getAttribute(HTML.Attribute.BORDER).toString().equals("0");
+            return !isBorderAttr || atr.getAttribute(HTML.Attribute.BORDER).toString().equals("0");
         }
         
         private boolean hasBorderAttr(AttributeSet atr)
         {
-            for(Enumeration e = atr.getAttributeNames(); e.hasMoreElements();)
+            for(Enumeration<?> e = atr.getAttributeNames(); e.hasMoreElements();)
             {
                 if(e.nextElement().toString().equals("border"))
                     return true;
@@ -773,14 +738,15 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
      * @author Bob Tantlinger
      *
      */
-    private class UnknownElementView extends ComponentView
+    private static class UnknownElementView extends ComponentView
     {        
         public UnknownElementView(Element e)
         {
             super(e);
         }
-        
-        protected Component createComponent() 
+
+        @Override
+        protected Component createComponent()
         {           
             JLabel p = new JLabel();
             if(getElement().getAttributes().getAttribute(StyleConstants.NameAttribute) == HTML.Tag.COMMENT)
@@ -799,7 +765,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             else
             {            
                 String text = this.getElement().getName();
-                if(text == null || text.equals(""))
+                if(text == null || text.isEmpty())
                     text = "??";
                 if(isEndTag())
                     text = "</" + text + ">";
@@ -822,10 +788,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit
             if(as != null)
             {
                 Object end = as.getAttribute(HTML.Attribute.ENDTAG);
-                if(end != null && (end instanceof String) && ((String)end).equals("true"))
-                {
-                    return true;
-                }
+                return (end instanceof String) && end.equals("true");
             }
             return false;
         }       

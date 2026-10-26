@@ -45,8 +45,9 @@ public class CachedImageView extends ImageView
     {
         super(elem);       
     }
-    
-    public void paint(Graphics g, Shape a) 
+
+    @Override
+    public void paint(Graphics g, Shape a)
     {
         super.paint(g, a);
         
