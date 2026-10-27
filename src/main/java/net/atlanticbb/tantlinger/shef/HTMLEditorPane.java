@@ -1,88 +1,32 @@
 package net.atlanticbb.tantlinger.shef;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import net.atlanticbb.tantlinger.i18n.I18n;
+import net.atlanticbb.tantlinger.ui.DefaultAction;
+import net.atlanticbb.tantlinger.ui.UIUtils;
+import net.atlanticbb.tantlinger.ui.text.*;
+import net.atlanticbb.tantlinger.ui.text.actions.*;
+import novaworx.syntax.SyntaxFactory;
+import novaworx.textpane.SyntaxDocument;
+import novaworx.textpane.SyntaxGutter;
+import novaworx.textpane.SyntaxGutterBase;
+import org.bushe.swing.action.ActionList;
+import org.bushe.swing.action.ActionManager;
+import org.bushe.swing.action.ActionUIFactory;
 
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.undo.UndoManager;
-
-import net.atlanticbb.tantlinger.i18n.I18n;
-import net.atlanticbb.tantlinger.ui.DefaultAction;
-import net.atlanticbb.tantlinger.ui.UIUtils;
-import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
-import net.atlanticbb.tantlinger.ui.text.Entities;
-import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
-import net.atlanticbb.tantlinger.ui.text.IndentationFilter;
-import net.atlanticbb.tantlinger.ui.text.SourceCodeEditor;
-import net.atlanticbb.tantlinger.ui.text.WysiwygHTMLEditorKit;
-import net.atlanticbb.tantlinger.ui.text.actions.ClearStylesAction;
-import net.atlanticbb.tantlinger.ui.text.actions.FindReplaceAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLEditorActionFactory;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLElementPropertiesAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLFontAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLFontColorAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLHorizontalRuleAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLImageAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLInlineAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLLineBreakAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLLinkAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTableAction;
-import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
-import net.atlanticbb.tantlinger.ui.text.actions.SpecialCharAction;
-
-
-import novaworx.syntax.SyntaxFactory;
-import novaworx.textpane.SyntaxDocument;
-import novaworx.textpane.SyntaxGutter;
-import novaworx.textpane.SyntaxGutterBase;
-
-import org.bushe.swing.action.ActionList;
-import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ActionUIFactory;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeListener;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -90,13 +34,8 @@ import org.bushe.swing.action.ActionUIFactory;
  */
 public class HTMLEditorPane extends JPanel 
 {
-	 /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
-
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.shef");
-    
     private static final String[] INVALID_TAGS = {"html", "head", "body", "title"};
 
     private JEditorPane wysEditor;
@@ -105,7 +44,6 @@ public class HTMLEditorPane extends JPanel
     private JComboBox fontFamilyCombo;
     private JComboBox paragraphCombo;
     private JTabbedPane tabs;
-    //private JMenuBar menuBar;
     private JToolBar formatToolBar;
 
     private JMenu editMenu;
@@ -116,12 +54,12 @@ public class HTMLEditorPane extends JPanel
     
     private ActionList actionList;
     
-    private FocusListener focusHandler = new FocusHandler(); 
-    private DocumentListener textChangedHandler = new TextChangedHandler();
-    private ActionListener fontChangeHandler = new FontChangeHandler();
-    private ActionListener paragraphComboHandler = new ParagraphComboHandler();
-    private CaretListener caretHandler = new CaretHandler();
-    private MouseListener popupHandler = new PopupHandler();
+    private final FocusListener focusHandler = new FocusHandler();
+    private final DocumentListener textChangedHandler = new TextChangedHandler();
+    private final ActionListener fontChangeHandler = new FontChangeHandler();
+    private final ActionListener paragraphComboHandler = new ParagraphComboHandler();
+    private final CaretListener caretHandler = new CaretHandler();
+    private final MouseListener popupHandler = new PopupHandler();
         
     private boolean isWysTextChanged;
     
@@ -154,13 +92,12 @@ public class HTMLEditorPane extends JPanel
         createEditorTabs(showHTMLEditor);
         createEditorActions(showHTMLEditor);
         setLayout(new BorderLayout());
-        add(formatToolBar, BorderLayout.NORTH);
-        add(tabs, BorderLayout.CENTER);    
-        
+        add(formatToolBar, BorderLayout.PAGE_START);
+        add(tabs, BorderLayout.CENTER);
     }
     
-    public void dispose() {
-        
+    public void dispose()
+    {
         wysEditor.removeAll();
         wysEditor.removeCaretListener(caretHandler);
         wysEditor.removeFocusListener(focusHandler);
@@ -170,9 +107,7 @@ public class HTMLEditorPane extends JPanel
         srcEditor.removeCaretListener(caretHandler);
         srcEditor.removeFocusListener(focusHandler);
         srcEditor.getDocument().removeDocumentListener(textChangedHandler);
-        
     }
-
 
     public JMenu getEditMenu()
     {
@@ -189,7 +124,6 @@ public class HTMLEditorPane extends JPanel
         return insertMenu;
     }
 
-    
     private void createEditorActions(boolean enableHTML)
     {        
         actionList = new ActionList("editor-actions");
@@ -224,11 +158,10 @@ public class HTMLEditorPane extends JPanel
         actionList.addAll(lst);
         editMenu = ActionUIFactory.getInstance().createMenu(lst);
         editMenu.setText(i18n.str("edit"));        
-       
-        
+
         //create format menu
         formatMenu = new JMenu(i18n.str("format"));        
-        lst = HTMLEditorActionFactory.createFontSizeActionList();//HTMLEditorActionFactory.createInlineActionList();
+        lst = HTMLEditorActionFactory.createFontSizeActionList();
         actionList.addAll(lst);        
         formatMenu.add(createMenu(lst, i18n.str("size")));
         fontSizeActions.addAll(lst);
@@ -278,9 +211,7 @@ public class HTMLEditorPane extends JPanel
                 
         actionList.add(objectPropertiesAction);
         formatMenu.add(objectPropertiesAction);
-                
-        
-        
+
         //create insert menu
         insertMenu = new JMenu(i18n.str("insert"));
         act = new HTMLLinkAction();
@@ -307,7 +238,6 @@ public class HTMLEditorPane extends JPanel
         act = new SpecialCharAction();
         actionList.add(act);
         insertMenu.add(act);
-        
        
         createFormatToolBar(paraActions, fontSizeActions);
     }
@@ -319,31 +249,26 @@ public class HTMLEditorPane extends JPanel
         formatToolBar.setFocusable(false);
         
         Font comboFont = new Font("Dialog", Font.PLAIN, 12);
-        PropertyChangeListener propLst = new PropertyChangeListener()
-        {
-            public void propertyChange(PropertyChangeEvent evt)
-            {
-                if(evt.getPropertyName().equals("selected"))
+        PropertyChangeListener propLst = evt -> {
+            if(evt.getPropertyName().equals("selected")
+                    && evt.getNewValue().equals(Boolean.TRUE))
                 {
-                    if(evt.getNewValue().equals(Boolean.TRUE))
-                    {
-                        paragraphCombo.removeActionListener(paragraphComboHandler);                    
-                        paragraphCombo.setSelectedItem(evt.getSource());
-                        paragraphCombo.addActionListener(paragraphComboHandler);
-                    }
+                    paragraphCombo.removeActionListener(paragraphComboHandler);
+                    paragraphCombo.setSelectedItem(evt.getSource());
+                    paragraphCombo.addActionListener(paragraphComboHandler);
                 }
-            }            
         };
-        for(Iterator it = blockActs.iterator(); it.hasNext();)
-        {
-            Object o = it.next();
-            if(o instanceof DefaultAction)
-                ((DefaultAction)o).addPropertyChangeListener(propLst);
-        }        
-        paragraphCombo = new JComboBox(toArray(blockActs));       
-        paragraphCombo.setPreferredSize(new Dimension(120, 22));
-        paragraphCombo.setMinimumSize(new Dimension(120, 22));
-        paragraphCombo.setMaximumSize(new Dimension(120, 22));
+
+        for (Object o : blockActs) {
+            if (o instanceof DefaultAction)
+                ((DefaultAction) o).addPropertyChangeListener(propLst);
+        }
+
+        final Dimension fixedSize = new Dimension(120, 22);
+        paragraphCombo = new JComboBox<>(toArray(blockActs));
+        paragraphCombo.setPreferredSize(fixedSize);
+        paragraphCombo.setMinimumSize(fixedSize);
+        paragraphCombo.setMaximumSize(fixedSize);
         paragraphCombo.setFont(comboFont);
         paragraphCombo.addActionListener(paragraphComboHandler);
         paragraphCombo.setRenderer(new ParagraphComboRenderer());
@@ -365,36 +290,31 @@ public class HTMLEditorPane extends JPanel
         fontFamilyCombo.setFont(comboFont);
         fontFamilyCombo.addActionListener(fontChangeHandler);
         
-        for (String f : fonts) 
+        for (String f : fonts) {
             fontFamilyCombo.addItem(new Font(f, Font.PLAIN, 12));
+        }
 
         fontFamilyCombo.setRenderer(new DefaultListCellRenderer() {
-            
-            protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+            private final DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected,cellHasFocus);
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+                JLabel renderer = (JLabel) defaultRenderer
+                        .getListCellRendererComponent(list, value, index, isSelected,cellHasFocus);
                 renderer.setFont((Font)value);
                 renderer.setText(((Font)value).getFontName());
                 fontFamilyCombo.setFont((Font)value);
                 return renderer;
             }
         });
-        
-        
-        
+
         formatToolBar.add(fontFamilyCombo);        
         
         final JButton fontSizeButton = new JButton(UIUtils.getIcon(UIUtils.X16, "fontsize.png"));
         final JPopupMenu sizePopup = ActionUIFactory.getInstance().createPopupMenu(fontSizeActs);
-        ActionListener al = new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {                
-                sizePopup.show(fontSizeButton, 0, fontSizeButton.getHeight());
-            }            
-        };
+        ActionListener al = e -> sizePopup.show(fontSizeButton, 0, fontSizeButton.getHeight());
         fontSizeButton.addActionListener(al);
         configToolbarButton(fontSizeButton);
         formatToolBar.add(fontSizeButton);
@@ -421,9 +341,8 @@ public class HTMLEditorPane extends JPanel
         formatToolBar.addSeparator();
         
         List alst = HTMLEditorActionFactory.createListElementActionList();
-        for(Iterator it = alst.iterator(); it.hasNext();)
-        {
-            act = (Action)it.next();
+        for (Object o : alst) {
+            act = (Action) o;
             act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
             actionList.add(act);
             addToToolBar(formatToolBar, act);
@@ -431,9 +350,8 @@ public class HTMLEditorPane extends JPanel
         formatToolBar.addSeparator();
         
         alst = HTMLEditorActionFactory.createAlignActionList();
-        for(Iterator it = alst.iterator(); it.hasNext();)
-        {
-            act = (Action)it.next();
+        for (Object o : alst) {
+            act = (Action) o;
             act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
             actionList.add(act);
             addToToolBar(formatToolBar, act);
@@ -451,7 +369,6 @@ public class HTMLEditorPane extends JPanel
         act = new HTMLTableAction();
         actionList.add(act);
         addToToolBar(formatToolBar, act);
-        
     }
     
     private void addToToolBar(JToolBar toolbar, Action act)
@@ -469,15 +386,13 @@ public class HTMLEditorPane extends JPanel
      */
     private Action[] toArray(ActionList lst)
     {
-        List acts = new ArrayList();
-        for(Iterator it = lst.iterator(); it.hasNext();)
-        {
-            Object v = it.next();
-            if(v != null && v instanceof Action)
-                acts.add(v);
+        List<Action> acts = new ArrayList<>();
+        for (Object v : lst) {
+            if (v instanceof Action)
+                acts.add((Action) v);
         }
         
-        return (Action[])acts.toArray(new Action[acts.size()]);
+        return acts.toArray(Action[]::new);
     }
         
     private void configToolbarButton(AbstractButton button)
@@ -490,7 +405,6 @@ public class HTMLEditorPane extends JPanel
         button.setPreferredSize(new Dimension(22, 22));
         button.setFocusable(false);
         button.setFocusPainted(false);
-        //button.setBorder(plainBorder);
         Action a = button.getAction();
         if(a != null)
             button.setToolTipText(a.getValue(Action.NAME).toString());
@@ -528,13 +442,7 @@ public class HTMLEditorPane extends JPanel
         scrollPane.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, gutterBase);
         
         tabs.addTab("HTML", scrollPane);
-        tabs.addChangeListener(new ChangeListener()
-        {
-            public void stateChanged(ChangeEvent e)
-            {                
-                updateEditView();                
-            }
-        });   
+        tabs.addChangeListener(e -> updateEditView());
     }
     
     private SourceCodeEditor createSourceEditor()
@@ -568,7 +476,6 @@ public class HTMLEditorPane extends JPanel
         ed.addFocusListener(focusHandler);
         ed.addMouseListener(popupHandler);
         
-        
         HTMLDocument document = (HTMLDocument)ed.getDocument();
         CompoundUndoManager cuh = new CompoundUndoManager(document, new UndoManager());
         document.addUndoableEditListener(cuh);
@@ -576,7 +483,7 @@ public class HTMLEditorPane extends JPanel
                 
         return ed;        
     }
-    
+
     //  inserts html into the wysiwyg editor TODO remove JEditorPane parameter
     private void insertHTML(JEditorPane editor, String html, int location) 
     {       

@@ -26,20 +26,17 @@ import java.util.*;
  */
 public class WysiwygHTMLEditorKit extends HTMLEditorKit
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
-    public static final String INSERT_BREAK = "insert-break";
-    public static final String DELETE_PREVIOUS = "delete-previous";
-    public static final String DELETE_NEXT = "delete-next";
-    public static final String INSERT_TAB = "insert-tab";
-    public static final String PASTE_FROM_CLIPBOARD = "paste-from-clipboard";
-    public static final String TAB_BACKWARD = "tab-backward";
+    private static final String INSERT_BREAK = "insert-break";
+    private static final String DELETE_PREVIOUS = "delete-previous";
+    private static final String DELETE_NEXT = "delete-next";
+    private static final String INSERT_TAB = "insert-tab";
+    private static final String PASTE_FROM_CLIPBOARD = "paste-from-clipboard";
+    private static final String TAB_BACKWARD = "tab-backward";
+
     private final ViewFactory wysFactory = new WysiwygHTMLFactory();
     private final java.util.List<View> monitoredViews = new ArrayList<>();
     private final MouseInputAdapter resizeHandler = new ResizeHandler();
-        
     private final Map<JEditorPane, Map<String, Action>> editorToActionsMap = new HashMap<>();
     private final KeyStroke tabBackwardKS = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
         
