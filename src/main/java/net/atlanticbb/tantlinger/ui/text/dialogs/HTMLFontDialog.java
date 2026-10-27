@@ -4,48 +4,34 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import java.awt.BorderLayout;
-import javax.swing.*;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import java.awt.*;
-import java.util.Vector;
-import javax.swing.JPanel;
-
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
 
 
-
-
-public class HTMLFontDialog extends HTMLOptionDialog
-{
+public class HTMLFontDialog extends HTMLOptionDialog {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    
+    private static final Integer SIZES[] =
+            {
+                    new Integer(8),
+                    new Integer(10),
+                    new Integer(12),
+                    new Integer(14),
+                    new Integer(18),
+                    new Integer(24),
+                    new Integer(36)
+            };
     private static Icon icon = UIUtils.getIcon(UIUtils.X48, "fontsize.png"); //$NON-NLS-1$
     private static String title = i18n.str("font"); //$NON-NLS-1$
     private static String desc = i18n.str("font_desc"); //$NON-NLS-1$
-    
-    private static final Integer SIZES[] =
-    {
-        new Integer(8),
-        new Integer(10),
-        new Integer(12),
-        new Integer(14),
-        new Integer(18),
-        new Integer(24),
-        new Integer(36)        
-    };    
-    
     private JPanel jContentPane = null;
     private JLabel fontLabel = null;
     private JComboBox fontCombo = null;
@@ -57,153 +43,136 @@ public class HTMLFontDialog extends HTMLOptionDialog
     private JPanel previewPanel = null;
     private JLabel previewLabel = null;
     private JPanel spacerPanel = null;
-    
+
     private String text = "";   //$NON-NLS-1$
-    
-    public HTMLFontDialog(Frame parent, String text)
-    {
+
+    public HTMLFontDialog(Frame parent, String text) {
         super(parent, title, desc, icon);
         initialize(text);
     }
-    
-    public HTMLFontDialog(Dialog parent, String text)
-    {
+
+    public HTMLFontDialog(Dialog parent, String text) {
         super(parent, title, desc, icon);
         initialize(text);
     }
-    
-    public boolean isBold()
-    {
+
+    public boolean isBold() {
         return boldCB.isSelected();
     }
-    
-    public boolean isItalic()
-    {
-        return italicCB.isSelected();
-    }
-    
-    public boolean isUnderline()
-    {
-        return ulCB.isSelected();
-    }
-    
-    public void setBold(boolean b)
-    {
+
+    public void setBold(boolean b) {
         boldCB.setSelected(b);
         updatePreview();
     }
-    
-    public void setItalic(boolean b)
-    {
+
+    public boolean isItalic() {
+        return italicCB.isSelected();
+    }
+
+    public void setItalic(boolean b) {
         italicCB.setSelected(b);
         updatePreview();
     }
-    
-    public void setUnderline(boolean b)
-    {
+
+    public boolean isUnderline() {
+        return ulCB.isSelected();
+    }
+
+    public void setUnderline(boolean b) {
         ulCB.setSelected(b);
         updatePreview();
     }
-    
-    public void setFontName(String fn)
-    {
+
+    public String getFontName() {
+        return fontCombo.getSelectedItem().toString();
+    }
+
+    public void setFontName(String fn) {
         fontCombo.setSelectedItem(fn);
         updatePreview();
     }
-    
-    public String getFontName()
-    {
-        return fontCombo.getSelectedItem().toString();
-    }
-    
-    public int getFontSize()
-    {
-        Integer i = (Integer)sizeCombo.getSelectedItem();
+
+    public int getFontSize() {
+        Integer i = (Integer) sizeCombo.getSelectedItem();
         return i.intValue();
     }
-    
-    public void setFontSize(int size)
-    {              
+
+    public void setFontSize(int size) {
         sizeCombo.setSelectedItem(new Integer(size));
         updatePreview();
     }
-    
-    public String getHTML()
-    {
+
+    public String getHTML() {
         String html = "<font "; //$NON-NLS-1$
         html += "name=\"" + fontCombo.getSelectedItem() + "\" "; //$NON-NLS-1$ //$NON-NLS-2$
-        html += "size=\"" + (sizeCombo.getSelectedIndex()+1) + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
-        if(boldCB.isSelected())
+        html += "size=\"" + (sizeCombo.getSelectedIndex() + 1) + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (boldCB.isSelected())
             html += "<b>"; //$NON-NLS-1$
-        if(italicCB.isSelected())
+        if (italicCB.isSelected())
             html += "<i>"; //$NON-NLS-1$
-        if(ulCB.isSelected())
+        if (ulCB.isSelected())
             html += "<u>"; //$NON-NLS-1$
-        
+
         html += text;
-        
-        if(boldCB.isSelected())
+
+        if (boldCB.isSelected())
             html += "</b>"; //$NON-NLS-1$
-        if(italicCB.isSelected())
+        if (italicCB.isSelected())
             html += "</i>"; //$NON-NLS-1$
-        if(ulCB.isSelected())
+        if (ulCB.isSelected())
             html += "</u>"; //$NON-NLS-1$
-        
+
         html += "</font>";         //$NON-NLS-1$
         return html;
     }
 
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
-    private void initialize(String text)
-    {        
+    private void initialize(String text) {
         setContentPane(getJContentPane());
         pack();
         setSize(350, getHeight());
         setResizable(false);
         this.text = text;
     }
-    
-    private void updatePreview()
-    {
+
+    private void updatePreview() {
         int style = Font.PLAIN;
-        if(boldCB.isSelected())
+        if (boldCB.isSelected())
             style += Font.BOLD;
-        if(italicCB.isSelected())
+        if (italicCB.isSelected())
             style += Font.ITALIC;
-        
-        if(ulCB.isSelected())
+
+        if (ulCB.isSelected())
             previewLabel.setBorder(
-                BorderFactory.createMatteBorder(
-                    0, 0, 1, 0, previewLabel.getForeground()));
+                    BorderFactory.createMatteBorder(
+                            0, 0, 1, 0, previewLabel.getForeground()));
         else
             previewLabel.setBorder(null);
-        
+
         String font = fontCombo.getSelectedItem().toString();
         Integer size = SIZES[sizeCombo.getSelectedIndex()];
         Font f = new Font(font, style, size.intValue());
         previewLabel.setFont(f);
-        
+
     }
 
     /**
      * This method initializes jContentPane
-     * 
+     *
      * @return javax.swing.JPanel
      */
-    private JPanel getJContentPane()
-    {
-        if(jContentPane == null)
-        {
+    private JPanel getJContentPane() {
+        if (jContentPane == null) {
             GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
             gridBagConstraints21.gridx = 0;
             gridBagConstraints21.gridwidth = 3;
             gridBagConstraints21.anchor = java.awt.GridBagConstraints.WEST;
             gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints21.insets = new java.awt.Insets(5,0,0,0);
+            gridBagConstraints21.insets = new java.awt.Insets(5, 0, 0, 0);
             gridBagConstraints21.gridy = 1;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
             gridBagConstraints2.fill = java.awt.GridBagConstraints.NONE;
@@ -216,38 +185,36 @@ public class HTMLFontDialog extends HTMLOptionDialog
             gridBagConstraints1.gridy = 0;
             gridBagConstraints1.weightx = 1.0;
             gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new java.awt.Insets(0,0,0,5);
+            gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
             gridBagConstraints1.gridx = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
-            gridBagConstraints.insets = new java.awt.Insets(0,0,0,5);
+            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
             gridBagConstraints.gridy = 0;
             fontLabel = new JLabel();
             fontLabel.setText(i18n.str("font")); //$NON-NLS-1$
             jContentPane = new JPanel();
             jContentPane.setLayout(new GridBagLayout());
-            jContentPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5));
+            jContentPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
             jContentPane.add(fontLabel, gridBagConstraints);
             jContentPane.add(getFontCombo(), gridBagConstraints1);
             jContentPane.add(getSizeCombo(), gridBagConstraints2);
             jContentPane.add(getStylePanel(), gridBagConstraints21);
-            
+
             sizeCombo.setSelectedItem(new Integer(previewLabel.getFont().getSize()));
         }
         return jContentPane;
     }
 
     /**
-     * This method initializes fontCombo	
-     * 	
-     * @return javax.swing.JComboBox	
+     * This method initializes fontCombo
+     *
+     * @return javax.swing.JComboBox
      */
-    private JComboBox getFontCombo()
-    {        
-        if(fontCombo == null)
-        {            
-            GraphicsEnvironment gEnv = 
-                GraphicsEnvironment.getLocalGraphicsEnvironment();
+    private JComboBox getFontCombo() {
+        if (fontCombo == null) {
+            GraphicsEnvironment gEnv =
+                    GraphicsEnvironment.getLocalGraphicsEnvironment();
             String envfonts[] = gEnv.getAvailableFontFamilyNames();
             Vector fonts = new Vector();
             fonts.add("Default"); //$NON-NLS-1$
@@ -256,12 +223,10 @@ public class HTMLFontDialog extends HTMLOptionDialog
             fonts.add("monospaced");
             for (int i = 0; i < envfonts.length; i++)
                 fonts.add(envfonts[i]);
-            
+
             fontCombo = new JComboBox(fonts);
-            fontCombo.addItemListener(new java.awt.event.ItemListener()
-            {
-                public void itemStateChanged(java.awt.event.ItemEvent e)
-                {
+            fontCombo.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
                 }
             });
@@ -270,20 +235,16 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes sizeCombo	
-     * 	
-     * @return javax.swing.JComboBox	
+     * This method initializes sizeCombo
+     *
+     * @return javax.swing.JComboBox
      */
-    private JComboBox getSizeCombo()
-    {
-        if(sizeCombo == null)
-        {
+    private JComboBox getSizeCombo() {
+        if (sizeCombo == null) {
             sizeCombo = new JComboBox(SIZES);
             sizeCombo.setSelectedItem(new Integer(12));
-            sizeCombo.addItemListener(new java.awt.event.ItemListener()
-            {
-                public void itemStateChanged(java.awt.event.ItemEvent e)
-                {
+            sizeCombo.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
                 }
             });
@@ -292,14 +253,12 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes stylePanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes stylePanel
+     *
+     * @return javax.swing.JPanel
      */
-    private JPanel getStylePanel()
-    {
-        if(stylePanel == null)
-        {
+    private JPanel getStylePanel() {
+        if (stylePanel == null) {
             GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
             gridBagConstraints7.gridx = 0;
             gridBagConstraints7.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -318,18 +277,18 @@ public class HTMLFontDialog extends HTMLOptionDialog
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.gridx = 0;
             gridBagConstraints5.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints5.insets = new java.awt.Insets(0,0,0,5);
+            gridBagConstraints5.insets = new java.awt.Insets(0, 0, 0, 5);
             gridBagConstraints5.weighty = 0.0;
             gridBagConstraints5.gridy = 2;
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints4.insets = new java.awt.Insets(0,0,0,5);
+            gridBagConstraints4.insets = new java.awt.Insets(0, 0, 0, 5);
             gridBagConstraints4.gridy = 1;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 0;
             gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints3.insets = new java.awt.Insets(5,0,0,5);
+            gridBagConstraints3.insets = new java.awt.Insets(5, 0, 0, 5);
             gridBagConstraints3.gridy = 0;
             stylePanel = new JPanel();
             stylePanel.setLayout(new GridBagLayout());
@@ -343,20 +302,16 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes boldCB	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes boldCB
+     *
+     * @return javax.swing.JCheckBox
      */
-    private JCheckBox getBoldCB()
-    {
-        if(boldCB == null)
-        {
+    private JCheckBox getBoldCB() {
+        if (boldCB == null) {
             boldCB = new JCheckBox();
             boldCB.setText(i18n.str("bold")); //$NON-NLS-1$
-            boldCB.addItemListener(new java.awt.event.ItemListener()
-            {
-                public void itemStateChanged(java.awt.event.ItemEvent e)
-                {
+            boldCB.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
                 }
             });
@@ -365,20 +320,16 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes italicCB	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes italicCB
+     *
+     * @return javax.swing.JCheckBox
      */
-    private JCheckBox getItalicCB()
-    {
-        if(italicCB == null)
-        {
+    private JCheckBox getItalicCB() {
+        if (italicCB == null) {
             italicCB = new JCheckBox();
             italicCB.setText(i18n.str("italic")); //$NON-NLS-1$
-            italicCB.addItemListener(new java.awt.event.ItemListener()
-            {
-                public void itemStateChanged(java.awt.event.ItemEvent e)
-                {
+            italicCB.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
                 }
             });
@@ -387,20 +338,16 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes ulCB	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes ulCB
+     *
+     * @return javax.swing.JCheckBox
      */
-    private JCheckBox getUlCB()
-    {
-        if(ulCB == null)
-        {
+    private JCheckBox getUlCB() {
+        if (ulCB == null) {
             ulCB = new JCheckBox();
             ulCB.setText(i18n.str("underline")); //$NON-NLS-1$
-            ulCB.addItemListener(new java.awt.event.ItemListener()
-            {
-                public void itemStateChanged(java.awt.event.ItemEvent e)
-                {
+            ulCB.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
                 }
             });
@@ -409,14 +356,12 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes previewPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes previewPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private JPanel getPreviewPanel()
-    {
-        if(previewPanel == null)
-        {            
+    private JPanel getPreviewPanel() {
+        if (previewPanel == null) {
             previewLabel = new JLabel();
             previewLabel.setText("AaBbYyZz"); //$NON-NLS-1$
             JPanel spacer = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -424,8 +369,8 @@ public class HTMLFontDialog extends HTMLOptionDialog
             spacer.add(previewLabel);
             previewPanel = new JPanel();
             previewPanel.setLayout(new BorderLayout());
-            previewPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("preview"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(5,5,5,5), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED))))); //$NON-NLS-1$
-            previewPanel.setPreferredSize(new java.awt.Dimension(90,100));
+            previewPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("preview"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED))))); //$NON-NLS-1$
+            previewPanel.setPreferredSize(new java.awt.Dimension(90, 100));
             previewPanel.setMaximumSize(previewPanel.getPreferredSize());
             previewPanel.setMinimumSize(previewPanel.getPreferredSize());
             previewPanel.add(spacer, null);
@@ -434,19 +379,16 @@ public class HTMLFontDialog extends HTMLOptionDialog
     }
 
     /**
-     * This method initializes spacerPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes spacerPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private JPanel getSpacerPanel()
-    {
-        if(spacerPanel == null)
-        {
+    private JPanel getSpacerPanel() {
+        if (spacerPanel == null) {
             spacerPanel = new JPanel();
         }
         return spacerPanel;
     }
-    
-    
+
 
 }  //  @jve:decl-index=0:visual-constraint="48,14"

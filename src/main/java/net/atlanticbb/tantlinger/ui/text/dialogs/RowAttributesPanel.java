@@ -4,15 +4,14 @@
  */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Hashtable;
+import java.util.Map;
 
-public class RowAttributesPanel extends HTMLAttributeEditorPanel
-{
+public class RowAttributesPanel extends HTMLAttributeEditorPanel {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private AlignmentAttributesPanel alignPanel = null;
@@ -22,65 +21,56 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel
     /**
      * This is the default constructor
      */
-    public RowAttributesPanel()
-    {
+    public RowAttributesPanel() {
         this(new Hashtable());
     }
-    
-    public RowAttributesPanel(Hashtable attr)
-    {
+
+    public RowAttributesPanel(Hashtable attr) {
         super(attr);
         initialize();
         alignPanel.setAttributes(getAttributes());
-        updateComponentsFromAttribs();  
+        updateComponentsFromAttribs();
     }
-    
-    public void updateComponentsFromAttribs()
-    {
-        if(attribs.containsKey("bgcolor"))
-        {
+
+    public void updateComponentsFromAttribs() {
+        if (attribs.containsKey("bgcolor")) {
             bgColorPanel.setSelected(true);
             bgColorPanel.setColor(attribs.get("bgcolor").toString());
         }
-        
+
         alignPanel.updateComponentsFromAttribs();
     }
-    
-    
-    public void updateAttribsFromComponents()
-    {
-        if(bgColorPanel.isSelected())
+
+
+    public void updateAttribsFromComponents() {
+        if (bgColorPanel.isSelected())
             attribs.put("bgcolor", bgColorPanel.getColor());
         else
             attribs.remove("bgcolor");
         alignPanel.updateAttribsFromComponents();
     }
-    
-    public void setComponentStates(Hashtable attribs)
-    {
-        if(attribs.containsKey("bgcolor"))
-        {
+
+    public void setComponentStates(Hashtable attribs) {
+        if (attribs.containsKey("bgcolor")) {
             bgColorPanel.setSelected(true);
             bgColorPanel.setColor(attribs.get("bgcolor").toString());
         }
-        
+
         alignPanel.setComponentStates(attribs);
-        
+
     }
-    
-    public void setAttributes(Map attr)
-    {
+
+    public void setAttributes(Map attr) {
         alignPanel.setAttributes(attr);
         super.setAttributes(attr);
     }
 
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
-    private void initialize()
-    {
+    private void initialize() {
         GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
         gridBagConstraints2.gridx = 0;
         gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
@@ -95,55 +85,49 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0,0,5,0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         gridBagConstraints.weightx = 0.0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridy = 0;
         this.setLayout(new GridBagLayout());
         this.setSize(279, 140);
-        this.setPreferredSize(new java.awt.Dimension(215,140));
+        this.setPreferredSize(new java.awt.Dimension(215, 140));
         this.add(getAlignPanel(), gridBagConstraints);
         this.add(getBgColorPanel(), gridBagConstraints1);
         this.add(getExpansionPanel(), gridBagConstraints2);
     }
 
     /**
-     * This method initializes alignPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes alignPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private AlignmentAttributesPanel getAlignPanel()
-    {
-        if(alignPanel == null)
-        {
+    private AlignmentAttributesPanel getAlignPanel() {
+        if (alignPanel == null) {
             alignPanel = new AlignmentAttributesPanel();
         }
         return alignPanel;
     }
 
     /**
-     * This method initializes bgColorPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes bgColorPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private BGColorPanel getBgColorPanel()
-    {
-        if(bgColorPanel == null)
-        {
+    private BGColorPanel getBgColorPanel() {
+        if (bgColorPanel == null) {
             bgColorPanel = new BGColorPanel();
         }
         return bgColorPanel;
     }
 
     /**
-     * This method initializes expansionPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes expansionPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private JPanel getExpansionPanel()
-    {
-        if(expansionPanel == null)
-        {
+    private JPanel getExpansionPanel() {
+        if (expansionPanel == null) {
             expansionPanel = new JPanel();
         }
         return expansionPanel;

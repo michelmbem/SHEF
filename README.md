@@ -19,7 +19,7 @@ Features
 Demo
 --------
 
-A Demo is provided in the package.  Here's a screenshot:
+A Demo is provided in the package. Here's a screenshot:
 
 ![SHEF screenshot](https://github.com/kkieffer/SHEF/blob/master/screenshot.jpg "SHEF screenshot")
 
@@ -34,7 +34,6 @@ Modifications
 * Added icons and other cosmetic changes
 * Font combo box now displays WYSIWYG fonts
 * Directly paste images from system clipboard
-
 
 License
 -------

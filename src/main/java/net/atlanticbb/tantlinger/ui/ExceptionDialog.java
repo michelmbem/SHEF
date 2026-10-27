@@ -1,35 +1,16 @@
 package net.atlanticbb.tantlinger.ui;
 
-import javax.swing.JPanel;
-import java.awt.Frame;
-import javax.swing.JDialog;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
+import net.atlanticbb.tantlinger.i18n.I18n;
 
-import java.awt.Dialog;
-import java.awt.Insets;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-
-
+import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import javax.swing.BorderFactory;
 
-import net.atlanticbb.tantlinger.i18n.I18n;
-
-
-public class ExceptionDialog extends JDialog
-{
+public class ExceptionDialog extends JDialog {
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
-    
+
     private static final long serialVersionUID = 1L;
     private static final int PREFERRED_WIDTH = 450;
     private static final String DEFAULT_TITLE = i18n.str("error");  //  @jve:decl-index=0: //$NON-NLS-1$
@@ -44,59 +25,52 @@ public class ExceptionDialog extends JDialog
     private JScrollPane scrollPane = null;
     private JTextArea textArea = null;
     private JSeparator separator = null;
-    
-    
-    public ExceptionDialog()
-    {
+
+
+    public ExceptionDialog() {
         super();
         init(new Exception());
-        
+
     }
-    
+
     /**
      * @param owner
      */
-    public ExceptionDialog(Frame owner, Throwable th)
-    {
+    public ExceptionDialog(Frame owner, Throwable th) {
         super(owner, DEFAULT_TITLE);
         init(th);
-        
+
     }
-    
-    public ExceptionDialog(Dialog owner, Throwable th)
-    {
+
+    public ExceptionDialog(Dialog owner, Throwable th) {
         super(owner, DEFAULT_TITLE);
         init(th);
     }
-    
-    private void init(Throwable th)
-    {        
+
+    private void init(Throwable th) {
         setModal(true);
-        initialize();        
+        initialize();
         setThrowable(th);
         showDetails(false);
     }
 
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
-    private void initialize()
-    {            
+    private void initialize() {
         this.setContentPane(getJContentPane());
         getRootPane().setDefaultButton(getOkButton());
     }
 
     /**
      * This method initializes jContentPane
-     * 
+     *
      * @return javax.swing.JPanel
      */
-    private JPanel getJContentPane()
-    {
-        if(jContentPane == null)
-        {
+    private JPanel getJContentPane() {
+        if (jContentPane == null) {
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.gridwidth = 3;
@@ -146,7 +120,7 @@ public class ExceptionDialog extends JDialog
             iconLabel.setText(""); //$NON-NLS-1$
             iconLabel.setIcon(UIManager.getIcon("OptionPane.errorIcon")); //$NON-NLS-1$
             //iconLabel.setIcon(new ImageIcon(getClass().getResource("/com/neatomatic/ui/images/x32/cancel.png")));
-            jContentPane = new JPanel();            
+            jContentPane = new JPanel();
             jContentPane.setLayout(new GridBagLayout());
             jContentPane.setBorder(BorderFactory.createEmptyBorder(12, 5, 10, 5));
             jContentPane.add(iconLabel, gridBagConstraints);
@@ -160,14 +134,12 @@ public class ExceptionDialog extends JDialog
     }
 
     /**
-     * This method initializes buttonPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes buttonPanel
+     *
+     * @return javax.swing.JPanel
      */
-    private JPanel getButtonPanel()
-    {
-        if(buttonPanel == null)
-        {
+    private JPanel getButtonPanel() {
+        if (buttonPanel == null) {
             GridLayout gridLayout = new GridLayout();
             gridLayout.setRows(2);
             gridLayout.setHgap(0);
@@ -182,20 +154,16 @@ public class ExceptionDialog extends JDialog
     }
 
     /**
-     * This method initializes okButton	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes okButton
+     *
+     * @return javax.swing.JButton
      */
-    private JButton getOkButton()
-    {
-        if(okButton == null)
-        {
+    private JButton getOkButton() {
+        if (okButton == null) {
             okButton = new JButton();
             okButton.setText(i18n.str("ok")); //$NON-NLS-1$
-            okButton.addActionListener(new java.awt.event.ActionListener()
-            {
-                public void actionPerformed(java.awt.event.ActionEvent e)
-                {
+            okButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
                     dispose();
                 }
             });
@@ -204,78 +172,65 @@ public class ExceptionDialog extends JDialog
     }
 
     /**
-     * This method initializes detailsButton	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes detailsButton
+     *
+     * @return javax.swing.JButton
      */
-    private JButton getDetailsButton()
-    {
-        if(detailsButton == null)
-        {
+    private JButton getDetailsButton() {
+        if (detailsButton == null) {
             detailsButton = new JButton();
             detailsButton.setText(i18n.str("_details")); //$NON-NLS-1$
-            detailsButton.addActionListener(new java.awt.event.ActionListener()
-            {
-                public void actionPerformed(java.awt.event.ActionEvent e)
-                {
+            detailsButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
                     toggleDetails();
                 }
             });
         }
         return detailsButton;
     }
-    
-    private void toggleDetails()
-    {
+
+    private void toggleDetails() {
         showDetails(!isDetailsVisible());
     }
-    
-    public void showDetails(boolean b)
-    {
-        if(b)
-        {
+
+    public void showDetails(boolean b) {
+        if (b) {
             detailsButton.setText(i18n.str("details_")); //$NON-NLS-1$
             scrollPane.setVisible(true);
             separator.setVisible(false);
-        }
-        else
-        {
+        } else {
             detailsButton.setText(i18n.str("_details")); //$NON-NLS-1$
             scrollPane.setVisible(false);
             separator.setVisible(true);
         }
-        
-        setResizable(true);        
+
+        setResizable(true);
         pack();
         setResizable(false);
     }
-    
-    public boolean isDetailsVisible()
-    {
+
+    public boolean isDetailsVisible() {
         return scrollPane.isVisible();
     }
-    
-    public void setThrowable(Throwable th)
-    {
+
+    public void setThrowable(Throwable th) {
         String msg = i18n.str("no_message_given"); //$NON-NLS-1$
-        if(th.getLocalizedMessage() != null && !th.getLocalizedMessage().equals("")) //$NON-NLS-1$
+        if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().equals("")) //$NON-NLS-1$
             msg = th.getLocalizedMessage();
         msgLabel.setText(msg);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         th.printStackTrace(new PrintStream(bout));
-        
-        String stackTrace = new String(bout.toByteArray());        
+
+        String stackTrace = new String(bout.toByteArray());
         textArea.setText(stackTrace);
         textArea.setCaretPosition(0);
     }
-    
+
     /**
      * @return a JSeparator that gets swapped out with the detail pane.
      */
-    private JSeparator getSeparator()
-    {
-        if(separator == null)
-        {
+    private JSeparator getSeparator() {
+        if (separator == null) {
             separator = new JSeparator();
             separator.setPreferredSize(new Dimension(PREFERRED_WIDTH, 3));
         }
@@ -284,14 +239,12 @@ public class ExceptionDialog extends JDialog
     }
 
     /**
-     * This method initializes scrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+     * This method initializes scrollPane
+     *
+     * @return javax.swing.JScrollPane
      */
-    private JScrollPane getScrollPane()
-    {
-        if(scrollPane == null)
-        {
+    private JScrollPane getScrollPane() {
+        if (scrollPane == null) {
             scrollPane = new JScrollPane();
             scrollPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, 200));
             scrollPane.setViewportView(getTextArea());
@@ -300,14 +253,12 @@ public class ExceptionDialog extends JDialog
     }
 
     /**
-     * This method initializes textArea	
-     * 	
-     * @return javax.swing.JTextArea	
+     * This method initializes textArea
+     *
+     * @return javax.swing.JTextArea
      */
-    private JTextArea getTextArea()
-    {
-        if(textArea == null)
-        {
+    private JTextArea getTextArea() {
+        if (textArea == null) {
             textArea = new JTextArea();
             textArea.setTabSize(2);
             textArea.setEditable(false);

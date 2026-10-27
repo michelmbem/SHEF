@@ -3,97 +3,83 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
 import novaworx.syntax.SyntaxFactory;
 import novaworx.syntax.Token;
 import novaworx.textpane.SyntaxDocument;
 import novaworx.textpane.SyntaxStyle;
 import novaworx.textpane.SyntaxTextPane;
 
+import java.awt.*;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 
 /**
  * @author Bob Tantlinger
  *
  */
-public class SourceCodeEditor extends SyntaxTextPane
-{
+public class SourceCodeEditor extends SyntaxTextPane {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
-    
-    
+
+
     /**
-     * 
+     *
      */
-    public SourceCodeEditor()
-    {
+    public SourceCodeEditor() {
         super();
-        
+
         SyntaxFactory.setSyntaxCatalog(getClass().getResource("/resources/syntax.catalog.xml"));
         SyntaxFactory.loadSyntaxes();
-        
+
         setLineHighlight(true);
         setBracketHighlight(true);
         setAntiAlias(true);
         setOpaque(true);
         setCaretOnDelay(500);
         setCaretOffDelay(500);
-        
+
         setFont(new Font("Default", Font.PLAIN, 12));
-        
+
         /* Load default theme */
         Properties themes = new Properties();
         InputStream in = null;
-        try
-        {
+        try {
             in = getClass().getResource("/net/atlanticbb/tantlinger/ui/text/syntax.properties").openStream();
             themes.load(in);
-            setTheme(themes, "default");            
-        }
-        catch(Exception e)
-        {            
+            setTheme(themes, "default");
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 in.close();
-            }
-            catch(Exception ex)
-            {
-               
+            } catch (Exception ex) {
+
             }
         }
     }
-    
-    public void setTheme(Properties props) 
-    {
+
+    public void setTheme(Properties props) {
         String prefix = "default";
-        try
-        {
-            SyntaxDocument d = (SyntaxDocument)getDocument();
+        try {
+            SyntaxDocument d = (SyntaxDocument) getDocument();
             prefix = d.getSyntax().getName();
-            
+
+        } catch (ClassCastException ex) {
+
         }
-        catch(ClassCastException ex)
-        {
-            
-        }
-        
+
         setTheme(props, prefix);
     }
-    
-    
+
+
     /**
      * Set a color theme from a properties file
-     * @param props The Properties object
+     *
+     * @param props  The Properties object
      * @param prefix The prefix to use when getting the keys
      */
     public void setTheme(Properties props, String prefix) //throws Exception 
@@ -168,76 +154,61 @@ public class SourceCodeEditor extends SyntaxTextPane
         gutter.setBracketScopeForeground(parseColor(props.getProperty(prefix + ".bracketscope.fg")));
         gutter.setBracketScopeBackground(parseColor(props.getProperty(prefix + ".bracketscope.bg")));*/
     }
-    
+
     /**
      * Parse a color from the syntax.properties file. It can have the format
      * RRGGBB in hex or AARRGGBB (with alpha blending)
-     * 
+     *
      * @param color The color string
      * @return A color object
      */
     private Color parseColor(String color) //throws Exception
     {
-        if(color == null)
+        if (color == null)
             return new Color(0, 0, 0, 0);
-        try
-        {
-            if(color.length() == 6)
-            {
+        try {
+            if (color.length() == 6) {
                 int r = Integer.parseInt(color.substring(0, 2), 16);
                 int g = Integer.parseInt(color.substring(2, 4), 16);
                 int b = Integer.parseInt(color.substring(4, 6), 16);
                 return new Color(r, g, b);
-            }
-            else if(color.length() == 8)
-            {
+            } else if (color.length() == 8) {
                 int a = Integer.parseInt(color.substring(0, 2), 16);
                 int r = Integer.parseInt(color.substring(2, 4), 16);
                 int g = Integer.parseInt(color.substring(4, 6), 16);
                 int b = Integer.parseInt(color.substring(6, 8), 16);
                 return new Color(r, g, b, a);
-            }
-            else
-            {
+            } else {
                 //throw new Exception("Invalid color syntax");
             }
-        }
-        catch(NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             //throw new Exception("Invalid color data", e);
         }
-        
+
         return Color.black;
     }
 
     /**
      * Parse a font from the syntax.properties file. Takes a comma-separated
      * list of the plain,bold and italic parameters
-     * 
+     *
      * @param font The font string
      * @return A font style constant
      */
     private int parseFont(String font) //throws Exception
     {
         int flags = Font.PLAIN;
-        if(font != null)
-        {
+        if (font != null) {
 
             StringTokenizer tokenizer = new StringTokenizer(font, ",");
-            while(tokenizer.hasMoreTokens())
-            {
+            while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken().toLowerCase();
 
-                if(token.equals("bold"))
-                {
+                if (token.equals("bold")) {
                     flags |= Font.BOLD;
-                }
-                else if(token.equals("italic"))
-                {
+                } else if (token.equals("italic")) {
                     flags |= Font.ITALIC;
-                }
-                else if(token.equals("plain"))
-                {
+                } else if (token.equals("plain")) {
                     /* Ignore */
                 }
                 /*else

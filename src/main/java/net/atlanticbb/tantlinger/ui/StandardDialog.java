@@ -1,20 +1,14 @@
 //based on a javaworld article
 
 package net.atlanticbb.tantlinger.ui;
+
+import net.atlanticbb.tantlinger.i18n.I18n;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
-import net.atlanticbb.tantlinger.i18n.I18n;
-
-
 
 
 /**
@@ -22,36 +16,38 @@ import net.atlanticbb.tantlinger.i18n.I18n;
  * "Cancel" buttons. Subclasses can override the isDataValid(),
  * okButtonPressed(), and cancelButtonPressed() methods to perform
  * implementation specific processing.
- * <P>
+ * <p>
  * By default, the dialog is modal, and has a JPanel with a
  * BorderLayout for its content pane.
  *
  * @author David Fraser
  * @author Michael Harris
  */
-public class StandardDialog extends JDialog
-{
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
-    
+public class StandardDialog extends JDialog {
     // Constants
     public static final int BUTTONS_CENTER = FlowLayout.CENTER;
     public static final int BUTTONS_LEFT = FlowLayout.LEFT;
     public static final int BUTTONS_RIGHT = FlowLayout.RIGHT;
-
-    /** The spacing between components in pixels */
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
+    /**
+     * The spacing between components in pixels
+     */
     private static final int COMPONENT_SPACING = 5;
 
     // Attributes
 
-    /** Flag indicating if the "Cancel" button was pressed to close dialog */
+    /**
+     * Flag indicating if the "Cancel" button was pressed to close dialog
+     */
     private boolean myIsDialogCancelled = true;
 
-    /** The content pane for holding user components */
+    /**
+     * The content pane for holding user components
+     */
     private Container myUserContentPane;
 
     // Methods
@@ -59,8 +55,7 @@ public class StandardDialog extends JDialog
     /**
      * This method is the default constructor.
      */
-    public StandardDialog()
-    {
+    public StandardDialog() {
         init(BUTTONS_CENTER, COMPONENT_SPACING);
     }
 
@@ -69,10 +64,9 @@ public class StandardDialog extends JDialog
      * and title.
      *
      * @param parent The parent frame for the dialog.
-     * @param title The title to display in the dialog.
+     * @param title  The title to display in the dialog.
      */
-    public StandardDialog(Frame parent, String title)
-    {
+    public StandardDialog(Frame parent, String title) {
         super(parent, title);
         init(BUTTONS_CENTER, COMPONENT_SPACING);
     }
@@ -82,46 +76,39 @@ public class StandardDialog extends JDialog
      * and title.
      *
      * @param parent The parent dialog for the dialog.
-     * @param title The title to display in the dialog.
+     * @param title  The title to display in the dialog.
      */
-    public StandardDialog(Dialog parent, String title)
-    {
+    public StandardDialog(Dialog parent, String title) {
         super(parent, title);
         init(BUTTONS_CENTER, COMPONENT_SPACING);
     }
-    
-    public StandardDialog(Dialog parent, String title, int orientation, int spacing)
-    {
+
+    public StandardDialog(Dialog parent, String title, int orientation, int spacing) {
         super(parent, title);
         init(orientation, spacing);
     }
-    
-    public StandardDialog(Frame parent, String title, int orientation, int spacing)
-    {
+
+    public StandardDialog(Frame parent, String title, int orientation, int spacing) {
         super(parent, title);
         init(orientation, spacing);
     }
-    
-    public StandardDialog(Frame parent, String title, int orientation)
-    {
+
+    public StandardDialog(Frame parent, String title, int orientation) {
         super(parent, title);
         init(orientation, COMPONENT_SPACING);
     }
-    
-    public StandardDialog(Dialog parent, String title, int orientation)
-    {
+
+    public StandardDialog(Dialog parent, String title, int orientation) {
         super(parent, title);
         init(orientation, COMPONENT_SPACING);
     }
-    
-    
+
 
     /**
      * This method sets up the default attributes of the dialog and
      * the content pane.
      */
-    private void init(int orientation, int spacing)
-    {
+    private void init(int orientation, int spacing) {
         setModal(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -131,53 +118,49 @@ public class StandardDialog extends JDialog
         JPanel internalContentPane = new JPanel();
 
         internalContentPane.setLayout(
-            new BorderLayout(COMPONENT_SPACING, COMPONENT_SPACING));
-                
-        Action okAction = new AbstractAction(i18n.str("ok"))
-        {
+                new BorderLayout(COMPONENT_SPACING, COMPONENT_SPACING));
+
+        Action okAction = new AbstractAction(i18n.str("ok")) {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                if(isValidData())
-                {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (isValidData()) {
                     myIsDialogCancelled = false;
                     dispose();
                 }
             }
         };
-        
+
 
         Action cancelAction = new AbstractAction(i18n.str("cancel")) //$NON-NLS-1$
         {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent actionEvent)
-            {
+            public void actionPerformed(ActionEvent actionEvent) {
                 myIsDialogCancelled = true;
                 dispose();
             }
         };
-        
+
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
-        JButton okB = new JButton(okAction);        
+        JButton okB = new JButton(okAction);
         buttonPanel.add(okB);
         buttonPanel.add(new JButton(cancelAction));
         this.getRootPane().setDefaultButton(okB);
-        
+
         JPanel spacer = new JPanel(new FlowLayout(orientation));
         spacer.add(buttonPanel);
 
         //internalContentPane.add(buttonPanel, BorderLayout.SOUTH);
-		internalContentPane.add(spacer, BorderLayout.SOUTH);
+        internalContentPane.add(spacer, BorderLayout.SOUTH);
 
         // Initialise the user content pane with a JPanel
         myUserContentPane = new JPanel(new BorderLayout());
@@ -187,10 +170,8 @@ public class StandardDialog extends JDialog
         // Finally, add a listener for the window close button.
         // Process this event the same as the "Cancel" button.
 
-        WindowAdapter windowAdapter = new WindowAdapter()
-        {
-            public void windowClosing(WindowEvent windowEvent)
-            {
+        WindowAdapter windowAdapter = new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
                 myIsDialogCancelled = true;
                 dispose();
             }
@@ -205,8 +186,7 @@ public class StandardDialog extends JDialog
      *
      * @returns the content pane for the dialog.
      */
-    public Container getContentPane()
-    {
+    public Container getContentPane() {
         return myUserContentPane;
     }
 
@@ -216,8 +196,7 @@ public class StandardDialog extends JDialog
      *
      * @param contentPane The content pane for the dialog.
      */
-    public void setContentPane(Container contentPane)
-    {
+    public void setContentPane(Container contentPane) {
         myUserContentPane = contentPane;
         super.getContentPane().add(myUserContentPane, BorderLayout.CENTER);
     }
@@ -230,8 +209,7 @@ public class StandardDialog extends JDialog
      * User has caused the dialog to close by any method other than by
      * pressing the "Ok" button, this method will return <code>true</code>.
      */
-    public boolean hasUserCancelled()
-    {
+    public boolean hasUserCancelled() {
         return myIsDialogCancelled;
     }
 
@@ -244,8 +222,7 @@ public class StandardDialog extends JDialog
      * <code>true</code> indicates that all of the fields were validated
      * correctly and <code>false</code> indicates the validation failed
      */
-    protected boolean isValidData()
-    {
+    protected boolean isValidData() {
         return true;
     }
 }
