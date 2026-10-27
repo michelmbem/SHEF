@@ -28,17 +28,18 @@ public class Demo {
             IOUtils.close(in);
         }
 
-        frame = new JFrame();
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(editor.getEditMenu());
         menuBar.add(editor.getFormatMenu());
         menuBar.add(editor.getInsertMenu());
-        frame.setJMenuBar(menuBar);
 
+        frame = new JFrame();
+        frame.setContentPane(editor);
+        frame.setJMenuBar(menuBar);
         frame.setTitle("HTML Editor Demo");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
-        frame.getContentPane().add(editor);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
