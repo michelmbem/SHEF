@@ -29,6 +29,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#append(javax.swing.text.View)
      */
+    @Override
     public void append(View v) {
         delegate.append(v);
     }
@@ -36,6 +37,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#breakView(int, int, float, float)
      */
+    @Override
     public View breakView(int axis, int offset, float pos, float len) {
         return delegate.breakView(axis, offset, pos, len);
     }
@@ -43,6 +45,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#changedUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
      */
+    @Override
     public void changedUpdate(DocumentEvent e, Shape a, ViewFactory f) {
         delegate.changedUpdate(e, a, f);
     }
@@ -50,6 +53,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#createFragment(int, int)
      */
+    @Override
     public View createFragment(int p0, int p1) {
         return delegate.createFragment(p0, p1);
     }
@@ -57,6 +61,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
         return delegate.equals(obj);
     }
@@ -64,6 +69,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getAlignment(int)
      */
+    @Override
     public float getAlignment(int axis) {
         return delegate.getAlignment(axis);
     }
@@ -71,6 +77,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getAttributes()
      */
+    @Override
     public AttributeSet getAttributes() {
         return delegate.getAttributes();
     }
@@ -78,6 +85,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getBreakWeight(int, float, float)
      */
+    @Override
     public int getBreakWeight(int axis, float pos, float len) {
         return delegate.getBreakWeight(axis, pos, len);
     }
@@ -85,6 +93,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getChildAllocation(int, java.awt.Shape)
      */
+    @Override
     public Shape getChildAllocation(int index, Shape a) {
         return delegate.getChildAllocation(index, a);
     }
@@ -92,6 +101,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getContainer()
      */
+    @Override
     public Container getContainer() {
         return delegate.getContainer();
     }
@@ -99,6 +109,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getDocument()
      */
+    @Override
     public Document getDocument() {
         return delegate.getDocument();
     }
@@ -106,6 +117,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getElement()
      */
+    @Override
     public Element getElement() {
         return delegate.getElement();
     }
@@ -113,6 +125,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getEndOffset()
      */
+    @Override
     public int getEndOffset() {
         return delegate.getEndOffset();
     }
@@ -120,6 +133,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getGraphics()
      */
+    @Override
     public Graphics getGraphics() {
         return delegate.getGraphics();
     }
@@ -127,6 +141,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getMaximumSpan(int)
      */
+    @Override
     public float getMaximumSpan(int axis) {
         return delegate.getMaximumSpan(axis);
     }
@@ -134,6 +149,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getMinimumSpan(int)
      */
+    @Override
     public float getMinimumSpan(int axis) {
         return delegate.getMinimumSpan(axis);
     }
@@ -141,6 +157,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getNextVisualPositionFrom(int, javax.swing.text.Position.Bias, java.awt.Shape, int, javax.swing.text.Position.Bias[])
      */
+    @Override
     public int getNextVisualPositionFrom(int pos, Bias b, Shape a, int direction, Bias[] biasRet) throws BadLocationException {
         return delegate.getNextVisualPositionFrom(pos, b, a, direction, biasRet);
     }
@@ -148,6 +165,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getParent()
      */
+    @Override
     public View getParent() {
         return delegate.getParent();
     }
@@ -155,6 +173,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#setParent(javax.swing.text.View)
      */
+    @Override
     public void setParent(View parent) {
         delegate.setParent(parent);
     }
@@ -169,6 +188,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getResizeWeight(int)
      */
+    @Override
     public int getResizeWeight(int axis) {
         return delegate.getResizeWeight(axis);
     }
@@ -176,6 +196,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getStartOffset()
      */
+    @Override
     public int getStartOffset() {
         return delegate.getStartOffset();
     }
@@ -183,6 +204,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getToolTipText(float, float, java.awt.Shape)
      */
+    @Override
     public String getToolTipText(float x, float y, Shape allocation) {
         return delegate.getToolTipText(x, y, allocation);
     }
@@ -190,6 +212,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getView(int)
      */
+    @Override
     public View getView(int n) {
         return delegate.getView(n);
     }
@@ -197,6 +220,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getViewCount()
      */
+    @Override
     public int getViewCount() {
         return delegate.getViewCount();
     }
@@ -204,6 +228,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getViewFactory()
      */
+    @Override
     public ViewFactory getViewFactory() {
         return delegate.getViewFactory();
     }
@@ -211,6 +236,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getViewIndex(float, float, java.awt.Shape)
      */
+    @Override
     public int getViewIndex(float x, float y, Shape allocation) {
         return delegate.getViewIndex(x, y, allocation);
     }
@@ -218,6 +244,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#getViewIndex(int, javax.swing.text.Position.Bias)
      */
+    @Override
     public int getViewIndex(int pos, Bias b) {
         return delegate.getViewIndex(pos, b);
     }
@@ -225,6 +252,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return delegate.hashCode();
     }
@@ -232,6 +260,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#insert(int, javax.swing.text.View)
      */
+    @Override
     public void insert(int offs, View v) {
         delegate.insert(offs, v);
     }
@@ -239,6 +268,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#insertUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
      */
+    @Override
     public void insertUpdate(DocumentEvent e, Shape a, ViewFactory f) {
         delegate.insertUpdate(e, a, f);
     }
@@ -246,6 +276,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#isVisible()
      */
+    @Override
     public boolean isVisible() {
         return delegate.isVisible();
     }
@@ -253,6 +284,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#modelToView(int, javax.swing.text.Position.Bias, int, javax.swing.text.Position.Bias, java.awt.Shape)
      */
+    @Override
     public Shape modelToView(int p0, Bias b0, int p1, Bias b1, Shape a) throws BadLocationException {
         return delegate.modelToView(p0, b0, p1, b1, a);
     }
@@ -267,6 +299,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#modelToView(int, java.awt.Shape)
      */
+    @Override
     public Shape modelToView(int pos, Shape a) throws BadLocationException {
         return delegate.modelToView(pos, a);
     }
@@ -274,6 +307,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#preferenceChanged(javax.swing.text.View, boolean, boolean)
      */
+    @Override
     public void preferenceChanged(View child, boolean width, boolean height) {
         delegate.preferenceChanged(child, width, height);
     }
@@ -281,6 +315,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#remove(int)
      */
+    @Override
     public void remove(int i) {
         delegate.remove(i);
     }
@@ -288,6 +323,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#removeAll()
      */
+    @Override
     public void removeAll() {
         delegate.removeAll();
     }
@@ -295,6 +331,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#removeUpdate(javax.swing.event.DocumentEvent, java.awt.Shape, javax.swing.text.ViewFactory)
      */
+    @Override
     public void removeUpdate(DocumentEvent e, Shape a, ViewFactory f) {
         delegate.removeUpdate(e, a, f);
     }
@@ -302,6 +339,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#replace(int, int, javax.swing.text.View[])
      */
+    @Override
     public void replace(int offset, int length, View[] views) {
         delegate.replace(offset, length, views);
     }
@@ -309,6 +347,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#setSize(float, float)
      */
+    @Override
     public void setSize(float width, float height) {
         delegate.setSize(width, height);
     }
@@ -316,6 +355,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return delegate.toString();
     }
@@ -330,6 +370,7 @@ public abstract class DelegateView extends View {
     /* (non-Javadoc)
      * @see javax.swing.text.View#viewToModel(float, float, java.awt.Shape)
      */
+    @Override
     public int viewToModel(float x, float y, Shape a) {
         return delegate.viewToModel(x, y, a);
     }

@@ -11,9 +11,6 @@ import java.util.Hashtable;
 public class ListAttributesPanel extends HTMLAttributeEditorPanel {
     public static final int UL_LIST = 0;
     public static final int OL_LIST = 1;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String UL = i18n.str("unordered_list"); //$NON-NLS-1$
     private static final String OL = i18n.str("ordered_list");     //$NON-NLS-1$

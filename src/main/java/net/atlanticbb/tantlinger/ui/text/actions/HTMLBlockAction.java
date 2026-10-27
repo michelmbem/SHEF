@@ -58,9 +58,6 @@ public class HTMLBlockAction extends HTMLTextEditAction {
                     i18n.str("ordered_list"), //$NON-NLS-1$
                     i18n.str("unordered_list")         //$NON-NLS-1$
             };
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final int KEYS[] =
             {

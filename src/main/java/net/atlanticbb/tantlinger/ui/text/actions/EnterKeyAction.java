@@ -29,9 +29,6 @@ import java.util.Enumeration;
  *
  */
 public class EnterKeyAction extends DecoratedTextAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     //private Action delegate = null;
 
@@ -42,7 +39,6 @@ public class EnterKeyAction extends DecoratedTextAction {
      */
     public EnterKeyAction(Action defaultEnterAction) {
         super("EnterAction", defaultEnterAction);
-        //delegate = defaultEnterAction;
     }
 
     public void actionPerformed(ActionEvent e) {

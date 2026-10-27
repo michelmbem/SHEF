@@ -16,9 +16,6 @@ import java.awt.event.*;
 
 
 public class SpecialCharDialog extends JDialog {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs"); //$NON-NLS-1$
@@ -87,7 +84,7 @@ public class SpecialCharDialog extends JDialog {
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(headerPanel, BorderLayout.NORTH);
         getContentPane().add(charPanel, BorderLayout.CENTER);
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
 
         //setSize(414, 340);
         pack();

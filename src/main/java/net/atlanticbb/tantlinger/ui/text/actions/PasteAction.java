@@ -28,9 +28,6 @@ import java.io.IOException;
 
 
 public class PasteAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public PasteAction() {

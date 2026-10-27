@@ -48,9 +48,6 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
                     i18n.str("hyperlink_properties_"),
                     i18n.str("object_properties_")
             };
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLElementPropertiesAction() {

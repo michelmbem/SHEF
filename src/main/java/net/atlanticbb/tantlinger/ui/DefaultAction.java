@@ -57,6 +57,7 @@ public class DefaultAction extends BasicAction implements EnabledUpdater {
      *
      * @see org.bushe.swing.action.BasicAction#actionPerformedCatch(java.lang.Throwable)
      */
+    @Override
     protected void actionPerformedCatch(Throwable t) {
         t.printStackTrace();
     }

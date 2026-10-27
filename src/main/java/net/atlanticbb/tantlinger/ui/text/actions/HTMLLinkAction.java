@@ -22,9 +22,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class HTMLLinkAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLLinkAction() {

@@ -11,9 +11,6 @@ import java.awt.event.KeyEvent;
  * Select all action
  */
 public class SelectAllAction extends BasicEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public SelectAllAction() {

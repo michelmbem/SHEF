@@ -13,9 +13,6 @@ import java.awt.event.ActionEvent;
 
 
 public class SpecialCharAction extends BasicEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     SpecialCharDialog dialog;
 

@@ -28,9 +28,6 @@ public class StandardDialog extends JDialog {
     public static final int BUTTONS_CENTER = FlowLayout.CENTER;
     public static final int BUTTONS_LEFT = FlowLayout.LEFT;
     public static final int BUTTONS_RIGHT = FlowLayout.RIGHT;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
     /**
@@ -121,9 +118,6 @@ public class StandardDialog extends JDialog {
                 new BorderLayout(COMPONENT_SPACING, COMPONENT_SPACING));
 
         Action okAction = new AbstractAction(i18n.str("ok")) {
-            /**
-             *
-             */
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent actionEvent) {
@@ -137,9 +131,6 @@ public class StandardDialog extends JDialog {
 
         Action cancelAction = new AbstractAction(i18n.str("cancel")) //$NON-NLS-1$
         {
-            /**
-             *
-             */
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent actionEvent) {
@@ -159,18 +150,17 @@ public class StandardDialog extends JDialog {
         JPanel spacer = new JPanel(new FlowLayout(orientation));
         spacer.add(buttonPanel);
 
-        //internalContentPane.add(buttonPanel, BorderLayout.SOUTH);
-        internalContentPane.add(spacer, BorderLayout.SOUTH);
+        internalContentPane.add(spacer, BorderLayout.PAGE_END);
 
-        // Initialise the user content pane with a JPanel
+        // Initialize the user content pane with a JPanel
         myUserContentPane = new JPanel(new BorderLayout());
-        //setContentPane(new JPanel(new BorderLayout()));
         super.setContentPane(internalContentPane);
 
         // Finally, add a listener for the window close button.
         // Process this event the same as the "Cancel" button.
 
         WindowAdapter windowAdapter = new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent windowEvent) {
                 myIsDialogCancelled = true;
                 dispose();
@@ -186,6 +176,7 @@ public class StandardDialog extends JDialog {
      *
      * @returns the content pane for the dialog.
      */
+    @Override
     public Container getContentPane() {
         return myUserContentPane;
     }
@@ -196,6 +187,7 @@ public class StandardDialog extends JDialog {
      *
      * @param contentPane The content pane for the dialog.
      */
+    @Override
     public void setContentPane(Container contentPane) {
         myUserContentPane = contentPane;
         super.getContentPane().add(myUserContentPane, BorderLayout.CENTER);

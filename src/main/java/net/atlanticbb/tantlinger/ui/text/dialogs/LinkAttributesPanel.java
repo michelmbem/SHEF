@@ -11,9 +11,6 @@ import java.awt.*;
 
 
 public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String NEW_WIN = "New Window"; //$NON-NLS-1$
     private static final String SAME_WIN = "Same Window"; //$NON-NLS-1$

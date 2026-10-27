@@ -11,9 +11,6 @@ import java.util.Map;
 
 public class CellAttributesPanel extends HTMLAttributeEditorPanel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private AlignmentAttributesPanel alignPanel = null;
     private SizeAttributesPanel sizePanel = null;

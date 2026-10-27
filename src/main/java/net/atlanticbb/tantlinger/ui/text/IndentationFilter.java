@@ -28,6 +28,7 @@ public class IndentationFilter extends DocumentFilter {
 
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
             throws BadLocationException {
+
         Document doc = fb.getDocument();
 
         if (text != null && length == 0) {
@@ -44,20 +45,20 @@ public class IndentationFilter extends DocumentFilter {
     private String convertTabsToSpaces(String text, Document doc) {
         try {
             AbstractDocument adoc = (AbstractDocument) doc;
-            int tabSize = ((Integer) adoc.getProperty("tabSize")).intValue();
+            int tabSize = (Integer) adoc.getProperty("tabSize");
 
-            String softTab = "";
-            for (int i = 1; i <= tabSize; i++)
-                softTab += ' ';
+            StringBuilder softTab = new StringBuilder();
+            softTab.append(" ".repeat(Math.max(0, tabSize)));
 
-            StringBuffer sb = new StringBuffer(text);
+            StringBuilder sb = new StringBuilder(text);
             int pos = 0;
             while ((pos = sb.indexOf("\t", pos)) != -1) {
-                sb.replace(pos, pos + 1, softTab);
+                sb.replace(pos, pos + 1, softTab.toString());
                 pos += softTab.length();
             }
+
             return sb.toString();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
 
         return text;
@@ -65,7 +66,8 @@ public class IndentationFilter extends DocumentFilter {
 
     private String getLineIndentation(int offs, Document doc)
             throws BadLocationException {
-        StringBuffer ws = new StringBuffer();
+
+        StringBuilder ws = new StringBuilder();
 
         if (doc instanceof AbstractDocument) {
             AbstractDocument adoc = (AbstractDocument) doc;

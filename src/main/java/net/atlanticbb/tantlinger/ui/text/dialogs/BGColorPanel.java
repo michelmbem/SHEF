@@ -13,9 +13,6 @@ import java.awt.*;
 
 
 public class BGColorPanel extends JPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");

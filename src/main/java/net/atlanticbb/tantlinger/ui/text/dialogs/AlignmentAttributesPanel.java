@@ -16,9 +16,6 @@ import java.util.Hashtable;
  *
  */
 public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String VERT_ALIGNMENTS[] = {"top", "middle", "bottom"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     private static final String HORIZ_ALIGNMENTS[] =

@@ -16,7 +16,7 @@ import javax.swing.text.TextAction;
 public abstract class DecoratedTextAction extends TextAction {
     Action delegate;
 
-    public DecoratedTextAction(String name, Action delegate) {
+    protected DecoratedTextAction(String name, Action delegate) {
         super(name);
         this.delegate = delegate;
     }

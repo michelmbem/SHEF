@@ -10,9 +10,6 @@ import java.awt.*;
 
 
 public class OptionDialog extends StandardDialog {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private JPanel internalContentPane;
     private Container contentPane;
@@ -33,20 +30,19 @@ public class OptionDialog extends StandardDialog {
         hp.setTitle(title);
         hp.setDescription(desc);
         hp.setIcon(icon);
-        //hp.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
         internalContentPane.add(hp, BorderLayout.NORTH);
 
         super.setContentPane(internalContentPane);
     }
 
+    @Override
     public Container getContentPane() {
         return contentPane;
     }
 
+    @Override
     public void setContentPane(Container c) {
-        //internalContentPane.remove(contentPane);
         contentPane = c;
         internalContentPane.add(c, BorderLayout.CENTER);
-
     }
 }

@@ -15,9 +15,6 @@ import java.util.Map;
 public class ListDialog extends OptionDialog {
     public static final int UNORDERED = ListAttributesPanel.UL_LIST;
     public static final int ORDERED = ListAttributesPanel.OL_LIST;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
     private static Icon icon = UIUtils.getIcon(UIUtils.X48, "categories.png"); //$NON-NLS-1$

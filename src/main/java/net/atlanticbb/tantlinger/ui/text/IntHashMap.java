@@ -20,6 +20,8 @@
  */
 package net.atlanticbb.tantlinger.ui.text;
 
+import java.util.Objects;
+
 /**
  * <p>A hash map that uses primitive ints for the key rather than objects.</p>
  *
@@ -37,14 +39,21 @@ package net.atlanticbb.tantlinger.ui.text;
 class IntHashMap {
 
     /**
+     * The load factor for the hashtable.
+     *
+     * @serial
+     */
+    private final float loadFactor;
+
+    /**
      * The hash table data.
      */
-    private transient Entry table[];
+    private Entry[] table;
 
     /**
      * The total number of entries in the hash table.
      */
-    private transient int count;
+    private int count;
 
     /**
      * The table is rehashed when its size exceeds this threshold.  (The
@@ -53,13 +62,6 @@ class IntHashMap {
      * @serial
      */
     private int threshold;
-
-    /**
-     * The load factor for the hashtable.
-     *
-     * @serial
-     */
-    private float loadFactor;
 
     /**
      * <p>Constructs a new, empty hashtable with a default capacity and load
@@ -92,15 +94,15 @@ class IntHashMap {
      */
     public IntHashMap(int initialCapacity, float loadFactor) {
         super();
-        if (initialCapacity < 0) {
+
+        if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
-        }
-        if (loadFactor <= 0) {
+
+        if (loadFactor <= 0)
             throw new IllegalArgumentException("Illegal Load: " + loadFactor);
-        }
-        if (initialCapacity == 0) {
+
+        if (initialCapacity == 0)
             initialCapacity = 1;
-        }
 
         this.loadFactor = loadFactor;
         table = new Entry[initialCapacity];
@@ -145,11 +147,9 @@ class IntHashMap {
      * @see java.util.Map
      */
     public boolean contains(Object value) {
-        if (value == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(value);
 
-        Entry tab[] = table;
+        Entry[] tab = table;
         for (int i = tab.length; i-- > 0; ) {
             for (Entry e = tab[i]; e != null; e = e.next) {
                 if (e.value.equals(value)) {
@@ -157,6 +157,7 @@ class IntHashMap {
                 }
             }
         }
+
         return false;
     }
 
@@ -185,14 +186,13 @@ class IntHashMap {
      * @see #contains(Object)
      */
     public boolean containsKey(int key) {
-        Entry tab[] = table;
-        int hash = key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        Entry[] tab = table;
+        int index = (key & 0x7FFFFFFF) % tab.length;
+
         for (Entry e = tab[index]; e != null; e = e.next) {
-            if (e.hash == hash) {
-                return true;
-            }
+            if (e.hash == key) return true;
         }
+
         return false;
     }
 
@@ -206,14 +206,15 @@ class IntHashMap {
      * @see #put(int, Object)
      */
     public Object get(int key) {
-        Entry tab[] = table;
-        int hash = key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        Entry[] tab = table;
+        int index = (key & 0x7FFFFFFF) % tab.length;
+
         for (Entry e = tab[index]; e != null; e = e.next) {
-            if (e.hash == hash) {
+            if (e.hash == key) {
                 return e.value;
             }
         }
+
         return null;
     }
 
@@ -228,10 +229,10 @@ class IntHashMap {
      */
     protected void rehash() {
         int oldCapacity = table.length;
-        Entry oldMap[] = table;
+        Entry[] oldMap = table;
 
         int newCapacity = oldCapacity * 2 + 1;
-        Entry newMap[] = new Entry[newCapacity];
+        Entry[] newMap = new Entry[newCapacity];
 
         threshold = (int) (newCapacity * loadFactor);
         table = newMap;
@@ -265,11 +266,11 @@ class IntHashMap {
      */
     public Object put(int key, Object value) {
         // Makes sure the key is not already in the hashtable.
-        Entry tab[] = table;
-        int hash = key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        Entry[] tab = table;
+        int index = (key & 0x7FFFFFFF) % tab.length;
+
         for (Entry e = tab[index]; e != null; e = e.next) {
-            if (e.hash == hash) {
+            if (e.hash == key) {
                 Object old = e.value;
                 e.value = value;
                 return old;
@@ -281,11 +282,11 @@ class IntHashMap {
             rehash();
 
             tab = table;
-            index = (hash & 0x7FFFFFFF) % tab.length;
+            index = (key & 0x7FFFFFFF) % tab.length;
         }
 
         // Creates the new entry.
-        Entry e = new Entry(hash, key, value, tab[index]);
+        Entry e = new Entry(key, key, value, tab[index]);
         tab[index] = e;
         count++;
         return null;
@@ -303,16 +304,16 @@ class IntHashMap {
      * or <code>null</code> if the key did not have a mapping.
      */
     public Object remove(int key) {
-        Entry tab[] = table;
-        int hash = key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        Entry[] tab = table;
+        int index = (key & 0x7FFFFFFF) % tab.length;
+
         for (Entry e = tab[index], prev = null; e != null; prev = e, e = e.next) {
-            if (e.hash == hash) {
-                if (prev != null) {
+            if (e.hash == key) {
+                if (prev != null)
                     prev.next = e.next;
-                } else {
+                else
                     tab[index] = e.next;
-                }
+
                 count--;
                 Object oldValue = e.value;
                 e.value = null;
@@ -326,7 +327,7 @@ class IntHashMap {
      * <p>Clears this hashtable so that it contains no keys.</p>
      */
     public synchronized void clear() {
-        Entry tab[] = table;
+        Entry[] tab = table;
         for (int index = tab.length; --index >= 0; ) {
             tab[index] = null;
         }

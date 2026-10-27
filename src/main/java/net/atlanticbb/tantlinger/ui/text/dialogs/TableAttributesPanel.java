@@ -10,9 +10,6 @@ import java.util.Hashtable;
 
 public class TableAttributesPanel extends HTMLAttributeEditorPanel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String ALIGNMENTS[] = {"left", "center", "right"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     private static final String MEASUREMENTS[] = {"percent", "pixels"}; //$NON-NLS-1$ //$NON-NLS-2$

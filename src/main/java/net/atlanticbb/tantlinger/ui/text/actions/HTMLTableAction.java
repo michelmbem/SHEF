@@ -24,9 +24,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class HTMLTableAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLTableAction() {

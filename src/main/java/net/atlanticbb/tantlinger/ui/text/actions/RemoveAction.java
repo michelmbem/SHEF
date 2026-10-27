@@ -22,9 +22,6 @@ import java.awt.event.ActionEvent;
 public class RemoveAction extends DecoratedTextAction {
     public static final int BACKSPACE = 0;
     public static final int DELETE = 1;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private int type = BACKSPACE;
     //private Action delegate = null;

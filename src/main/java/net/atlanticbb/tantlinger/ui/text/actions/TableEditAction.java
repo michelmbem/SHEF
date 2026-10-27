@@ -34,9 +34,6 @@ public class TableEditAction extends HTMLTextEditAction {
     public static final int DELETE_ROW = 3;
     public static final int INSERT_COL = 4;
     public static final int DELETE_COL = 5;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String NAMES[] =
             {

@@ -12,9 +12,6 @@ import java.util.Hashtable;
 
 
 public class StyleAttributesPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private JLabel classLabel = null;
     private JLabel idLabel = null;

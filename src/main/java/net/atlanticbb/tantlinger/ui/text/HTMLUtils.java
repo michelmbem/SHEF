@@ -22,6 +22,7 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -33,7 +34,11 @@ import java.util.List;
  * @author Bob Tantlinger
  *
  */
-public class HTMLUtils {
+public final class HTMLUtils {
+
+    private HTMLUtils() {
+        /* This utility class should not be instantiated */
+    }
 
     private static final Tidy tidy = new Tidy();
 
@@ -47,8 +52,6 @@ public class HTMLUtils {
         tidy.setLiteralAttribs(true);
         tidy.setTrimEmptyElements(true);
         tidy.setXHTML(true);
-        //tidy.setInputEncoding("UTF-16");
-        //tidy.setOutputEncoding("UTF-16");
     }
 
 
@@ -83,29 +86,30 @@ public class HTMLUtils {
      * @return
      */
     public static String createTag(HTML.Tag enclTag, AttributeSet set, String innerHTML) {
-        String t = tagOpen(enclTag, set) + innerHTML + tagClose(enclTag);
-        return t;
+        return tagOpen(enclTag, set) + innerHTML + tagClose(enclTag);
     }
 
     private static String tagOpen(HTML.Tag enclTag, AttributeSet set) {
-        String t = "<" + enclTag;
-        for (Enumeration e = set.getAttributeNames(); e.hasMoreElements(); ) {
+        StringBuilder t = new StringBuilder("<" + enclTag);
+
+        for (Enumeration<?> e = set.getAttributeNames(); e.hasMoreElements(); ) {
             Object name = e.nextElement();
             if (!name.toString().equals("name")) {
                 Object val = set.getAttribute(name);
-                t += " " + name + "=\"" + val + "\"";
+                t.append(" ").append(name).append("=\"").append(val).append("\"");
             }
         }
 
-        return t + ">";
+        return t.append(">").toString();
     }
 
     private static String tagClose(HTML.Tag t) {
         return "</" + t + ">";
     }
 
-    public static List getParagraphElements(JEditorPane editor) {
-        List elems = new LinkedList();
+    public static List<Element> getParagraphElements(JEditorPane editor) {
+        List<Element> elems = new LinkedList<>();
+
         try {
             HTMLDocument doc = (HTMLDocument) editor.getDocument();
             Element curE = getParaElement(doc, editor.getSelectionStart());
@@ -117,7 +121,7 @@ public class HTMLUtils {
                 if (curE.getEndOffset() >= doc.getLength())
                     break;
             }
-        } catch (ClassCastException cce) {
+        } catch (ClassCastException ignored) {
         }
 
         return elems;
@@ -162,7 +166,7 @@ public class HTMLUtils {
      */
     public static boolean isElementEmpty(Element el) {
         String s = getElementHTML(el, false).trim();
-        return s.length() == 0;
+        return s.isEmpty();
     }
 
     /**
@@ -172,15 +176,16 @@ public class HTMLUtils {
      * @return A list element (UL, OL, DIR, MENU, or DL) if found, null otherwise
      */
     public static Element getListParent(Element elem) {
+        final List<String> listElems = List.of("ul", "ol", "dl", "menu", "dir");
         Element parent = elem;
+
         while (parent != null) {
-            if (parent.getName().toUpperCase().equals("UL") ||
-                    parent.getName().toUpperCase().equals("OL") ||
-                    parent.getName().equals("dl") || parent.getName().equals("menu") ||
-                    parent.getName().equals("dir"))
+            String parentName = parent.getName();
+            if (listElems.stream().anyMatch(e -> e.equalsIgnoreCase(parentName)))
                 return parent;
             parent = parent.getParentElement();
         }
+
         return null;
     }
 
@@ -238,7 +243,7 @@ public class HTMLUtils {
         if (txt.startsWith(openStart)) {
             int n = txt.indexOf(">");
             if (n != -1) {
-                txt = txt.substring(n + 1, txt.length());
+                txt = txt.substring(n + 1);
             }
         }
 
@@ -268,9 +273,7 @@ public class HTMLUtils {
             ex.printStackTrace();
         }
 
-        if (includeEnclosingTags)
-            return txt;
-        return removeEnclosingTags(el, txt);
+        return includeEnclosingTags ? txt : removeEnclosingTags(el, txt);
     }
 
     /**
@@ -316,7 +319,7 @@ public class HTMLUtils {
         Element parent = curElem;
         int depth = 0;
         while (parent != null) {
-            if (parent.getName().equals("body") || /*parent.getName().equals("blockquote") ||*/ parent.getName().equals("td"))
+            if (parent.getName().equals("body") || parent.getName().equals("td"))
                 break;
             parent = parent.getParentElement();
             depth++;
@@ -334,8 +337,8 @@ public class HTMLUtils {
      * @param editor
      */
     public static void insertArbitraryHTML(String rawHtml, JEditorPane editor) {
-        tidy.setOutputEncoding("UTF-8");
-        tidy.setInputEncoding("UTF-8");
+        tidy.setOutputEncoding(StandardCharsets.UTF_8.name());
+        tidy.setInputEncoding(StandardCharsets.UTF_8.name());
 
         try {
             ByteArrayInputStream bin = new ByteArrayInputStream(rawHtml.getBytes("UTF-8"));
@@ -346,12 +349,10 @@ public class HTMLUtils {
                 Node body = nodelist.item(0);
                 NodeList bodyChildren = body.getChildNodes();
 
-                //for(int i = bodyChildren.getLength() - 1; i >= 0; i--)
                 int len = bodyChildren.getLength();
                 for (int i = 0; i < len; i++) {
                     String ml = xmlToString(bodyChildren.item(i));
                     if (ml != null) {
-                        //System.out.println(ml);
                         HTML.Tag tag = getStartTag(ml);
                         if (tag == null) {
                             tag = HTML.Tag.SPAN;
@@ -378,8 +379,6 @@ public class HTMLUtils {
             transformer.transform(source, result);
 
             return stringWriter.getBuffer().toString();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
         } catch (TransformerException e) {
             e.printStackTrace();
         }
@@ -413,21 +412,15 @@ public class HTMLUtils {
         boolean beginParagraph = caret == pElem.getStartOffset();
         html = jEditorPaneizeHTML(html);
 
-        //System.out.println(html);
-
         try {
             if (breakParagraph && beginParagraph) {
-                //System.out.println("breakParagraph && beginParagraph");
                 document.insertBeforeStart(pElem, "<p></p>");
                 Element nextEl = document.getParagraphElement(caret + 1);
                 editorKit.insertHTML(document, caret + 1, html, depthFromRoot(nextEl)/*1*/, 0, tag);
                 document.remove(caret, 1);
             } else if (breakParagraph && !beginParagraph) {
-                //System.out.println("breakParagraph && !beginParagraph");
                 editorKit.insertHTML(document, caret, html, depthFromRoot(pElem)/*1*/, 0, tag);
             } else if (!breakParagraph && beginParagraph) {
-                //System.out.println("!breakParagraph && beginParagraph");
-
                 /* Trick: insert a non-breaking space after start, so that we're inserting into the middle of a line.
                  * Then, remove the space. This works around a bug when using insertHTML near the beginning of a
                  * paragraph.*/
@@ -435,7 +428,6 @@ public class HTMLUtils {
                 editorKit.insertHTML(document, caret + 1, html, 0, 0, tag);
                 document.remove(caret, 1);
             } else if (!breakParagraph && !beginParagraph) {
-                //System.out.println("!breakParagraph && !beginParagraph");
                 editorKit.insertHTML(document, caret, html, 0, 0, tag);
             }
         } catch (Exception ex) {
@@ -464,7 +456,7 @@ public class HTMLUtils {
         try {
             StyledDocument doc = (StyledDocument) editor.getDocument();
             return (doc.getCharacterElement(p).getAttributes());
-        } catch (ClassCastException cce) {
+        } catch (ClassCastException ignored) {
         }
 
         return null;
@@ -486,7 +478,7 @@ public class HTMLUtils {
             if (val != null)
                 return val.toString();
             val = attr.getAttribute(HTML.Tag.FONT);
-            if (val != null && val instanceof AttributeSet) {
+            if (val instanceof AttributeSet) {
                 AttributeSet set = (AttributeSet) val;
                 val = set.getAttribute(HTML.Attribute.FACE);
                 if (val != null)
@@ -509,24 +501,14 @@ public class HTMLUtils {
      */
     public static void setFontFamily(JEditorPane editor, String fontName) {
         AttributeSet attr = getCharacterAttributes(editor);
-        if (attr == null)
-            return;
-        /*try
-        {
-            HTMLDocument doc = (HTMLDocument)editor.getDocument();             
-            attr = doc.getCharacterElement(editor.getCaretPosition()).getAttributes();
-        }
-        catch(ClassCastException cce)
-        {
-            return;
-        }*/
+        if (attr == null) return;
 
         printAttribs(attr);
         if (fontName == null) //we're removing the font
         {
             //the font might be defined as a font tag
             Object val = attr.getAttribute(HTML.Tag.FONT);
-            if (val != null && val instanceof AttributeSet) {
+            if (val instanceof AttributeSet) {
                 MutableAttributeSet set = new SimpleAttributeSet((AttributeSet) val);
                 val = set.getAttribute(HTML.Attribute.FACE); //does it have a FACE attrib?
                 if (val != null) {
@@ -610,17 +592,16 @@ public class HTMLUtils {
             return;
         }
 
-        List tokens = tokenizeCharAttribs(doc, editor.getSelectionStart(), editor.getSelectionEnd());
-        for (Iterator it = tokens.iterator(); it.hasNext(); ) {
-            CharStyleToken t = (CharStyleToken) it.next();
-            if (t.attrs.isDefined(atr)) {
-                SimpleAttributeSet sas = new SimpleAttributeSet();
-                sas.addAttributes(t.attrs);
-                sas.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
-                sas.removeAttribute(atr);
-                doc.setCharacterAttributes(t.offs, t.len, sas, true);
-            }
+        List<CharStyleToken> tokens = tokenizeCharAttribs(doc, editor.getSelectionStart(), editor.getSelectionEnd());
+        for (CharStyleToken t : tokens) {
+            if (!t.attrs.isDefined(atr)) continue;
+            SimpleAttributeSet sas = new SimpleAttributeSet();
+            sas.addAttributes(t.attrs);
+            sas.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
+            sas.removeAttribute(atr);
+            doc.setCharacterAttributes(t.offs, t.len, sas, true);
         }
+
         int pos = editor.getCaretPosition();
         attr.addAttributes(doc.getCharacterElement(pos).getAttributes());
         attr.removeAttribute(atr);
@@ -634,12 +615,11 @@ public class HTMLUtils {
      * @param e
      * @return
      */
-    private static List tokenizeCharAttribs(HTMLDocument doc, int s, int e) {
-        LinkedList tokens = new LinkedList();
+    private static List<CharStyleToken> tokenizeCharAttribs(HTMLDocument doc, int s, int e) {
+        LinkedList<CharStyleToken> tokens = new LinkedList<>();
         CharStyleToken tok = new CharStyleToken();
+
         for (; s <= e; s++) {
-            //if(s == doc.getLength())
-            //    break;
             AttributeSet as = doc.getCharacterElement(s).getAttributes();
             if (tok.attrs == null || (s + 1 <= e && !as.isEqual(tok.attrs))) {
                 tok = new CharStyleToken();
@@ -665,6 +645,7 @@ public class HTMLUtils {
     public static void setCharacterAttributes(JEditorPane editor, AttributeSet attr, boolean replace) {
         HTMLDocument doc;
         StyledEditorKit k;
+
         try {
             doc = (HTMLDocument) editor.getDocument();
             k = (StyledEditorKit) editor.getEditorKit();
@@ -696,8 +677,8 @@ public class HTMLUtils {
                 inputAttributes.removeAttributes(inputAttributes);
                 inputAttributes.addAttribute(StyleConstants.NameAttribute, HTML.Tag.CONTENT);
             }
+
             inputAttributes.addAttributes(attr);
-            //System.err.println("inputAttr: " + inputAttributes);
         }
     }
 
@@ -722,28 +703,24 @@ public class HTMLUtils {
      * @return
      */
     public static Map tagAttribsToMap(String atts) {
-        Map attribs = new HashMap();
-
+        Map<String, String> attribs = new HashMap<>();
         StringTokenizer st = new StringTokenizer(atts.trim(), " ");
         String lastAtt = null;
+
         while (st.hasMoreTokens()) {
             String atVal = st.nextToken().trim();
             int equalPos = atVal.indexOf('=');
+
             if (equalPos == -1) {
-                if (lastAtt == null)
-                    break;//no equals char in this string
-                String lastVal = attribs.get(lastAtt).toString();
-                attribs.put(lastAtt, lastVal + " " + atVal);
+                if (lastAtt == null) break;//no equals char in this string
+                attribs.compute(lastAtt, (k, lastVal) -> lastVal + " " + atVal);
                 continue;
             }
 
             String at = atVal.substring(0, equalPos);
-            String val = atVal.substring(atVal.indexOf('=') + 1, atVal.length());
-            if (val.startsWith("\""))
-                val = val.substring(1, val.length());
-            if (val.endsWith("\""))
-                val = val.substring(0, val.length() - 1);
-
+            String val = atVal.substring(atVal.indexOf('=') + 1);
+            if (val.startsWith("\"")) val = val.substring(1);
+            if (val.endsWith("\"")) val = val.substring(0, val.length() - 1);
             attribs.put(at, val);
             lastAtt = at;
         }
@@ -757,12 +734,12 @@ public class HTMLUtils {
      * in the format "#RRGGBB"
      */
     public static String colorToHex(Color color) {
-        String colorstr = new String("#");
+        String colorstr = "#";
 
         // Red
         String str = Integer.toHexString(color.getRed());
         if (str.length() > 2)
-            str = str.substring(0, 2);
+            colorstr += str.substring(0, 2);
         else if (str.length() < 2)
             colorstr += "0" + str;
         else
@@ -771,7 +748,7 @@ public class HTMLUtils {
         // Green
         str = Integer.toHexString(color.getGreen());
         if (str.length() > 2)
-            str = str.substring(0, 2);
+            colorstr += str.substring(0, 2);
         else if (str.length() < 2)
             colorstr += "0" + str;
         else
@@ -780,7 +757,7 @@ public class HTMLUtils {
         // Blue
         str = Integer.toHexString(color.getBlue());
         if (str.length() > 2)
-            str = str.substring(0, 2);
+            colorstr += str.substring(0, 2);
         else if (str.length() < 2)
             colorstr += "0" + str;
         else
@@ -797,7 +774,6 @@ public class HTMLUtils {
      */
     public static Color hexToColor(String value) {
         String digits;
-        //int n = value.length();
         if (value.startsWith("#"))
             digits = value.substring(1, Math.min(value.length(), 7));
         else
@@ -805,12 +781,12 @@ public class HTMLUtils {
 
         String hstr = "0x" + digits;
         Color c;
-
         try {
             c = Color.decode(hstr);
         } catch (NumberFormatException nfe) {
             c = Color.BLACK; // just return black
         }
+
         return c;
     }
 
@@ -819,9 +795,9 @@ public class HTMLUtils {
      * to a Color.
      */
     public static Color stringToColor(String str) {
-        Color color = null;
+        Color color;
 
-        if (str.length() == 0)
+        if (str.isEmpty())
             color = Color.black;
         else if (str.charAt(0) == '#')
             color = hexToColor(str);
@@ -859,6 +835,7 @@ public class HTMLUtils {
             color = hexToColor("#00FFFF");
         else
             color = hexToColor(str); // sometimes get specified without leading #
+
         return color;
     }
 
@@ -885,11 +862,13 @@ public class HTMLUtils {
         System.err.println("----------------------------------------------------------------");
         System.err.println(attr);
         Enumeration ee = attr.getAttributeNames();
+
         while (ee.hasMoreElements()) {
             Object name = ee.nextElement();
             Object atr = attr.getAttribute(name);
             System.err.println(name + " " + name.getClass().getName() + " | " + atr + " " + atr.getClass().getName());
         }
+
         System.err.println("----------------------------------------------------------------");
     }
 

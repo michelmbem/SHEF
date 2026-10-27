@@ -51,9 +51,6 @@ public class HTMLInlineAction extends HTMLTextEditAction {
                     i18n.str("underline"),
                     i18n.str("strikethrough")
             };
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final int[] MNEMS =
             {

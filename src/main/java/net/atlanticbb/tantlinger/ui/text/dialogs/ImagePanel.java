@@ -15,9 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ImagePanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private ImageAttributesPanel imageAttrPanel;
     private LinkAttributesPanel linkAttrPanel;

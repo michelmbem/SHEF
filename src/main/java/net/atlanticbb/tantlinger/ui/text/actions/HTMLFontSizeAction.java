@@ -29,9 +29,6 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     public static final int XLARGE = 5;
     public static final int XXLARGE = 6;
     public static final int FONT_SIZES[] = {8, 10, 12, 14, 18, 24, 36/*28*/};
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final String SML = i18n.str("small");
     private static final String MED = i18n.str("medium");

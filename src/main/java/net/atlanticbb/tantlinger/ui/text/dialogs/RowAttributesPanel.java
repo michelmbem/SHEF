@@ -10,9 +10,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class RowAttributesPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private AlignmentAttributesPanel alignPanel = null;
     private BGColorPanel bgColorPanel = null;

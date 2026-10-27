@@ -16,9 +16,6 @@ import java.util.Hashtable;
  *
  */
 public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private static final String MEASUREMENTS[] = {"percent", "pixels"};     //$NON-NLS-1$ //$NON-NLS-2$

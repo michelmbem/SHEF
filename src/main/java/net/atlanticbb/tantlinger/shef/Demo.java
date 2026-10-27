@@ -12,20 +12,18 @@ import java.lang.reflect.InvocationTargetException;
  * @author Bob Tantlinger
  */
 public class Demo {
+    private static final String HTMLSNIP = "/net/atlanticbb/tantlinger/shef/htmlsnip.txt";
     private static Demo demo;
     private final JFrame frame;
     private final HTMLEditorPane editor;
 
     public Demo() {
         editor = new HTMLEditorPane(true);
-        InputStream in = Demo.class.getResourceAsStream("/net/atlanticbb/tantlinger/shef/htmlsnip.txt");
 
-        try {
+        try (InputStream in = Demo.class.getResourceAsStream(HTMLSNIP)) {
             editor.setText(IOUtils.read(in));
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            IOUtils.close(in);
         }
 
         JMenuBar menuBar = new JMenuBar();

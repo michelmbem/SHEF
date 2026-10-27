@@ -5,7 +5,6 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
 import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +18,6 @@ import java.awt.event.KeyEvent;
  */
 public class CutAction extends BasicEditAction {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
 
@@ -31,15 +27,13 @@ public class CutAction extends BasicEditAction {
         putValue(Action.SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "cut.png"));
         putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "cut.png"));
         putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        putValue(MNEMONIC_KEY, new Integer(i18n.mnem("cut")));
-        addShouldBeEnabledDelegate(new ShouldBeEnabledDelegate() {
-            public boolean shouldBeEnabled(Action a) {
-                JEditorPane ed = getCurrentEditor();
-                return ed != null &&
-                        ed.getSelectionStart() != ed.getSelectionEnd();
-                //return true;
-            }
+                KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        putValue(MNEMONIC_KEY, (int) i18n.mnem("cut"));
+        addShouldBeEnabledDelegate(a -> {
+            JEditorPane ed = getCurrentEditor();
+            return ed != null &&
+                    ed.getSelectionStart() != ed.getSelectionEnd();
+            //return true;
         });
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
@@ -51,6 +45,7 @@ public class CutAction extends BasicEditAction {
         editor.cut();
     }
 
+    @Override
     protected void contextChanged() {
         super.contextChanged();
         this.updateEnabledState();

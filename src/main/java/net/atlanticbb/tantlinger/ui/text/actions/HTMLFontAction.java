@@ -22,9 +22,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class HTMLFontAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLFontAction() {

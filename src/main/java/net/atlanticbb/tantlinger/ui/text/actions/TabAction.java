@@ -21,9 +21,6 @@ import java.awt.event.ActionEvent;
 public class TabAction extends DecoratedTextAction {
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     //private Action delegate;
     private int type;

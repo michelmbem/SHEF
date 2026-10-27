@@ -16,9 +16,6 @@ import java.awt.*;
 import java.util.Map;
 
 public class TablePropertiesDialog extends OptionDialog {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");

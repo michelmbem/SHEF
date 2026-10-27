@@ -22,9 +22,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class HTMLImageAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
 

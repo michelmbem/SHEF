@@ -20,9 +20,6 @@ import java.awt.event.ActionEvent;
 public class HTMLLineBreakAction extends HTMLTextEditAction {
     //private final String RES = TBGlobals.RESOURCES;
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLLineBreakAction() {

@@ -15,6 +15,7 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 /**
  *
@@ -67,22 +68,21 @@ public class CachedImageView extends ImageView {
 
         hasCached = true;//set the hasCached flag so we dont write it twice
 
-        Runnable runner = new Runnable() {
-            public void run() {
-                String type = "png";//assume png for non-jpegs
-                if (cImg.getAbsolutePath().endsWith("jpg"))
-                    type = "jpg";
+        Runnable runner = () -> {
+            String type = "png";//assume png for non-jpegs
+            if (cImg.getAbsolutePath()
+                    .toLowerCase(Locale.ROOT)
+                    .endsWith(".jpg"))
+                type = "jpg";
 
-                BufferedImage bufImg = makeBufferedImage(image);
-                try {
-                    ImageIO.write(bufImg, type, cImg);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+            BufferedImage bufImg = makeBufferedImage(image);
+            try {
+                ImageIO.write(bufImg, type, cImg);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         };
 
-        //System.err.println("CACHE " + cImg.getName());
         Thread th = new Thread(runner, "Image Cacher");
         th.setPriority(Thread.NORM_PRIORITY);
         th.start();
@@ -106,6 +106,7 @@ public class CachedImageView extends ImageView {
      * The superclass treats this the same as the actual url, but
      * the image is loaded from the local cache rather than redownloading it
      */
+    @Override
     public URL getImageURL() {
         String src = srcAttribute();
         if (src == null)
@@ -121,8 +122,7 @@ public class CachedImageView extends ImageView {
                 URL reference = ((HTMLDocument) getDocument()).getBase();
                 imgURL = new URL(reference, src);
             }
-        } catch (MalformedURLException e) {
-
+        } catch (MalformedURLException ignored) {
         }
 
         return imgURL;
@@ -160,7 +160,6 @@ public class CachedImageView extends ImageView {
             imgType = ".jpg";
 
         int hc = Math.abs(iUrl.hashCode());
-        File cacheImg = new File(IMG_CACHE_DIR, hc + imgType);
-        return cacheImg;
+        return new File(IMG_CACHE_DIR, hc + imgType);
     }
 }

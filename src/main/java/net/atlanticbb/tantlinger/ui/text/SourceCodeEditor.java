@@ -20,18 +20,10 @@ import java.util.StringTokenizer;
  *
  */
 public class SourceCodeEditor extends SyntaxTextPane {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
-
-    /**
-     *
-     */
     public SourceCodeEditor() {
         super();
-
         SyntaxFactory.setSyntaxCatalog(getClass().getResource("/resources/syntax.catalog.xml"));
         SyntaxFactory.loadSyntaxes();
 
@@ -46,30 +38,22 @@ public class SourceCodeEditor extends SyntaxTextPane {
 
         /* Load default theme */
         Properties themes = new Properties();
-        InputStream in = null;
-        try {
-            in = getClass().getResource("/net/atlanticbb/tantlinger/ui/text/syntax.properties").openStream();
+        try (InputStream in = getClass()
+                .getResourceAsStream("/net/atlanticbb/tantlinger/ui/text/syntax.properties")) {
             themes.load(in);
             setTheme(themes, "default");
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (Exception ex) {
-
-            }
         }
     }
 
     public void setTheme(Properties props) {
         String prefix = "default";
+
         try {
             SyntaxDocument d = (SyntaxDocument) getDocument();
             prefix = d.getSyntax().getName();
-
-        } catch (ClassCastException ex) {
-
+        } catch (ClassCastException ignored) {
         }
 
         setTheme(props, prefix);
@@ -139,20 +123,7 @@ public class SourceCodeEditor extends SyntaxTextPane {
         setBackground(parseColor(props.getProperty(prefix + ".text.bg")));
         setCaretColor(parseColor(props.getProperty(prefix + ".caret.fg")));
         setBracketHighlightColor(parseColor(props.getProperty(prefix + ".brackethighlight.fg")));
-        //setSelectionColor(parseColor(props.getProperty(prefix + ".selectioncolor.bg")));
         setLineHighlightColor(parseColor(props.getProperty(prefix + ".linehighlight.fg")));
-        /*gutter.setForeground(parseColor(props.getProperty(prefix + ".gutter.fg")));
-        gutter.setBackground(parseColor(props.getProperty(prefix + ".gutter.bg")));
-        gutter.setDividerForeground(parseColor(props.getProperty(prefix + ".divider.fg")));
-        gutter.setDividerBackground(parseColor(props.getProperty(prefix + ".divider.bg")));
-        gutter.setCurrentLineForeground(parseColor(props.getProperty(prefix + ".currentline.fg")));
-        gutter.setCurrentLineBackground(parseColor(props.getProperty(prefix + ".currentline.bg")));
-        gutter.setLineIntervalForeground(parseColor(props.getProperty(prefix + ".lineinterval.fg")));
-        gutter.setLineIntervalBackground(parseColor(props.getProperty(prefix + ".lineinterval.bg")));
-        gutter.setSelectionForeground(parseColor(props.getProperty(prefix + ".gutterselection.fg")));
-        gutter.setSelectionBackground(parseColor(props.getProperty(prefix + ".gutterselection.bg")));
-        gutter.setBracketScopeForeground(parseColor(props.getProperty(prefix + ".bracketscope.fg")));
-        gutter.setBracketScopeBackground(parseColor(props.getProperty(prefix + ".bracketscope.bg")));*/
     }
 
     /**
@@ -178,11 +149,8 @@ public class SourceCodeEditor extends SyntaxTextPane {
                 int g = Integer.parseInt(color.substring(4, 6), 16);
                 int b = Integer.parseInt(color.substring(6, 8), 16);
                 return new Color(r, g, b, a);
-            } else {
-                //throw new Exception("Invalid color syntax");
             }
-        } catch (NumberFormatException e) {
-            //throw new Exception("Invalid color data", e);
+        } catch (NumberFormatException ignored) {
         }
 
         return Color.black;
@@ -198,9 +166,10 @@ public class SourceCodeEditor extends SyntaxTextPane {
     private int parseFont(String font) //throws Exception
     {
         int flags = Font.PLAIN;
-        if (font != null) {
 
+        if (font != null) {
             StringTokenizer tokenizer = new StringTokenizer(font, ",");
+
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken().toLowerCase();
 
@@ -211,12 +180,9 @@ public class SourceCodeEditor extends SyntaxTextPane {
                 } else if (token.equals("plain")) {
                     /* Ignore */
                 }
-                /*else
-                {
-                    throw new Exception("Unknown font attribute");
-                }*/
             }
         }
+
         return flags;
     }
 

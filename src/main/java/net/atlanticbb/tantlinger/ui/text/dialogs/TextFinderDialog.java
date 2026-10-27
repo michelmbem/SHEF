@@ -41,9 +41,6 @@ public class TextFinderDialog extends JDialog {
             '}', '<', '>', '/', '|', '\\', '\'', '\"'};
     public static final int FIND = 0;
     public static final int REPLACE = 1;
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
     private static final String TITLE = i18n.str("find_and_replace"); //$NON-NLS-1$
@@ -123,7 +120,7 @@ public class TextFinderDialog extends JDialog {
         modelDown = rdDown.getModel();
         bg.add(rdDown);
         po.add(rdDown);
-        pc1.add(po, BorderLayout.SOUTH);
+        pc1.add(po, BorderLayout.PAGE_END);
 
         p1.add(pc1, BorderLayout.CENTER);
 
@@ -206,7 +203,7 @@ public class TextFinderDialog extends JDialog {
         rdDown.setModel(modelDown);
         bg.add(rdDown);
         po.add(rdDown);
-        pc2.add(po, BorderLayout.SOUTH);
+        pc2.add(po, BorderLayout.PAGE_END);
 
         p2.add(pc2, BorderLayout.CENTER);
 

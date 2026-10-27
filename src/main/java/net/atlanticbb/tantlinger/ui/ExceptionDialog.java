@@ -119,7 +119,6 @@ public class ExceptionDialog extends JDialog {
             iconLabel = new JLabel();
             iconLabel.setText(""); //$NON-NLS-1$
             iconLabel.setIcon(UIManager.getIcon("OptionPane.errorIcon")); //$NON-NLS-1$
-            //iconLabel.setIcon(new ImageIcon(getClass().getResource("/com/neatomatic/ui/images/x32/cancel.png")));
             jContentPane = new JPanel();
             jContentPane.setLayout(new GridBagLayout());
             jContentPane.setBorder(BorderFactory.createEmptyBorder(12, 5, 10, 5));
@@ -162,11 +161,7 @@ public class ExceptionDialog extends JDialog {
         if (okButton == null) {
             okButton = new JButton();
             okButton.setText(i18n.str("ok")); //$NON-NLS-1$
-            okButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    dispose();
-                }
-            });
+            okButton.addActionListener(e -> dispose());
         }
         return okButton;
     }
@@ -180,11 +175,7 @@ public class ExceptionDialog extends JDialog {
         if (detailsButton == null) {
             detailsButton = new JButton();
             detailsButton.setText(i18n.str("_details")); //$NON-NLS-1$
-            detailsButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    toggleDetails();
-                }
-            });
+            detailsButton.addActionListener(e -> toggleDetails());
         }
         return detailsButton;
     }
@@ -215,7 +206,7 @@ public class ExceptionDialog extends JDialog {
 
     public void setThrowable(Throwable th) {
         String msg = i18n.str("no_message_given"); //$NON-NLS-1$
-        if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().equals("")) //$NON-NLS-1$
+        if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().isEmpty()) //$NON-NLS-1$
             msg = th.getLocalizedMessage();
         msgLabel.setText(msg);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();

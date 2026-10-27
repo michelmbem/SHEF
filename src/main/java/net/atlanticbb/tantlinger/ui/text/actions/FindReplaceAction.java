@@ -13,9 +13,6 @@ import java.awt.event.KeyEvent;
 
 
 public class FindReplaceAction extends BasicEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private final boolean isReplaceTab;
     private final boolean showHTML;

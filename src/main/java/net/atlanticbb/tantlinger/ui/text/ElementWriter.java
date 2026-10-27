@@ -27,7 +27,6 @@ public class ElementWriter extends HTMLWriter {
 
         this.root = root;
 
-        //setIndentSpace(0);
         setLineLength(Integer.MAX_VALUE);
     }
 
@@ -51,6 +50,7 @@ public class ElementWriter extends HTMLWriter {
         return false;
     }
 
+    @Override
     protected boolean synthesizedElement(Element e) {
         return e.getStartOffset() < getStartOffset() ||
                 isAncestor(e, root) || super.synthesizedElement(e);

@@ -57,8 +57,7 @@
   quis massa. .
 </p>
 <p>
-  <img alt="A Shef" src="http://www.nasa.gov/centers/goddard/images/content/638831main_globe_east_2048.jpg">
-  
+  <img src="https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57723/globe_east_2048.jpg" alt="A Shef" width="300">
 </p>
 <p>
   Donec ut rutrum mauris. Maecenas elementum pretium feugiat. Proin 

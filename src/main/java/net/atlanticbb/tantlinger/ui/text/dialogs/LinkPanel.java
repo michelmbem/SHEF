@@ -13,9 +13,6 @@ import java.util.Map;
 
 
 public class LinkPanel extends HTMLAttributeEditorPanel {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private JPanel hlinkPanel = null;
     private JLabel urlLabel = null;

@@ -18,7 +18,7 @@ public abstract class BasicEditAction extends HTMLTextEditAction {
     /**
      * @param name
      */
-    public BasicEditAction(String name) {
+    protected BasicEditAction(String name) {
         super(name);
     }
 
@@ -39,13 +39,14 @@ public abstract class BasicEditAction extends HTMLTextEditAction {
     protected abstract void doEdit(ActionEvent e, JEditorPane editor);
 
     protected void updateContextState(JEditorPane editor) {
-
     }
 
+    @Override
     protected final void updateWysiwygContextState(JEditorPane wysEditor) {
         updateContextState(wysEditor);
     }
 
+    @Override
     protected final void updateSourceContextState(JEditorPane srcEditor) {
         updateContextState(srcEditor);
     }

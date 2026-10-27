@@ -21,9 +21,6 @@ import java.awt.event.ActionEvent;
  *
  */
 public class HTMLHorizontalRuleAction extends HTMLTextEditAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public HTMLHorizontalRuleAction() {
