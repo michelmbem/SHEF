@@ -138,7 +138,7 @@ public class HTMLEditorPane extends JPanel {
         }
         lst.addAll(editActions);
         lst.add(null);
-        lst.add(new FindReplaceAction(false, enableHTML));
+        lst.add(new FindReplaceAction(false));
         actionList.addAll(lst);
         editMenu = ActionUIFactory.getInstance().createMenu(lst);
         editMenu.setText(i18n.str("edit"));

@@ -28,7 +28,7 @@ public class CopyAction extends BasicEditAction {
         putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "copy.png"));
         putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        putValue(MNEMONIC_KEY, (int) i18n.mnem("copy"));
+        putValue(MNEMONIC_KEY, i18n.mnem("copy"));
         addShouldBeEnabledDelegate(a -> {
             JEditorPane ed = getCurrentEditor();
             return ed != null && ed.getSelectionStart() != ed.getSelectionEnd();

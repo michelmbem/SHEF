@@ -24,7 +24,7 @@ public class ClearStylesAction extends HTMLTextEditAction {
 
     public ClearStylesAction() {
         super(i18n.str("clear_styles"));
-        putValue(MNEMONIC_KEY, (int) i18n.mnem("clear_styles"));
+        putValue(MNEMONIC_KEY, i18n.mnem("clear_styles"));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("shift ctrl Y"));
         addShouldBeEnabledDelegate(a -> getEditMode() != SOURCE);
     }

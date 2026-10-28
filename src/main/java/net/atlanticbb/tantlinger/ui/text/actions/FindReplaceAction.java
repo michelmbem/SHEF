@@ -15,21 +15,19 @@ import java.awt.event.KeyEvent;
 public class FindReplaceAction extends BasicEditAction {
     private static final long serialVersionUID = 1L;
     private final boolean isReplaceTab;
-    private final boolean showHTML;
     private TextFinderDialog dialog;
 
-
-    public FindReplaceAction(boolean isReplace, boolean _showHTML) {
+    public FindReplaceAction(boolean isReplace) {
         super(null);
-        showHTML = _showHTML;
+
         if (isReplace) {
             putValue(NAME, i18n.str("replace_")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("replace_")));
+            putValue(MNEMONIC_KEY, i18n.mnem("replace_"));
         } else {
             putValue(NAME, i18n.str("find_")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("find_")));
-            putValue(ACCELERATOR_KEY,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            putValue(MNEMONIC_KEY, i18n.mnem("find_"));
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+                    KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         }
 
         isReplaceTab = isReplace;
@@ -38,6 +36,7 @@ public class FindReplaceAction extends BasicEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.BasicEditAction#doEdit(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
+    @Override
     protected void doEdit(ActionEvent e, JEditorPane textComponent) {
         Component c = SwingUtilities.getWindowAncestor(textComponent);
         if (dialog == null) {
@@ -54,9 +53,6 @@ public class FindReplaceAction extends BasicEditAction {
             } else
                 return;
         }
-
-        //if(textComponent.getSelectionStart() != textComponent.getSelectionEnd())
-        //  dialog.setSearchText(textComponent.getSelectedText());
 
         if (!dialog.isVisible()) {
             dialog.show((isReplaceTab) ? TextFinderDialog.REPLACE : TextFinderDialog.FIND);

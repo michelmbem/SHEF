@@ -50,16 +50,14 @@ public class I18n {
 
     public static void setLocale(Locale loc) {
         locale = loc;
-        for (Iterator it = I18NS.values().iterator(); it.hasNext(); ) {
-            I18n i18n = (I18n) it.next();
+        for (Object o : I18NS.values()) {
+            I18n i18n = (I18n) o;
             i18n.bundle = null; //reset so bundle with new locale gets created...
         }
     }
 
     public static void setLocale(String locStr) throws IllegalArgumentException {
         Locale loc = localeFromString(locStr);
-        if (loc == null)
-            throw new IllegalArgumentException("The locale " + locStr + " was not properly formatted");
         setLocale(loc);
     }
 
@@ -70,7 +68,7 @@ public class I18n {
      * @return
      */
     private static String slashesToDots(String path) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(path, "/");
         while (st.hasMoreTokens()) {
             sb.append(".");
@@ -84,7 +82,7 @@ public class I18n {
     }
 
     private static String createBundleName(String bundlePackage, String bundleName) {
-        StringBuffer sb = new StringBuffer(slashesToDots(bundlePackage));
+        StringBuilder sb = new StringBuilder(slashesToDots(bundlePackage));
         if (!sb.toString().endsWith("."))
             sb.append('.');
         sb.append(bundleName);
@@ -152,14 +150,11 @@ public class I18n {
 
     public static Locale localeFromString(String locStr) {
         String[] parts = locStr.split("_");
-        if (parts.length > 0 || parts.length <= 3) {
-            String lang = parts[0];
-            String country = (parts.length > 1) ? parts[1] : "";
-            String varient = (parts.length > 2) ? parts[2] : "";
-            return new Locale(lang, country, varient);
-        }
+        String lang = parts[0];
+        String country = (parts.length > 1) ? parts[1] : "";
+        String variant = (parts.length > 2) ? parts[2] : "";
+        return new Locale(lang, country, variant);
 
-        return null;
     }
 
     public String str(String key) {
@@ -182,16 +177,16 @@ public class I18n {
         }
     }
 
-    public char mnem(String key) {
+    public int mnem(String key) {
         String s = str(key + MNEM_POSTFIX);
-        if (s != null && s.length() > 0)
+        if (s != null && !s.isEmpty())
             return s.charAt(0);
         return '!';
     }
 
-    public char mnem(String key, Locale loc) {
+    public int mnem(String key, Locale loc) {
         String s = str(key + MNEM_POSTFIX, loc);
-        if (s != null && s.length() > 0)
+        if (s != null && !s.isEmpty())
             return s.charAt(0);
         return '!';
     }
@@ -200,16 +195,13 @@ public class I18n {
         String bun = getBundleForPackage(_package);
 
         File[] packs = getAvailableLanguagePacks();
-        if (packs != null && packs.length > 0) {
+        if (packs.length > 0) {
             URL[] urls = new URL[packs.length];
             try {
                 for (int i = 0; i < urls.length; i++)
                     urls[i] = packs[i].toURL();
                 return ResourceBundle.getBundle(bun, loc, URLClassLoader.newInstance(urls));
-            } catch (MalformedURLException muex) {
-
-            } catch (MissingResourceException rex) {
-
+            } catch (MalformedURLException | MissingResourceException ignored) {
             }
         }
 
@@ -220,8 +212,7 @@ public class I18n {
         public boolean accept(File f) {
             if (f.isFile() && f.canRead()) {
                 String name = f.getName().toLowerCase();
-                if (name.endsWith(".zip"))
-                    return true;
+                return name.endsWith(".zip");
             }
             return false;
         }

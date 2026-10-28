@@ -16,8 +16,8 @@ import javax.swing.text.Element;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -43,28 +43,27 @@ public class HTMLBlockAction extends HTMLTextEditAction {
     public static final int BLOCKQUOTE = 9;
     public static final int OL = 10;
     public static final int UL = 11;
-    public static final String[] ELEMENT_TYPES =
-            {
-                    i18n.str("body_text"), //$NON-NLS-1$
-                    i18n.str("paragraph"), //$NON-NLS-1$
-                    i18n.str("heading") + " 1", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("heading") + " 2", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("heading") + " 3", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("heading") + " 4", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("heading") + " 5", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("heading") + " 6", //$NON-NLS-1$ //$NON-NLS-2$
-                    i18n.str("preformatted"),          //$NON-NLS-1$
-                    i18n.str("blockquote"), //$NON-NLS-1$
-                    i18n.str("ordered_list"), //$NON-NLS-1$
-                    i18n.str("unordered_list")         //$NON-NLS-1$
-            };
+    protected static final String[] ELEMENT_TYPES = {
+            i18n.str("body_text"), //$NON-NLS-1$
+            i18n.str("paragraph"), //$NON-NLS-1$
+            i18n.str("heading") + " 1", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("heading") + " 2", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("heading") + " 3", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("heading") + " 4", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("heading") + " 5", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("heading") + " 6", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str("preformatted"), //$NON-NLS-1$
+            i18n.str("blockquote"), //$NON-NLS-1$
+            i18n.str("ordered_list"), //$NON-NLS-1$
+            i18n.str("unordered_list") //$NON-NLS-1$
+    };
     private static final long serialVersionUID = 1L;
-    private static final int KEYS[] =
-            {
-                    KeyEvent.VK_D, KeyEvent.VK_ENTER, KeyEvent.VK_1, KeyEvent.VK_2,
-                    KeyEvent.VK_3, KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6,
-                    KeyEvent.VK_R, KeyEvent.VK_Q, KeyEvent.VK_N, KeyEvent.VK_U
-            };
+    private static final int[] KEYS = {
+            KeyEvent.VK_D, KeyEvent.VK_ENTER, KeyEvent.VK_1, KeyEvent.VK_2,
+            KeyEvent.VK_3, KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6,
+            KeyEvent.VK_R, KeyEvent.VK_Q, KeyEvent.VK_N, KeyEvent.VK_U
+    };
+
     private int type;
 
     /**
@@ -81,24 +80,24 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         this.type = type;
         putValue(NAME, ELEMENT_TYPES[type]);
         putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke(KEYS[type], Event.ALT_MASK));
+                KeyStroke.getKeyStroke(KEYS[type], InputEvent.ALT_MASK));
         if (type == P)
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("paragraph"))); //$NON-NLS-1$
+            putValue(MNEMONIC_KEY, i18n.mnem("paragraph")); //$NON-NLS-1$
         else if (type == PRE)
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("preformatted"))); //$NON-NLS-1$
+            putValue(MNEMONIC_KEY, i18n.mnem("preformatted")); //$NON-NLS-1$
         else if (type == BLOCKQUOTE)
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("blockquote"))); //$NON-NLS-1$
+            putValue(MNEMONIC_KEY, i18n.mnem("blockquote")); //$NON-NLS-1$
         else if (type == OL) {
             putValue(SMALL_ICON,
                     UIUtils.getIcon(UIUtils.X16, "listordered.png")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("ordered_list"))); //$NON-NLS-1$
+            putValue(MNEMONIC_KEY, i18n.mnem("ordered_list")); //$NON-NLS-1$
         } else if (type == UL) {
             putValue(SMALL_ICON,
                     UIUtils.getIcon(UIUtils.X16, "listunordered.png")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, new Integer(i18n.mnem("unordered_list"))); //$NON-NLS-1$
+            putValue(MNEMONIC_KEY, i18n.mnem("unordered_list")); //$NON-NLS-1$
         } else {
             String s = type + ""; //$NON-NLS-1$
-            putValue(Action.MNEMONIC_KEY, new Integer(s.charAt(0)));
+            putValue(Action.MNEMONIC_KEY, (int) s.charAt(0));
         }
         putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_RADIO);
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
@@ -200,11 +199,11 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         try {
             w.write();
             String html = out.toString();
-            html = html.substring(html.indexOf('>') + 1, html.length());
+            html = html.substring(html.indexOf('>') + 1);
             html = html.substring(0, html.lastIndexOf('<'));
-            html = '<' + replaceTag.toString() + '>' + html + "</" + replaceTag.toString() + '>'; //$NON-NLS-1$
+            html = '<' + replaceTag.toString() + '>' + html + "</" + replaceTag + '>'; //$NON-NLS-1$
             document.setOuterHTML(listParent, html);
-        } catch (Exception idiotic) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -231,7 +230,6 @@ public class HTMLBlockAction extends HTMLTextEditAction {
 
         if (!parentTag.equals(HTML.Tag.LI))//don't allow nested lists
         {
-            //System.err.println("INSERT LIST");
             changeBlockType(editor, e);
         } else//is already a list, so turn off list
         {

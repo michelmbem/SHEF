@@ -28,7 +28,7 @@ public class CutAction extends BasicEditAction {
         putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "cut.png"));
         putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        putValue(MNEMONIC_KEY, (int) i18n.mnem("cut"));
+        putValue(MNEMONIC_KEY, i18n.mnem("cut"));
         addShouldBeEnabledDelegate(a -> {
             JEditorPane ed = getCurrentEditor();
             return ed != null &&

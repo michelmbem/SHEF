@@ -6,7 +6,6 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.DefaultAction;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLDocument;
@@ -23,21 +22,18 @@ public abstract class HTMLTextEditAction extends DefaultAction {
     public static final int DISABLED = -1;
     public static final int WYSIWYG = 0;
     public static final int SOURCE = 1;
-    static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.actions");
+    protected static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.actions");
 
-    public HTMLTextEditAction(String name) {
+    protected HTMLTextEditAction(String name) {
         super(name);
-        addShouldBeEnabledDelegate(new ShouldBeEnabledDelegate() {
-            public boolean shouldBeEnabled(Action a) {
-                return getEditMode() != DISABLED;
-            }
-        });
+        addShouldBeEnabledDelegate(a -> getEditMode() != DISABLED);
         updateEnabledState();
     }
 
     /* (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void execute(ActionEvent e) throws Exception {
         if (getEditMode() == WYSIWYG)
             wysiwygEditPerformed(e, getCurrentEditor());
@@ -47,28 +43,27 @@ public abstract class HTMLTextEditAction extends DefaultAction {
 
     public int getEditMode() {
         JEditorPane ep = getCurrentEditor();
-        if (ep == null)
-            return DISABLED;
-        if (ep.getDocument() instanceof HTMLDocument && ep.getEditorKit() instanceof HTMLEditorKit)
-            return WYSIWYG;
+        if (ep == null) return DISABLED;
+        if (ep.getDocument() instanceof HTMLDocument &&
+                ep.getEditorKit() instanceof HTMLEditorKit) return WYSIWYG;
         return SOURCE;
     }
 
     protected JEditorPane getCurrentEditor() {
         try {
-            JEditorPane ep = (JEditorPane) getContextValue(EDITOR);
-            return ep;
-        } catch (ClassCastException cce) {
-            //cce.printStackTrace();
+            return (JEditorPane) getContextValue(EDITOR);
+        } catch (ClassCastException ignored) {
         }
 
         return null;
     }
 
+    @Override
     protected void actionPerformedCatch(Throwable t) {
         t.printStackTrace();
     }
 
+    @Override
     protected void contextChanged() {
         if (getEditMode() == WYSIWYG)
             updateWysiwygContextState(getCurrentEditor());
@@ -77,11 +72,9 @@ public abstract class HTMLTextEditAction extends DefaultAction {
     }
 
     protected void updateWysiwygContextState(JEditorPane wysEditor) {
-
     }
 
     protected void updateSourceContextState(JEditorPane srcEditor) {
-
     }
 
     protected abstract void wysiwygEditPerformed(ActionEvent e, JEditorPane editor);

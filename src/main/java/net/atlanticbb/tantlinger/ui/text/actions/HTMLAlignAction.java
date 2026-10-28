@@ -30,31 +30,24 @@ public class HTMLAlignAction extends HTMLTextEditAction {
     public static final int CENTER = 1;
     public static final int RIGHT = 2;
     public static final int JUSTIFY = 3;
-    public static final String ALIGNMENT_NAMES[] =
-            {
-                    i18n.str("left"),
-                    i18n.str("center"),
-                    i18n.str("right"),
-                    i18n.str("justify")
-            };
-    public static final String ALIGNMENTS[] =
-            {
-                    "left", "center", "right", "justify"
-            };
+    protected static final String[] ALIGNMENT_NAMES = {
+            i18n.str("left"),
+            i18n.str("center"),
+            i18n.str("right"),
+            i18n.str("justify")
+    };
+    protected static final String[] ALIGNMENTS = { "left", "center", "right", "justify" };
     private static final long serialVersionUID = 1L;
-    private static final int[] MNEMS =
-            {
-                    i18n.mnem("left"),
-                    i18n.mnem("center"),
-                    i18n.mnem("right"),
-                    i18n.mnem("justify")
-            };
-    private static final String IMGS[] =
-            {
-                    "al_left.png", "al_center.png", "al_right.png", "al_just.png"
-            };
+    private static final int[] MNEMS = {
+            i18n.mnem("left"),
+            i18n.mnem("center"),
+            i18n.mnem("right"),
+            i18n.mnem("justify")
+    };
+    private static final String[] IMGS =
+            { "al_left.png", "al_center.png", "al_right.png", "al_just.png" };
 
-    private int align;
+    private final int align;
 
 
     /**
@@ -68,9 +61,8 @@ public class HTMLAlignAction extends HTMLTextEditAction {
         if (al < 0 || al >= ALIGNMENTS.length)
             throw new IllegalArgumentException("Illegal Argument");
 
-        //String pkg = getClass().getPackage().getName();
-        putValue(NAME, (ALIGNMENT_NAMES[al]));
-        putValue(MNEMONIC_KEY, new Integer(MNEMS[al]));
+        putValue(NAME, ALIGNMENT_NAMES[al]);
+        putValue(MNEMONIC_KEY, MNEMS[al]);
 
         putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, IMGS[al]));
         putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_RADIO);
@@ -78,6 +70,7 @@ public class HTMLAlignAction extends HTMLTextEditAction {
         align = al;
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane ed) {
         setSelected(shouldBeSelected(ed));
     }
@@ -100,14 +93,12 @@ public class HTMLAlignAction extends HTMLTextEditAction {
         HTMLDocument doc = (HTMLDocument) editor.getDocument();
         Element curE = doc.getParagraphElement(editor.getSelectionStart());
         Element endE = doc.getParagraphElement(editor.getSelectionEnd());
-        //System.err.println("ALIGN " + curE.getName());
 
         CompoundUndoManager.beginCompoundEdit(doc);
         while (true) {
             alignElement(curE);
-            if (curE.getEndOffset() >= endE.getEndOffset()
-                    || curE.getEndOffset() >= doc.getLength())
-                break;
+            if (curE.getEndOffset() >= endE.getEndOffset() ||
+                    curE.getEndOffset() >= doc.getLength()) break;
             curE = doc.getParagraphElement(curE.getEndOffset() + 1);
         }
         CompoundUndoManager.endCompoundEdit(doc);
@@ -118,11 +109,11 @@ public class HTMLAlignAction extends HTMLTextEditAction {
 
         if (HTMLUtils.isImplied(elem)) {
             HTML.Tag tag = HTML.getTag(elem.getParentElement().getName());
-            //System.out.println(tag);
             //pre tag doesn't support an align attribute
             //http://www.w3.org/TR/REC-html32#pre
             if (tag != null && (!tag.equals(HTML.Tag.BODY)) &&
                     (!tag.isPreformatted() && !tag.equals(HTML.Tag.DD))) {
+
                 SimpleAttributeSet as = new SimpleAttributeSet(elem.getAttributes());
                 as.removeAttribute("align");
                 as.addAttribute("align", ALIGNMENTS[align]);
@@ -130,17 +121,18 @@ public class HTMLAlignAction extends HTMLTextEditAction {
                 Element parent = elem.getParentElement();
                 String html = HTMLUtils.getElementHTML(elem, false);
                 html = HTMLUtils.createTag(tag, as, html);
-                String snipet = "";
+                StringBuilder snippet = new StringBuilder();
+
                 for (int i = 0; i < parent.getElementCount(); i++) {
                     Element el = parent.getElement(i);
                     if (el == elem)
-                        snipet += html;
+                        snippet.append(html);
                     else
-                        snipet += HTMLUtils.getElementHTML(el, true);
+                        snippet.append(HTMLUtils.getElementHTML(el, true));
                 }
 
                 try {
-                    doc.setOuterHTML(parent, snipet);
+                    doc.setOuterHTML(parent, snippet.toString());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
