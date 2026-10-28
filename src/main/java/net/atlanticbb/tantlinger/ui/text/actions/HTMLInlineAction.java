@@ -38,35 +38,33 @@ public class HTMLInlineAction extends HTMLTextEditAction {
     public static final int ITALIC = 7;
     public static final int UNDERLINE = 8;
     public static final int STRIKE = 9;
-    public static final String[] INLINE_TYPES =
-            {
-                    i18n.str("emphasis"),
-                    i18n.str("strong"),
-                    i18n.str("code"),
-                    i18n.str("cite"),
-                    i18n.str("superscript"),
-                    i18n.str("subscript"),
-                    i18n.str("bold"),
-                    i18n.str("italic"),
-                    i18n.str("underline"),
-                    i18n.str("strikethrough")
-            };
+    protected static final String[] INLINE_TYPES = {
+            i18n.str("emphasis"),
+            i18n.str("strong"),
+            i18n.str("code"),
+            i18n.str("cite"),
+            i18n.str("superscript"),
+            i18n.str("subscript"),
+            i18n.str("bold"),
+            i18n.str("italic"),
+            i18n.str("underline"),
+            i18n.str("strikethrough")
+    };
     private static final long serialVersionUID = 1L;
-    private static final int[] MNEMS =
-            {
-                    i18n.mnem("emphasis"),
-                    i18n.mnem("strong"),
-                    i18n.mnem("code"),
-                    i18n.mnem("cite"),
-                    i18n.mnem("superscript"),
-                    i18n.mnem("subscript"),
-                    i18n.mnem("bold"),
-                    i18n.mnem("italic"),
-                    i18n.mnem("underline"),
-                    i18n.mnem("strikethrough")
-            };
+    private static final int[] MNEMS = {
+            i18n.mnem("emphasis"),
+            i18n.mnem("strong"),
+            i18n.mnem("code"),
+            i18n.mnem("cite"),
+            i18n.mnem("superscript"),
+            i18n.mnem("subscript"),
+            i18n.mnem("bold"),
+            i18n.mnem("italic"),
+            i18n.mnem("underline"),
+            i18n.mnem("strikethrough")
+    };
 
-    private int type;
+    private final int type;
 
     /**
      * Creates a new HTMLInlineAction
@@ -79,44 +77,48 @@ public class HTMLInlineAction extends HTMLTextEditAction {
         type = itype;
         if (type < 0 || type >= INLINE_TYPES.length)
             throw new IllegalArgumentException("Illegal Argument");
+
         putValue(NAME, (INLINE_TYPES[type]));
-        putValue(MNEMONIC_KEY, new Integer(MNEMS[type]));
+        putValue(MNEMONIC_KEY, MNEMS[type]);
 
         Icon ico = null;
         KeyStroke ks = null;
         if (type == BOLD) {
             ico = UIUtils.getIcon(UIUtils.X16, "bold.png");
-            ks = KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            ks = KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
         } else if (type == ITALIC) {
             ico = UIUtils.getIcon(UIUtils.X16, "italic.png");
-            ks = KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            ks = KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
         } else if (type == UNDERLINE) {
             ico = UIUtils.getIcon(UIUtils.X16, "underline.png");
-            ks = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            ks = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
         }
+
         putValue(SMALL_ICON, ico);
         putValue(ACCELERATOR_KEY, ks);
         putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_CHECKBOX);
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane ed) {
         setSelected(isDefined(HTMLUtils.getCharacterAttributes(ed)));
     }
 
+    @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
         HTML.Tag tag = getTag();
-        String prefix = "<" + tag.toString() + ">";
-        String postfix = "</" + tag.toString() + ">";
+        String prefix = "<" + tag + ">";
+        String suffix = "</" + tag + ">";
         String sel = editor.getSelectedText();
-        if (sel == null) {
-            editor.replaceSelection(prefix + postfix);
 
-            int pos = editor.getCaretPosition() - postfix.length();
-            if (pos >= 0)
-                editor.setCaretPosition(pos);
+        if (sel == null) {
+            editor.replaceSelection(prefix + suffix);
+
+            int pos = editor.getCaretPosition() - suffix.length();
+            if (pos >= 0) editor.setCaretPosition(pos);
         } else {
-            sel = prefix + sel + postfix;
+            sel = prefix + sel + suffix;
             editor.replaceSelection(sel);
         }
     }
@@ -126,54 +128,31 @@ public class HTMLInlineAction extends HTMLTextEditAction {
     }
 
     private HTML.Tag getTagForType(int type) {
-        HTML.Tag tag = null;
-
         switch (type) {
-            case EM:
-                tag = HTML.Tag.EM;
-                break;
-            case STRONG:
-                tag = HTML.Tag.STRONG;
-                break;
-            case CODE:
-                tag = HTML.Tag.CODE;
-                break;
-            case SUP:
-                tag = HTML.Tag.SUP;
-                break;
-            case SUB:
-                tag = HTML.Tag.SUB;
-                break;
-            case CITE:
-                tag = HTML.Tag.CITE;
-                break;
-            case BOLD:
-                tag = HTML.Tag.B;
-                break;
-            case ITALIC:
-                tag = HTML.Tag.I;
-                break;
-            case UNDERLINE:
-                tag = HTML.Tag.U;
-                break;
-            case STRIKE:
-                tag = HTML.Tag.STRIKE;
-                break;
+            case EM: return HTML.Tag.EM;
+            case STRONG: return HTML.Tag.STRONG;
+            case CODE: return HTML.Tag.CODE;
+            case SUP: return HTML.Tag.SUP;
+            case SUB: return HTML.Tag.SUB;
+            case CITE: return HTML.Tag.CITE;
+            case BOLD: return HTML.Tag.B;
+            case ITALIC: return HTML.Tag.I;
+            case UNDERLINE: return HTML.Tag.U;
+            case STRIKE:return HTML.Tag.STRIKE;
+            default: return null;
         }
-        return tag;
     }
 
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         CompoundUndoManager.beginCompoundEdit(editor.getDocument());
         toggleStyle(editor);
         CompoundUndoManager.endCompoundEdit(editor.getDocument());
-
-        //HTMLUtils.printAttribs(HTMLUtils.getCharacterAttributes(editor));        
     }
 
 
     private boolean isDefined(AttributeSet attr) {
         boolean hasSC = false;
+
         if (type == SUP)
             hasSC = StyleConstants.isSuperscript(attr);
         else if (type == SUB)
@@ -197,13 +176,11 @@ public class HTMLInlineAction extends HTMLTextEditAction {
         HTML.Tag tag = getTag();
 
         if (enable) {
-            //System.err.println("adding style");
             attr = new SimpleAttributeSet();
             attr.addAttribute(tag, new SimpleAttributeSet());
             //doesn't replace any attribs, just adds the new one
             HTMLUtils.setCharacterAttributes(editor, attr);
         } else {
-            //System.err.println("clearing style");
             //Kind of a ham-fisted way to do this, but sometimes there are
             //CSS attributes, someties there are HTML.Tag attributes, and sometimes
             //there are both. So, we have to remove 'em all to make sure this type
@@ -230,6 +207,7 @@ public class HTMLInlineAction extends HTMLTextEditAction {
         setSelected(enable);
     }
 
+    @Override
     protected void updateSourceContextState(JEditorPane ed) {
         setSelected(false);
     }

@@ -7,7 +7,6 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import net.atlanticbb.tantlinger.ui.text.dialogs.*;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -20,7 +19,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 //import java.util.Hashtable;
@@ -40,85 +38,88 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     public static final int IMG_PROPS = 2;
     public static final int LINK_PROPS = 3;
     public static final int ELEM_PROPS = 4;
-    public static final String PROPS[] =
-            {
-                    i18n.str("table_properties_"),
-                    i18n.str("list_properties_"),
-                    i18n.str("image_properties_"),
-                    i18n.str("hyperlink_properties_"),
-                    i18n.str("object_properties_")
-            };
+    protected static final String[] PROPS = {
+            i18n.str("table_properties_"),
+            i18n.str("list_properties_"),
+            i18n.str("image_properties_"),
+            i18n.str("hyperlink_properties_"),
+            i18n.str("object_properties_")
+    };
     private static final long serialVersionUID = 1L;
 
     public HTMLElementPropertiesAction() {
         super(PROPS[ELEM_PROPS]);
-        addShouldBeEnabledDelegate(new ShouldBeEnabledDelegate() {
-            public boolean shouldBeEnabled(Action a) {
-                return getEditMode() != SOURCE && elementAtCaretPosition(getCurrentEditor()) != null;
-            }
-        });
+        addShouldBeEnabledDelegate(a -> getEditMode() != SOURCE &&
+                elementAtCaretPosition(getCurrentEditor()) != null);
     }
 
-    //public void actionPerformed(ActionEvent e)
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane ed) {
         Element elem = elementAtCaretPosition(ed);
+        if (elem == null) return;
+
         int type = getElementType(elem);
         int caret = ed.getCaretPosition();
 
-        if (type == LINK_PROPS) {
-            editLinkProps(elem);
-        } else if (type == IMG_PROPS) {
-            editImageProps(elem);
-        } else if (type == TABLE_PROPS) {
-            editTableProps(elem);
-        } else if (type == LIST_PROPS) {
-            editListProps(elem);
-        } else if (type == ELEM_PROPS) {
-            editStyleProps(elem.getParentElement());
+        switch (type) {
+            case LINK_PROPS:
+                editLinkProps(elem);
+                break;
+            case IMG_PROPS:
+                editImageProps(elem);
+                break;
+            case TABLE_PROPS:
+                editTableProps(elem);
+                break;
+            case LIST_PROPS:
+                editListProps(elem);
+                break;
+            case ELEM_PROPS:
+                editStyleProps(elem.getParentElement());
+                break;
+            default:
+                return;
         }
 
         try {
             ed.setCaretPosition(caret);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 
-    private Map getAttribs(Element elem) {
-        Map at = new HashMap();
-
+    private Map<String, String> getAttribs(Element elem) {
+        Map<String, String> attribs = new HashMap<>();
         AttributeSet a = elem.getAttributes();
-        for (Enumeration e = a.getAttributeNames(); e.hasMoreElements(); ) {
+
+        for (Enumeration<?> e = a.getAttributeNames(); e.hasMoreElements(); ) {
             Object n = e.nextElement();
             //dont return the name attribute
-            if (n.toString().equals("name") && !elem.getName().equals("a"))
-                continue;
-            at.put(n.toString(), a.getAttribute(n).toString());
+            if (n.toString().equals("name") && !elem.getName().equals("a")) continue;
+            attribs.put(n.toString(), a.getAttribute(n).toString());
         }
 
-        return at;
+        return attribs;
     }
 
     private String getElementHTML(Element el, Map attribs) {
-        String html = "<" + el.getName();
-        for (Iterator e = attribs.keySet().iterator(); e.hasNext(); ) {
-            Object name = e.next();
+        StringBuilder html = new StringBuilder("<").append(el.getName());
+
+        for (Object name : attribs.keySet()) {
             Object val = attribs.get(name);
-            html += " " + name + "=\"" + val + "\"";
+            html.append(" ").append(name).append("=\"").append(val).append("\"");
         }
 
         String txt = HTMLUtils.getElementHTML(el, false);
-        html += ">\n" + txt + "\n</" + el.getName() + ">";
-
-        return html;
+        html.append(">\n").append(txt).append("\n</").append(el.getName()).append(">");
+        return html.toString();
     }
 
-    private Map getLinkAttributes(Element elem) {
+    private Map<String, String> getLinkAttributes(Element elem) {
         String link = HTMLUtils.getElementHTML(elem, true).trim();
-        Map attribs = new HashMap();
+        Map<String, String> attribs = new HashMap<>();
+
         if (link.startsWith("<a")) {
             link = link.substring(0, link.indexOf('>'));
-            link = link.substring(link.indexOf(' '), link.length()).trim();
-
+            link = link.substring(link.indexOf(' ')).trim();
             attribs = HTMLUtils.tagAttribsToMap(link);
         }
 
@@ -129,7 +130,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
         ImageDialog d = createImageDialog();
 
         if (d != null) {
-            Map imgAttribs = getAttribs(elem);
+            Map<String, String> imgAttribs = getAttribs(elem);
             d.setImageAttributes(imgAttribs);
             d.setLocationRelativeTo(d.getParent());
             d.setVisible(true);
@@ -151,8 +152,9 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
                         elem.getStartOffset(),
                         elem.getEndOffset() - elem.getStartOffset());
                 d.setLinkText(text);
-            } catch (BadLocationException ex) {
+            } catch (BadLocationException ignored) {
             }
+
             d.setVisible(true);
             if (!d.hasUserCancelled()) {
                 replace(elem, d.getHTML());
@@ -212,10 +214,9 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
         else
             return;
 
-        Map attr = getAttribs(elem);
+        Map<String, String> attr = getAttribs(elem);
         ListDialog d = createListDialog();
-        if (d == null)
-            return;
+        if (d == null) return;
 
         d.setListType(type);
         d.setListAttributes(attr);
@@ -223,23 +224,25 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
         d.setVisible(true);
         if (!d.hasUserCancelled()) {
             attr = d.getListAttributes();
-            String html = "";
+            StringBuilder html = new StringBuilder();
+
             if (d.getListType() != type) {
                 HTML.Tag tag = HTML.Tag.UL;
                 if (d.getListType() == ListDialog.ORDERED)
                     tag = HTML.Tag.OL;
-                String txt = HTMLUtils.getElementHTML(elem, false);
-                html = "<" + tag;
-                for (Iterator ee = attr.keySet().iterator(); ee.hasNext(); ) {
-                    Object o = ee.next();
-                    html += " " + o + "=" + attr.get(o);
+
+                html.append("<").append(tag);
+                for (Object o : attr.keySet()) {
+                    html.append(" ").append(o).append("=").append(attr.get(o));
                 }
-                html += ">" + txt + "</" + tag + ">";
+
+                String txt = HTMLUtils.getElementHTML(elem, false);
+                html.append(">").append(txt).append("</").append(tag).append(">");
             } else {
-                html = getElementHTML(elem, attr);
+                html.append(getElementHTML(elem, attr));
             }
 
-            replace(elem, html);
+            replace(elem, html.toString());
         }
 
     }
@@ -247,19 +250,17 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     private void editStyleProps(Element elem) {
         if (elem.getName().equals("p-implied"))
             elem = elem.getParentElement();
-        Map attr = getAttribs(elem);
+
+        Map<String, String> attr = getAttribs(elem);
         ElementStyleDialog d = createStyleDialog();
-        if (d == null)
-            return;
+        if (d == null) return;
 
         d.setLocationRelativeTo(d.getParent());
         d.setStyleAttributes(attr);
         d.setVisible(true);
 
         if (!d.hasUserCancelled()) {
-            System.err.println(elem.getName());
             String html = getElementHTML(elem, d.getStyleAttributes());
-            System.err.println(html);
             replace(elem, html);
         }
     }
@@ -267,11 +268,12 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     protected HyperlinkDialog createLinkDialog() {
         Component c = getCurrentEditor();
         HyperlinkDialog d = null;
+
         if (c != null) {
             Window w = SwingUtilities.getWindowAncestor(c);
-            if (w != null && w instanceof Frame)
+            if (w instanceof Frame)
                 d = new HyperlinkDialog((Frame) w);
-            else if (w != null && w instanceof Dialog)
+            else if (w instanceof Dialog)
                 d = new HyperlinkDialog((Dialog) w);
         }
 
@@ -281,11 +283,12 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     protected ImageDialog createImageDialog() {
         Component c = getCurrentEditor();
         ImageDialog d = null;
+
         if (c != null) {
             Window w = SwingUtilities.getWindowAncestor(c);
-            if (w != null && w instanceof Frame)
+            if (w instanceof Frame)
                 d = new ImageDialog((Frame) w);
-            else if (w != null && w instanceof Dialog)
+            else if (w instanceof Dialog)
                 d = new ImageDialog((Dialog) w);
         }
 
@@ -295,11 +298,12 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     protected TablePropertiesDialog createTablePropertiesDialog() {
         Component c = getCurrentEditor();
         TablePropertiesDialog d = null;
+
         if (c != null) {
             Window w = SwingUtilities.getWindowAncestor(c);
-            if (w != null && w instanceof Frame)
+            if (w instanceof Frame)
                 d = new TablePropertiesDialog((Frame) w);
-            else if (w != null && w instanceof Dialog)
+            else if (w instanceof Dialog)
                 d = new TablePropertiesDialog((Dialog) w);
         }
 
@@ -309,11 +313,12 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     protected ListDialog createListDialog() {
         Component c = getCurrentEditor();
         ListDialog d = null;
+
         if (c != null) {
             Window w = SwingUtilities.getWindowAncestor(c);
-            if (w != null && w instanceof Frame)
+            if (w instanceof Frame)
                 d = new ListDialog((Frame) w);
-            else if (w != null && w instanceof Dialog)
+            else if (w instanceof Dialog)
                 d = new ListDialog((Dialog) w);
         }
 
@@ -323,11 +328,12 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     protected ElementStyleDialog createStyleDialog() {
         Component c = getCurrentEditor();
         ElementStyleDialog d = null;
+        
         if (c != null) {
             Window w = SwingUtilities.getWindowAncestor(c);
-            if (w != null && w instanceof Frame)
+            if (w instanceof Frame)
                 d = new ElementStyleDialog((Frame) w);
-            else if (w != null && w instanceof Dialog)
+            else if (w instanceof Dialog)
                 d = new ElementStyleDialog((Dialog) w);
         }
 
@@ -340,6 +346,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
             document = (HTMLDocument) elem.getDocument();
         } catch (Exception ex) {
             ex.printStackTrace();
+            return;
         }
 
         CompoundUndoManager.beginCompoundEdit(document);
@@ -347,19 +354,17 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
             document.setOuterHTML(elem, html);
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            CompoundUndoManager.endCompoundEdit(document);
         }
-        CompoundUndoManager.endCompoundEdit(document);
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane ed) {
         int t = ELEM_PROPS;
         Element elem = elementAtCaretPosition(ed);
-        if (elem != null) {
-            t = getElementType(elem);
-        }
-
+        if (elem != null) t = getElementType(elem);
         putValue(NAME, PROPS[t]);
-        //Messages.setMnemonic(PROPS[t], this); TODO this won't set the right mnemonic
     }
 
     private int getElementType(Element elem) {
@@ -367,24 +372,19 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
         String name = att.getAttribute(StyleConstants.NameAttribute).toString();
 
         //is it an image?
-        if (name.equals("img"))
-            return IMG_PROPS;
+        if (name.equals("img")) return IMG_PROPS;
 
         //is it a link?
-        for (Enumeration ee = att.getAttributeNames(); ee.hasMoreElements(); )
-            if (ee.nextElement().toString().equals("a"))
-                return LINK_PROPS;
+        for (Enumeration<?> ee = att.getAttributeNames(); ee.hasMoreElements(); ) {
+            if (ee.nextElement().toString().equals("a")) return LINK_PROPS;
+        }
 
         //is it a list?
-        if (HTMLUtils.getParent(elem, HTML.Tag.UL) != null)
-            return LIST_PROPS;
-
-        if (HTMLUtils.getParent(elem, HTML.Tag.OL) != null)
-            return LIST_PROPS;
+        if (HTMLUtils.getParent(elem, HTML.Tag.UL) != null) return LIST_PROPS;
+        if (HTMLUtils.getParent(elem, HTML.Tag.OL) != null) return LIST_PROPS;
 
         //is it a table?
-        if (HTMLUtils.getParent(elem, HTML.Tag.TD) != null)
-            return TABLE_PROPS;
+        if (HTMLUtils.getParent(elem, HTML.Tag.TD) != null) return TABLE_PROPS;
 
         //return the default
         return ELEM_PROPS;
@@ -396,8 +396,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
      * @return the element, or null of the element cant be retrieved
      */
     private Element elementAtCaretPosition(JEditorPane ed) {
-        if (ed == null)
-            return null;
+        if (ed == null) return null;
 
         HTMLDocument doc = (HTMLDocument) ed.getDocument();
         int caret = ed.getCaretPosition();
@@ -410,7 +409,8 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
+    @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
-
+        // Does nothing
     }
 }

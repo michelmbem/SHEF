@@ -81,10 +81,11 @@ public class HTMLFontAction extends HTMLTextEditAction {
         String t = ""; //$NON-NLS-1$
         if (ed.getSelectedText() != null)
             t = ed.getSelectedText();
+
         HTMLFontDialog d = null;
-        if (w != null && w instanceof Frame)
+        if (w instanceof Frame)
             d = new HTMLFontDialog((Frame) w, t);
-        else if (w != null && w instanceof Dialog)
+        else if (w instanceof Dialog)
             d = new HTMLFontDialog((Dialog) w, t);
 
         return d;

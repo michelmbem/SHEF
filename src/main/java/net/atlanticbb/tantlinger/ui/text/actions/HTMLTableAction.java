@@ -28,7 +28,7 @@ public class HTMLTableAction extends HTMLTextEditAction {
 
     public HTMLTableAction() {
         super(i18n.str("table_"));
-        putValue(MNEMONIC_KEY, new Integer(i18n.mnem("table_")));
+        putValue(MNEMONIC_KEY, i18n.mnem("table_"));
 
         putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "table.png"));
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
@@ -36,29 +36,27 @@ public class HTMLTableAction extends HTMLTextEditAction {
 
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
         NewTableDialog dlg = createNewTableDialog(editor);
-        if (dlg == null)
-            return;
+        if (dlg == null) return;
+
         dlg.setLocationRelativeTo(dlg.getParent());
         dlg.setVisible(true);
-        if (dlg.hasUserCancelled())
-            return;
+        if (dlg.hasUserCancelled()) return;
 
         editor.replaceSelection(dlg.getHTML());
     }
 
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         NewTableDialog dlg = createNewTableDialog(editor);
-        if (dlg == null)
-            return;
+        if (dlg == null) return;
+
         dlg.setLocationRelativeTo(dlg.getParent());
         dlg.setVisible(true);
-        if (dlg.hasUserCancelled())
-            return;
+        if (dlg.hasUserCancelled()) return;
 
         HTMLDocument document = (HTMLDocument) editor.getDocument();
         String html = dlg.getHTML();
-
         Element elem = document.getParagraphElement(editor.getCaretPosition());
+
         CompoundUndoManager.beginCompoundEdit(document);
         try {
             if (HTMLUtils.isElementEmpty(elem))
@@ -69,8 +67,9 @@ public class HTMLTableAction extends HTMLTextEditAction {
                 HTMLUtils.insertHTML(html, HTML.Tag.TABLE, editor);
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            CompoundUndoManager.endCompoundEdit(document);
         }
-        CompoundUndoManager.endCompoundEdit(document);
     }
 
     /**
@@ -82,9 +81,10 @@ public class HTMLTableAction extends HTMLTextEditAction {
     private NewTableDialog createNewTableDialog(JTextComponent ed) {
         Window w = SwingUtilities.getWindowAncestor(ed);
         NewTableDialog d = null;
-        if (w != null && w instanceof Frame)
+
+        if (w instanceof Frame)
             d = new NewTableDialog((Frame) w);
-        else if (w != null && w instanceof Dialog)
+        else if (w instanceof Dialog)
             d = new NewTableDialog((Dialog) w);
 
         return d;

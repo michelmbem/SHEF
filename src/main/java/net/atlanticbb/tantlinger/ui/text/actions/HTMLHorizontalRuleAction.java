@@ -25,7 +25,7 @@ public class HTMLHorizontalRuleAction extends HTMLTextEditAction {
 
     public HTMLHorizontalRuleAction() {
         super(i18n.str("horizontal_rule"));
-        putValue(MNEMONIC_KEY, new Integer(i18n.mnem("horizontal_rule")));
+        putValue(MNEMONIC_KEY, i18n.mnem("horizontal_rule"));
         putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "hrule.png"));
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }

@@ -21,7 +21,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -43,15 +42,16 @@ public class HTMLBlockAction extends HTMLTextEditAction {
     public static final int BLOCKQUOTE = 9;
     public static final int OL = 10;
     public static final int UL = 11;
+    protected static final String HEADING = "heading";
     protected static final String[] ELEMENT_TYPES = {
             i18n.str("body_text"), //$NON-NLS-1$
             i18n.str("paragraph"), //$NON-NLS-1$
-            i18n.str("heading") + " 1", //$NON-NLS-1$ //$NON-NLS-2$
-            i18n.str("heading") + " 2", //$NON-NLS-1$ //$NON-NLS-2$
-            i18n.str("heading") + " 3", //$NON-NLS-1$ //$NON-NLS-2$
-            i18n.str("heading") + " 4", //$NON-NLS-1$ //$NON-NLS-2$
-            i18n.str("heading") + " 5", //$NON-NLS-1$ //$NON-NLS-2$
-            i18n.str("heading") + " 6", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 1", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 2", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 3", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 4", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 5", //$NON-NLS-1$ //$NON-NLS-2$
+            i18n.str(HEADING) + " 6", //$NON-NLS-1$ //$NON-NLS-2$
             i18n.str("preformatted"), //$NON-NLS-1$
             i18n.str("blockquote"), //$NON-NLS-1$
             i18n.str("ordered_list"), //$NON-NLS-1$
@@ -81,28 +81,12 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         putValue(NAME, ELEMENT_TYPES[type]);
         putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KEYS[type], InputEvent.ALT_MASK));
-        if (type == P)
-            putValue(MNEMONIC_KEY, i18n.mnem("paragraph")); //$NON-NLS-1$
-        else if (type == PRE)
-            putValue(MNEMONIC_KEY, i18n.mnem("preformatted")); //$NON-NLS-1$
-        else if (type == BLOCKQUOTE)
-            putValue(MNEMONIC_KEY, i18n.mnem("blockquote")); //$NON-NLS-1$
-        else if (type == OL) {
-            putValue(SMALL_ICON,
-                    UIUtils.getIcon(UIUtils.X16, "listordered.png")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, i18n.mnem("ordered_list")); //$NON-NLS-1$
-        } else if (type == UL) {
-            putValue(SMALL_ICON,
-                    UIUtils.getIcon(UIUtils.X16, "listunordered.png")); //$NON-NLS-1$
-            putValue(MNEMONIC_KEY, i18n.mnem("unordered_list")); //$NON-NLS-1$
-        } else {
-            String s = type + ""; //$NON-NLS-1$
-            putValue(Action.MNEMONIC_KEY, (int) s.charAt(0));
-        }
+        putMnemonicAndIcon(type);
         putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_RADIO);
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane ed) {
         HTMLDocument document = (HTMLDocument) ed.getDocument();
         Element elem = document.getParagraphElement(ed.getCaretPosition());
@@ -111,22 +95,22 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         if (elemName.equals("p-implied")) //$NON-NLS-1$
             elemName = elem.getParentElement().getName();
 
-        if (type == DIV && (elemName.equals("div") || elemName.equals("body") || elemName.equals("td"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        {
+        if (type == DIV && (elemName.equals("div") ||
+                elemName.equals("body") || elemName.equals("td"))) {
+            //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             setSelected(true);
         } else if (type == UL) {
             Element listElem = HTMLUtils.getListParent(elem);
-            setSelected(listElem != null && (listElem.getName().equals("ul")));                   //$NON-NLS-1$
+            setSelected(listElem != null && (listElem.getName().equals("ul"))); //$NON-NLS-1$
         } else if (type == OL) {
             Element listElem = HTMLUtils.getListParent(elem);
-            setSelected(listElem != null && (listElem.getName().equals("ol")));  //$NON-NLS-1$
-        } else if (elemName.equals(getTag().toString().toLowerCase())) {
-            setSelected(true);
+            setSelected(listElem != null && (listElem.getName().equals("ol"))); //$NON-NLS-1$
         } else {
-            setSelected(false);
+            setSelected(elemName.equals(getTag().toString().toLowerCase()));
         }
     }
 
+    @Override
     protected void updateSourceContextState(JEditorPane ed) {
         setSelected(false);
     }
@@ -135,6 +119,7 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         String tag = getTag().toString();
         String prefix = "\n<" + tag + ">\n\t"; //$NON-NLS-1$ //$NON-NLS-2$
         String postfix = "\n</" + tag + ">\n"; //$NON-NLS-1$ //$NON-NLS-2$
+
         if (type == OL || type == UL) {
             prefix += "<li>"; //$NON-NLS-1$
             postfix = "</li>" + postfix; //$NON-NLS-1$
@@ -145,33 +130,58 @@ public class HTMLBlockAction extends HTMLTextEditAction {
             editor.replaceSelection(prefix + postfix);
 
             int pos = editor.getCaretPosition() - postfix.length();
-            if (pos >= 0)
-                editor.setCaretPosition(pos);
+            if (pos >= 0) editor.setCaretPosition(pos);
         } else {
             sel = prefix + sel + postfix;
             editor.replaceSelection(sel);
         }
     }
 
-
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         HTMLDocument document = (HTMLDocument) editor.getDocument();
         int caret = editor.getCaretPosition();
+
         CompoundUndoManager.beginCompoundEdit(document);
         try {
-            if (type == OL || type == UL) {
+            if (type == OL || type == UL)
                 insertList(editor, e);
-            } else {
+            else
                 changeBlockType(editor, e);
-            }
+
             editor.setCaretPosition(caret);
         } catch (Exception awwCrap) {
             awwCrap.printStackTrace();
+        } finally {
+            CompoundUndoManager.endCompoundEdit(document);
         }
-
-        CompoundUndoManager.endCompoundEdit(document);
     }
 
+    private void putMnemonicAndIcon(int type) {
+        switch (type) {
+            case P:
+                putValue(MNEMONIC_KEY, i18n.mnem("paragraph")); //$NON-NLS-1$
+                break;
+            case PRE:
+                putValue(MNEMONIC_KEY, i18n.mnem("preformatted")); //$NON-NLS-1$
+                break;
+            case BLOCKQUOTE:
+                putValue(MNEMONIC_KEY, i18n.mnem("blockquote")); //$NON-NLS-1$
+                break;
+            case OL:
+                putValue(SMALL_ICON,
+                        UIUtils.getIcon(UIUtils.X16, "listordered.png")); //$NON-NLS-1$
+                putValue(MNEMONIC_KEY, i18n.mnem("ordered_list")); //$NON-NLS-1$
+                break;
+            case UL:
+                putValue(SMALL_ICON,
+                        UIUtils.getIcon(UIUtils.X16, "listunordered.png")); //$NON-NLS-1$
+                putValue(MNEMONIC_KEY, i18n.mnem("unordered_list")); //$NON-NLS-1$
+                break;
+            default:
+                putValue(Action.MNEMONIC_KEY, (int) String.valueOf(type).charAt(0));//$NON-NLS-1$
+                break;
+        }
+    }
 
     private HTML.Tag getRootTag(Element elem) {
         HTML.Tag root = HTML.Tag.BODY;
@@ -179,13 +189,6 @@ public class HTMLBlockAction extends HTMLTextEditAction {
             root = HTML.Tag.TD;
         return root;
     }
-     
-    /*private String cutOutElement(Element el) throws BadLocationException
-    {
-        String txt = HTMLUtils.getElementHTML(el, false);       
-        HTMLUtils.removeElement(el);        
-        return txt;
-    }*/
 
     private void insertHTML(String html, HTML.Tag tag, HTML.Tag root, ActionEvent e) {
         HTMLEditorKit.InsertHTMLTextAction a =
@@ -228,11 +231,11 @@ public class HTMLBlockAction extends HTMLTextEditAction {
             }
         }
 
-        if (!parentTag.equals(HTML.Tag.LI))//don't allow nested lists
-        {
+        if (!parentTag.equals(HTML.Tag.LI)) {
+            //don't allow nested lists
             changeBlockType(editor, e);
-        } else//is already a list, so turn off list
-        {
+        } else {
+            // is already a list, so turn off list
             HTML.Tag root = getRootTag(elem);
             String txt = HTMLUtils.getElementHTML(elem, false);
             editor.setCaretPosition(elem.getEndOffset());
@@ -245,6 +248,7 @@ public class HTMLBlockAction extends HTMLTextEditAction {
 
     private void changeBlockType(JEditorPane editor, ActionEvent e)
             throws BadLocationException {
+
         HTMLDocument doc = (HTMLDocument) editor.getDocument();
         Element curE = doc.getParagraphElement(editor.getSelectionStart());
         Element endE = doc.getParagraphElement(editor.getSelectionEnd());
@@ -252,46 +256,44 @@ public class HTMLBlockAction extends HTMLTextEditAction {
         Element curTD = HTMLUtils.getParent(curE, HTML.Tag.TD);
         HTML.Tag tag = getTag();
         HTML.Tag rootTag = getRootTag(curE);
-        String html = ""; //$NON-NLS-1$
+        StringBuilder html = new StringBuilder(); //$NON-NLS-1$
 
         if (isListType()) {
-            html = "<" + getTag() + ">"; //$NON-NLS-1$ //$NON-NLS-2$
+            html.append("<").append(getTag()).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
             tag = HTML.Tag.LI;
         }
 
         //a list to hold the elements we want to change
-        List elToRemove = new ArrayList();
+        List<Element> elToRemove = new ArrayList<>();
         elToRemove.add(curE);
 
         while (true) {
-            html += HTMLUtils.createTag(tag,
-                    curE.getAttributes(), HTMLUtils.getElementHTML(curE, false));
-            if (curE.getEndOffset() >= endE.getEndOffset()
-                    || curE.getEndOffset() >= doc.getLength())
-                break;
+            html.append(HTMLUtils.createTag(tag, curE.getAttributes(),
+                    HTMLUtils.getElementHTML(curE, false)));
+            if (curE.getEndOffset() >= endE.getEndOffset() ||
+                    curE.getEndOffset() >= doc.getLength()) break;
             curE = doc.getParagraphElement(curE.getEndOffset() + 1);
             elToRemove.add(curE);
 
             //did we enter a (different) table cell?
             Element ckTD = HTMLUtils.getParent(curE, HTML.Tag.TD);
-            if (ckTD != null && !ckTD.equals(curTD))
-                break;//stop here so we don't mess up the table
+            // stop here so we don't mess up the table
+            if (ckTD != null && !ckTD.equals(curTD)) break;
         }
 
         if (isListType())
-            html += "</" + getTag() + ">"; //$NON-NLS-1$ //$NON-NLS-2$
+            html.append("</").append(getTag()).append(">"); //$NON-NLS-1$ //$NON-NLS-2$
 
         //set the caret to the start of the last selected block element
         editor.setCaretPosition(curE.getStartOffset());
 
         //insert our changed block
         //we insert first and then remove, because of a bug in jdk 6.0
-        insertHTML(html, getTag(), rootTag, e);
+        insertHTML(html.toString(), getTag(), rootTag, e);
 
         //now, remove the elements that were changed.
-        for (Iterator it = elToRemove.iterator(); it.hasNext(); ) {
-            Element c = (Element) it.next();
-            HTMLUtils.removeElement(c);
+        for (Element elem : elToRemove) {
+            HTMLUtils.removeElement(elem);
         }
     }
 
@@ -302,50 +304,22 @@ public class HTMLBlockAction extends HTMLTextEditAction {
     /**
      * Gets the tag
      *
-     * @return
+     * @return an instance of {@link HTML.Tag}
      */
     public HTML.Tag getTag() {
-        HTML.Tag tag = HTML.Tag.DIV;
-
         switch (type) {
-            case P:
-                tag = HTML.Tag.P;
-                break;
-            case H1:
-                tag = HTML.Tag.H1;
-                break;
-            case H2:
-                tag = HTML.Tag.H2;
-                break;
-            case H3:
-                tag = HTML.Tag.H3;
-                break;
-            case H4:
-                tag = HTML.Tag.H4;
-                break;
-            case H5:
-                tag = HTML.Tag.H5;
-                break;
-            case H6:
-                tag = HTML.Tag.H6;
-                break;
-            case PRE:
-                tag = HTML.Tag.PRE;
-                break;
-            case UL:
-                tag = HTML.Tag.UL;
-                break;
-            case OL:
-                tag = HTML.Tag.OL;
-                break;
-            case BLOCKQUOTE:
-                tag = HTML.Tag.BLOCKQUOTE;
-                break;
-            case DIV:
-                tag = HTML.Tag.DIV;
-                break;
+            case P: return HTML.Tag.P;
+            case H1: return HTML.Tag.H1;
+            case H2: return HTML.Tag.H2;
+            case H3: return HTML.Tag.H3;
+            case H4: return HTML.Tag.H4;
+            case H5: return HTML.Tag.H5;
+            case H6: return HTML.Tag.H6;
+            case PRE: return HTML.Tag.PRE;
+            case UL: return HTML.Tag.UL;
+            case OL: return HTML.Tag.OL;
+            case BLOCKQUOTE: return HTML.Tag.BLOCKQUOTE;
+            default: return HTML.Tag.DIV;
         }
-
-        return tag;
     }
 }

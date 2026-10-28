@@ -33,11 +33,9 @@ public class HTMLImageAction extends HTMLTextEditAction {
 
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
         ImageDialog d = createDialog(editor);
-        //d.setSize(300, 300);
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);
-        if (d.hasUserCancelled())
-            return;
+        if (d.hasUserCancelled()) return;
 
         editor.requestFocusInWindow();
         editor.replaceSelection(d.getHTML());
@@ -45,11 +43,9 @@ public class HTMLImageAction extends HTMLTextEditAction {
 
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         ImageDialog d = createDialog(editor);
-        //d.setSize(300, 300);
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);
-        if (d.hasUserCancelled())
-            return;
+        if (d.hasUserCancelled()) return;
 
         String tagText = d.getHTML();
         if (editor.getCaretPosition() == editor.getDocument().getLength())
@@ -67,11 +63,11 @@ public class HTMLImageAction extends HTMLTextEditAction {
     protected ImageDialog createDialog(JTextComponent ed) {
         Window w = SwingUtilities.getWindowAncestor(ed);
         ImageDialog d = null;
-        if (w != null && w instanceof Frame)
-            d = new ImageDialog((Frame) w);
-        else if (w != null && w instanceof Dialog)
-            d = new ImageDialog((Dialog) w);
 
+        if (w instanceof Frame)
+            d = new ImageDialog((Frame) w);
+        else if (w instanceof Dialog)
+            d = new ImageDialog((Dialog) w);
 
         return d;
     }

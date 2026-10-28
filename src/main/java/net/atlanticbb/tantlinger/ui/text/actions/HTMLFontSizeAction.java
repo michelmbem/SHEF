@@ -28,18 +28,17 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     public static final int LARGE = 4;
     public static final int XLARGE = 5;
     public static final int XXLARGE = 6;
-    public static final int FONT_SIZES[] = {8, 10, 12, 14, 18, 24, 36/*28*/};
+    protected static final int[] FONT_SIZES = { 8, 10, 12, 14, 18, 24, 36 };
     private static final long serialVersionUID = 1L;
     private static final String SML = i18n.str("small");
     private static final String MED = i18n.str("medium");
     private static final String LRG = i18n.str("large");
-    public static final String SIZES[] =
-            {
-                    "xx-" + SML, "x-" + SML, SML, MED,
-                    LRG, "x-" + LRG, "xx-" + LRG
-            };
+    protected static final String[] SIZES = {
+            "xx-" + SML, "x-" + SML, SML, MED,
+            LRG, "x-" + LRG, "xx-" + LRG
+    };
 
-    private int size;
+    private final int size;
 
     /**
      * Creates a new HTMLFontSizeAction
@@ -59,35 +58,32 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     }
 
     protected void updateWysiwygContextState(JEditorPane ed) {
-        /*HTMLDocument document = (HTMLDocument)ed.getDocument();        
-        int caret = (ed.getCaretPosition() > 0) 
-            ? (ed.getCaretPosition() - 1) : ed.getCaretPosition();
-               
-        AttributeSet at = document.getCharacterElement(caret).getAttributes();*/
         AttributeSet at = HTMLUtils.getCharacterAttributes(ed);
         if (at.isDefined(StyleConstants.FontSize)) {
             setSelected(at.containsAttribute(
-                    StyleConstants.FontSize, new Integer(FONT_SIZES[size])));
+                    StyleConstants.FontSize, FONT_SIZES[size]));
         } else {
             setSelected(size == MEDIUM);
         }
     }
 
+    @Override
     protected void updateSourceContextState(JEditorPane ed) {
         setSelected(false);
     }
 
 
+    @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
         String prefix = "<font size=" + (size + 1) + ">";
         String postfix = "</font>";
         String sel = editor.getSelectedText();
+
         if (sel == null) {
             editor.replaceSelection(prefix + postfix);
 
             int pos = editor.getCaretPosition() - postfix.length();
-            if (pos >= 0)
-                editor.setCaretPosition(pos);
+            if (pos >= 0) editor.setCaretPosition(pos);
         } else {
             sel = prefix + sel + postfix;
             editor.replaceSelection(sel);
@@ -97,6 +93,7 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     /* (non-Javadoc)
      * @see com.bob.blah.HTMLTextEditAction#wysiwygEditPerformed(java.awt.event.ActionEvent, javax.swing.JTextPane)
      */
+    @Override
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         Action a = new StyledEditorKit.FontSizeAction(SIZES[size], FONT_SIZES[size]);
         a.actionPerformed(e);

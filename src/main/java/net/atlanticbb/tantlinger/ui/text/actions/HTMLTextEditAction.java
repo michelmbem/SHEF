@@ -34,7 +34,7 @@ public abstract class HTMLTextEditAction extends DefaultAction {
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
-    public void execute(ActionEvent e) throws Exception {
+    public void execute(ActionEvent e) {
         if (getEditMode() == WYSIWYG)
             wysiwygEditPerformed(e, getCurrentEditor());
         else if (getEditMode() == SOURCE)
@@ -56,11 +56,6 @@ public abstract class HTMLTextEditAction extends DefaultAction {
         }
 
         return null;
-    }
-
-    @Override
-    protected void actionPerformedCatch(Throwable t) {
-        t.printStackTrace();
     }
 
     @Override

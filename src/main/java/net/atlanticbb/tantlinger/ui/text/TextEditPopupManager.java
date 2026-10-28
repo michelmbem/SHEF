@@ -57,8 +57,8 @@ public class TextEditPopupManager {
     private final Action redo = new RedoAction();
 
     // maintains a list of the currently registered JTextComponents
-    private final List<WeakReference<JTextComponent>> textComps = new Vector<>();
-    private final List<UndoManager> undoers = new Vector<>();
+    private final List<WeakReference<JTextComponent>> textComps = new ArrayList<>();
+    private final List<UndoManager> undoers = new ArrayList<>();
 
     private JTextComponent focusedComp;// the registered JTextComponent that is
     // focused

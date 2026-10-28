@@ -12,7 +12,12 @@ import org.bushe.swing.action.ActionList;
  * @author Bob Tantlinger
  *
  */
-public class HTMLEditorActionFactory {
+public final class HTMLEditorActionFactory {
+
+    private HTMLEditorActionFactory() {
+        /* This utility class should not be instantiated */
+    }
+
     public static ActionList createEditActionList() {
         ActionList list = new ActionList("edit");
         list.add(CompoundUndoManager.UNDO);
@@ -21,11 +26,8 @@ public class HTMLEditorActionFactory {
         list.add(new CutAction());
         list.add(new CopyAction());
         list.add(new PasteAction());
-        //list.add(new PasteFormattedAction());
         list.add(null);
         list.add(new SelectAllAction());
-        //list.add(new IndentAction(IndentAction.INDENT));
-        //list.add(new IndentAction(IndentAction.OUTDENT));
         return list;
     }
 
@@ -42,27 +44,22 @@ public class HTMLEditorActionFactory {
         list.add(new HTMLInlineAction(HTMLInlineAction.SUB));
         list.add(new HTMLInlineAction(HTMLInlineAction.SUP));
         list.add(new HTMLInlineAction(HTMLInlineAction.STRIKE));
-
         return list;
     }
 
     public static ActionList createAlignActionList() {
         ActionList list = new ActionList("align");
-        String[] t = HTMLAlignAction.ALIGNMENTS;
-        for (int i = 0; i < t.length; i++) {
+        for (int i = 0; i < HTMLAlignAction.ALIGNMENTS.length; i++) {
             list.add(new HTMLAlignAction(i));
         }
-
         return list;
     }
 
     public static ActionList createFontSizeActionList() {
         ActionList list = new ActionList("font-size");
-        int[] t = HTMLFontSizeAction.FONT_SIZES;
-        for (int i = 0; i < t.length; i++) {
+        for (int i = 0; i < HTMLFontSizeAction.FONT_SIZES.length; i++) {
             list.add(new HTMLFontSizeAction(i));
         }
-
         return list;
     }
 
@@ -80,7 +77,6 @@ public class HTMLEditorActionFactory {
         list.add(new HTMLBlockAction(HTMLBlockAction.H4));
         list.add(new HTMLBlockAction(HTMLBlockAction.H5));
         list.add(new HTMLBlockAction(HTMLBlockAction.H6));
-
         return list;
     }
 
@@ -88,7 +84,6 @@ public class HTMLEditorActionFactory {
         ActionList list = new ActionList("list");
         list.add(new HTMLBlockAction(HTMLBlockAction.UL));
         list.add(new HTMLBlockAction(HTMLBlockAction.OL));
-
         return list;
     }
 

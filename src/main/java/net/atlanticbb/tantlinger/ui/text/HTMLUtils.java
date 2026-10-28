@@ -702,7 +702,7 @@ public final class HTMLUtils {
      * @param atts
      * @return
      */
-    public static Map tagAttribsToMap(String atts) {
+    public static Map<String, String> tagAttribsToMap(String atts) {
         Map<String, String> attribs = new HashMap<>();
         StringTokenizer st = new StringTokenizer(atts.trim(), " ");
         String lastAtt = null;
