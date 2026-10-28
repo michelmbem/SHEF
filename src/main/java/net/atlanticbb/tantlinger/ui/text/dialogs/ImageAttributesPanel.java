@@ -17,7 +17,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
 
     private static final String ALIGNMENTS[] =
             {
-                    "top", "middle", "bottom", "left", "right" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    "top", "middle", "bottom", "left", "right"
             };
 
     private JLabel imgUrlLabel = null;
@@ -51,26 +51,26 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     }
 
     public void updateComponentsFromAttribs() {
-        if (attribs.containsKey("src")) //$NON-NLS-1$
-            imgUrlField.setText(attribs.get("src").toString()); //$NON-NLS-1$
+        if (attribs.containsKey("src"))
+            imgUrlField.setText(attribs.get("src").toString());
 
-        if (attribs.containsKey("alt")) //$NON-NLS-1$
+        if (attribs.containsKey("alt"))
         {
             altTextCB.setSelected(true);
             altTextField.setEditable(true);
-            altTextField.setText(attribs.get("alt").toString()); //$NON-NLS-1$
+            altTextField.setText(attribs.get("alt").toString());
         } else {
             altTextCB.setSelected(false);
             altTextField.setEditable(false);
         }
 
-        if (attribs.containsKey("width")) //$NON-NLS-1$
+        if (attribs.containsKey("width"))
         {
             widthCB.setSelected(true);
             widthField.setEnabled(true);
             try {
                 widthField.getModel().setValue(
-                        new Integer(attribs.get("width").toString())); //$NON-NLS-1$
+                        new Integer(attribs.get("width").toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -79,13 +79,13 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             widthField.setEnabled(false);
         }
 
-        if (attribs.containsKey("height")) //$NON-NLS-1$
+        if (attribs.containsKey("height"))
         {
             heightCB.setSelected(true);
             heightField.setEnabled(true);
             try {
                 heightField.getModel().setValue(
-                        new Integer(attribs.get("height").toString())); //$NON-NLS-1$
+                        new Integer(attribs.get("height").toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -94,13 +94,13 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             heightField.setEnabled(false);
         }
 
-        if (attribs.containsKey("hspace")) //$NON-NLS-1$
+        if (attribs.containsKey("hspace"))
         {
             hSpaceCB.setSelected(true);
             hSpaceField.setEnabled(true);
             try {
                 hSpaceField.getModel().setValue(
-                        new Integer(attribs.get("hspace").toString())); //$NON-NLS-1$
+                        new Integer(attribs.get("hspace").toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -109,13 +109,13 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             hSpaceField.setEnabled(false);
         }
 
-        if (attribs.containsKey("vspace")) //$NON-NLS-1$
+        if (attribs.containsKey("vspace"))
         {
             vSpaceCB.setSelected(true);
             vSpaceField.setEnabled(true);
             try {
                 vSpaceField.getModel().setValue(
-                        new Integer(attribs.get("vspace").toString())); //$NON-NLS-1$
+                        new Integer(attribs.get("vspace").toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -124,13 +124,13 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             vSpaceField.setEnabled(false);
         }
 
-        if (attribs.containsKey("border")) //$NON-NLS-1$
+        if (attribs.containsKey("border"))
         {
             borderCB.setSelected(true);
             borderField.setEnabled(true);
             try {
                 borderField.getModel().setValue(
-                        new Integer(attribs.get("border").toString())); //$NON-NLS-1$
+                        new Integer(attribs.get("border").toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -139,11 +139,11 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             borderField.setEnabled(false);
         }
 
-        if (attribs.containsKey("align")) //$NON-NLS-1$
+        if (attribs.containsKey("align"))
         {
             alignCB.setSelected(true);
             alignCombo.setEnabled(true);
-            alignCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
+            alignCombo.setSelectedItem(attribs.get("align"));
         } else {
             alignCB.setSelected(false);
             alignCombo.setEnabled(false);
@@ -152,42 +152,42 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
 
 
     public void updateAttribsFromComponents() {
-        attribs.put("src", imgUrlField.getText()); //$NON-NLS-1$
+        attribs.put("src", imgUrlField.getText());
 
         if (altTextCB.isSelected())
-            attribs.put("alt", altTextField.getText()); //$NON-NLS-1$
+            attribs.put("alt", altTextField.getText());
         else
-            attribs.remove("alt"); //$NON-NLS-1$
+            attribs.remove("alt");
 
         if (widthCB.isSelected())
-            attribs.put("width", widthField.getModel().getValue().toString()); //$NON-NLS-1$
+            attribs.put("width", widthField.getModel().getValue().toString());
         else
-            attribs.remove("width"); //$NON-NLS-1$
+            attribs.remove("width");
 
         if (heightCB.isSelected())
-            attribs.put("height", heightField.getModel().getValue().toString()); //$NON-NLS-1$
+            attribs.put("height", heightField.getModel().getValue().toString());
         else
-            attribs.remove("height"); //$NON-NLS-1$
+            attribs.remove("height");
 
         if (vSpaceCB.isSelected())
-            attribs.put("vspace", vSpaceField.getModel().getValue().toString()); //$NON-NLS-1$
+            attribs.put("vspace", vSpaceField.getModel().getValue().toString());
         else
-            attribs.remove("vspace"); //$NON-NLS-1$
+            attribs.remove("vspace");
 
         if (hSpaceCB.isSelected())
-            attribs.put("hspace", hSpaceField.getModel().getValue().toString()); //$NON-NLS-1$
+            attribs.put("hspace", hSpaceField.getModel().getValue().toString());
         else
-            attribs.remove("hspace"); //$NON-NLS-1$
+            attribs.remove("hspace");
 
         if (borderCB.isSelected())
-            attribs.put("border", borderField.getModel().getValue().toString()); //$NON-NLS-1$
+            attribs.put("border", borderField.getModel().getValue().toString());
         else
-            attribs.remove("border"); //$NON-NLS-1$
+            attribs.remove("border");
 
         if (alignCB.isSelected())
-            attribs.put("align", alignCombo.getSelectedItem().toString()); //$NON-NLS-1$
+            attribs.put("align", alignCombo.getSelectedItem().toString());
         else
-            attribs.remove("align"); //$NON-NLS-1$
+            attribs.remove("align");
     }
 
     /**
@@ -197,85 +197,83 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
      */
     private void initialize() {
 
-        GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-        gridBagConstraints22.gridx = 2;
-        gridBagConstraints22.gridwidth = 2;
-        gridBagConstraints22.anchor = java.awt.GridBagConstraints.CENTER;
-        gridBagConstraints22.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints22.weighty = 1.0;
-        gridBagConstraints22.gridy = 0;
-        GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-        gridBagConstraints21.gridx = 0;
-        gridBagConstraints21.gridwidth = 2;
-        gridBagConstraints21.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints21.weighty = 1.0;
-        gridBagConstraints21.gridy = 3;
-        GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-        gridBagConstraints16.gridx = 0;
-        gridBagConstraints16.gridwidth = 2;
-        gridBagConstraints16.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints16.gridy = 2;
-        GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-        gridBagConstraints15.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints15.gridy = 1;
-        gridBagConstraints15.weightx = 1.0;
-        gridBagConstraints15.insets = new java.awt.Insets(0, 0, 10, 0);
-        gridBagConstraints15.gridwidth = 1;
-        gridBagConstraints15.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints15.gridx = 1;
-        GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-        gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints14.gridy = 0;
-        gridBagConstraints14.weightx = 1.0;
-        gridBagConstraints14.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints14.gridwidth = 1;
-        gridBagConstraints14.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints14.gridx = 1;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.insets = new java.awt.Insets(0, 0, 10, 5);
-        gridBagConstraints1.gridy = 1;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        gridBagConstraints.gridy = 0;
+        GridBagConstraints gbc22 = new GridBagConstraints();
+        gbc22.gridx = 2;
+        gbc22.gridwidth = 2;
+        gbc22.anchor = GridBagConstraints.CENTER;
+        gbc22.fill = GridBagConstraints.HORIZONTAL;
+        gbc22.weighty = 1.0;
+        gbc22.gridy = 0;
+        GridBagConstraints gbc21 = new GridBagConstraints();
+        gbc21.gridx = 0;
+        gbc21.gridwidth = 2;
+        gbc21.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc21.fill = GridBagConstraints.HORIZONTAL;
+        gbc21.weighty = 1.0;
+        gbc21.gridy = 3;
+        GridBagConstraints gbc16 = new GridBagConstraints();
+        gbc16.gridx = 0;
+        gbc16.gridwidth = 2;
+        gbc16.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc16.gridy = 2;
+        GridBagConstraints gbc15 = new GridBagConstraints();
+        gbc15.fill = GridBagConstraints.HORIZONTAL;
+        gbc15.gridy = 1;
+        gbc15.weightx = 1.0;
+        gbc15.insets = new Insets(0, 0, 10, 0);
+        gbc15.gridwidth = 1;
+        gbc15.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc15.gridx = 1;
+        GridBagConstraints gbc14 = new GridBagConstraints();
+        gbc14.fill = GridBagConstraints.HORIZONTAL;
+        gbc14.gridy = 0;
+        gbc14.weightx = 1.0;
+        gbc14.insets = new Insets(0, 0, 5, 0);
+        gbc14.gridwidth = 1;
+        gbc14.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc14.gridx = 1;
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 0;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.insets = new Insets(0, 0, 10, 5);
+        gbc1.gridy = 1;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.insets = new Insets(0, 0, 5, 5);
+        gbc.gridy = 0;
         imgUrlLabel = new JLabel();
-        imgUrlLabel.setText(i18n.str("image_url")); //$NON-NLS-1$
+        imgUrlLabel.setText(i18n.str("image_url"));
 
         selectFileButton = new JButton("Select Image File...");
-        selectFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        selectFileButton.addActionListener(evt -> {
 
-                JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
-                File selected;
-                chooser.setDialogTitle("Select Image File");
-                chooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
-                chooser.setAcceptAllFileFilterUsed(false);
-                int rc = chooser.showDialog(ImageAttributesPanel.this, "Select");
-                if (rc == JFileChooser.APPROVE_OPTION) {
-                    selected = chooser.getSelectedFile();
-                    if (selected == null)
-                        return;
+            JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+            File selected;
+            chooser.setDialogTitle("Select Image File");
+            chooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
+            chooser.setAcceptAllFileFilterUsed(false);
+            int rc = chooser.showDialog(ImageAttributesPanel.this, "Select");
+            if (rc == JFileChooser.APPROVE_OPTION) {
+                selected = chooser.getSelectedFile();
+                if (selected == null)
+                    return;
 
-                    imgUrlField.setText("file:" + selected.getAbsolutePath());
-
-                }
+                imgUrlField.setText("file:" + selected.getAbsolutePath());
 
             }
+
         });
 
         this.setLayout(new GridBagLayout());
-        //this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Image Properties", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5,5,5,5)));
-        this.add(imgUrlLabel, gridBagConstraints);
-        this.add(selectFileButton, gridBagConstraints22);
-        this.add(getAltTextCB(), gridBagConstraints1);
-        this.add(getImgUrlField(), gridBagConstraints14);
-        this.add(getAltTextField(), gridBagConstraints15);
-        this.add(getAttribPanel(), gridBagConstraints16);
-        this.add(getSpacerPanel(), gridBagConstraints21);
+        //this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, "Image Properties", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createEmptyBorder(5,5,5,5)));
+        this.add(imgUrlLabel, gbc);
+        this.add(selectFileButton, gbc22);
+        this.add(getAltTextCB(), gbc1);
+        this.add(getImgUrlField(), gbc14);
+        this.add(getAltTextField(), gbc15);
+        this.add(getAttribPanel(), gbc16);
+        this.add(getSpacerPanel(), gbc21);
         this.setSize(700, 300);
 
         TextEditPopupManager popupMan = TextEditPopupManager.getInstance();
@@ -293,7 +291,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getAltTextCB() {
         if (altTextCB == null) {
             altTextCB = new JCheckBox();
-            altTextCB.setText(i18n.str("alt_text")); //$NON-NLS-1$
+            altTextCB.setText(i18n.str("alt_text"));
             altTextCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     altTextField.setEditable(altTextCB.isSelected());
@@ -311,7 +309,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getWidthCB() {
         if (widthCB == null) {
             widthCB = new JCheckBox();
-            widthCB.setText(i18n.str("width")); //$NON-NLS-1$
+            widthCB.setText(i18n.str("width"));
             widthCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     widthField.setEnabled(widthCB.isSelected());
@@ -329,7 +327,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getHeightCB() {
         if (heightCB == null) {
             heightCB = new JCheckBox();
-            heightCB.setText(i18n.str("height")); //$NON-NLS-1$
+            heightCB.setText(i18n.str("height"));
             heightCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     heightField.setEnabled(heightCB.isSelected());
@@ -347,7 +345,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getBorderCB() {
         if (borderCB == null) {
             borderCB = new JCheckBox();
-            borderCB.setText(i18n.str("border")); //$NON-NLS-1$
+            borderCB.setText(i18n.str("border"));
             borderCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     borderField.setEnabled(borderCB.isSelected());
@@ -404,7 +402,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getVSpaceCB() {
         if (vSpaceCB == null) {
             vSpaceCB = new JCheckBox();
-            vSpaceCB.setText(i18n.str("vspace")); //$NON-NLS-1$
+            vSpaceCB.setText(i18n.str("vspace"));
             vSpaceCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     vSpaceField.setEnabled(vSpaceCB.isSelected());
@@ -422,7 +420,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getHSpaceCB() {
         if (hSpaceCB == null) {
             hSpaceCB = new JCheckBox();
-            hSpaceCB.setText(i18n.str("hspace")); //$NON-NLS-1$
+            hSpaceCB.setText(i18n.str("hspace"));
             hSpaceCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     hSpaceField.setEnabled(hSpaceCB.isSelected());
@@ -440,7 +438,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getAlignCB() {
         if (alignCB == null) {
             alignCB = new JCheckBox();
-            alignCB.setText(i18n.str("align")); //$NON-NLS-1$
+            alignCB.setText(i18n.str("align"));
             alignCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     alignCombo.setEnabled(alignCB.isSelected());
@@ -519,92 +517,92 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
      */
     private JPanel getAttribPanel() {
         if (attribPanel == null) {
-            GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-            gridBagConstraints13.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints13.insets = new Insets(0, 0, 10, 0);
-            gridBagConstraints13.gridx = 3;
-            gridBagConstraints13.gridy = 2;
-            gridBagConstraints13.weightx = 1.0;
-            gridBagConstraints13.fill = java.awt.GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-            gridBagConstraints12.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints12.insets = new java.awt.Insets(0, 0, 10, 0);
-            gridBagConstraints12.gridx = 3;
-            gridBagConstraints12.gridy = 1;
-            gridBagConstraints12.weightx = 0.0;
-            gridBagConstraints12.fill = java.awt.GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints11.insets = new java.awt.Insets(0, 0, 5, 0);
-            gridBagConstraints11.gridx = 3;
-            gridBagConstraints11.gridy = 0;
-            gridBagConstraints11.weightx = 0.0;
-            gridBagConstraints11.fill = java.awt.GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-            gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints10.gridx = 2;
-            gridBagConstraints10.gridy = 2;
-            gridBagConstraints10.insets = new java.awt.Insets(0, 0, 10, 5);
-            GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-            gridBagConstraints9.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints9.gridx = 2;
-            gridBagConstraints9.gridy = 1;
-            gridBagConstraints9.insets = new java.awt.Insets(0, 0, 10, 5);
-            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
-            gridBagConstraints8.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints8.gridx = 2;
-            gridBagConstraints8.gridy = 0;
-            gridBagConstraints8.insets = new java.awt.Insets(0, 0, 5, 5);
-            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints7.insets = new java.awt.Insets(0, 0, 10, 10);
-            gridBagConstraints7.gridx = 1;
-            gridBagConstraints7.gridy = 2;
-            gridBagConstraints7.weightx = 0.0;
-            gridBagConstraints7.fill = java.awt.GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-            gridBagConstraints6.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints6.insets = new java.awt.Insets(0, 0, 10, 10);
-            gridBagConstraints6.gridx = 1;
-            gridBagConstraints6.gridy = 1;
-            gridBagConstraints6.weightx = 0.0;
-            gridBagConstraints6.fill = java.awt.GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.anchor = GridBagConstraints.WEST;
-            gridBagConstraints5.insets = new Insets(0, 0, 5, 10);
-            gridBagConstraints5.gridx = 1;
-            gridBagConstraints5.gridy = 0;
-            gridBagConstraints5.weightx = 0.0;
-            gridBagConstraints5.fill = GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints4.gridx = 0;
-            gridBagConstraints4.gridy = 2;
-            gridBagConstraints4.insets = new java.awt.Insets(0, 0, 10, 5);
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints3.gridx = 0;
-            gridBagConstraints3.gridy = 1;
-            gridBagConstraints3.insets = new java.awt.Insets(0, 0, 10, 5);
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints2.gridx = 0;
-            gridBagConstraints2.gridy = 0;
-            gridBagConstraints2.insets = new java.awt.Insets(0, 0, 5, 5);
+            GridBagConstraints gbc13 = new GridBagConstraints();
+            gbc13.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc13.insets = new Insets(0, 0, 10, 0);
+            gbc13.gridx = 3;
+            gbc13.gridy = 2;
+            gbc13.weightx = 1.0;
+            gbc13.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc12 = new GridBagConstraints();
+            gbc12.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc12.insets = new Insets(0, 0, 10, 0);
+            gbc12.gridx = 3;
+            gbc12.gridy = 1;
+            gbc12.weightx = 0.0;
+            gbc12.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc11 = new GridBagConstraints();
+            gbc11.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc11.insets = new Insets(0, 0, 5, 0);
+            gbc11.gridx = 3;
+            gbc11.gridy = 0;
+            gbc11.weightx = 0.0;
+            gbc11.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc10 = new GridBagConstraints();
+            gbc10.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc10.gridx = 2;
+            gbc10.gridy = 2;
+            gbc10.insets = new Insets(0, 0, 10, 5);
+            GridBagConstraints gbc9 = new GridBagConstraints();
+            gbc9.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc9.gridx = 2;
+            gbc9.gridy = 1;
+            gbc9.insets = new Insets(0, 0, 10, 5);
+            GridBagConstraints gbc8 = new GridBagConstraints();
+            gbc8.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc8.gridx = 2;
+            gbc8.gridy = 0;
+            gbc8.insets = new Insets(0, 0, 5, 5);
+            GridBagConstraints gbc7 = new GridBagConstraints();
+            gbc7.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc7.insets = new Insets(0, 0, 10, 10);
+            gbc7.gridx = 1;
+            gbc7.gridy = 2;
+            gbc7.weightx = 0.0;
+            gbc7.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc6 = new GridBagConstraints();
+            gbc6.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc6.insets = new Insets(0, 0, 10, 10);
+            gbc6.gridx = 1;
+            gbc6.gridy = 1;
+            gbc6.weightx = 0.0;
+            gbc6.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc5 = new GridBagConstraints();
+            gbc5.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc5.insets = new Insets(0, 0, 5, 10);
+            gbc5.gridx = 1;
+            gbc5.gridy = 0;
+            gbc5.weightx = 0.0;
+            gbc5.fill = GridBagConstraints.NONE;
+            GridBagConstraints gbc4 = new GridBagConstraints();
+            gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc4.gridx = 0;
+            gbc4.gridy = 2;
+            gbc4.insets = new Insets(0, 0, 10, 5);
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc3.gridx = 0;
+            gbc3.gridy = 1;
+            gbc3.insets = new Insets(0, 0, 10, 5);
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc2.gridx = 0;
+            gbc2.gridy = 0;
+            gbc2.insets = new Insets(0, 0, 5, 5);
             attribPanel = new JPanel();
             attribPanel.setLayout(new GridBagLayout());
-            attribPanel.add(getWidthCB(), gridBagConstraints2);
-            attribPanel.add(getHeightCB(), gridBagConstraints3);
-            attribPanel.add(getBorderCB(), gridBagConstraints4);
-            attribPanel.add(getWidthField(), gridBagConstraints5);
-            attribPanel.add(getHeightField(), gridBagConstraints6);
-            attribPanel.add(getBorderField(), gridBagConstraints7);
-            attribPanel.add(getVSpaceCB(), gridBagConstraints8);
-            attribPanel.add(getHSpaceCB(), gridBagConstraints9);
-            attribPanel.add(getAlignCB(), gridBagConstraints10);
-            attribPanel.add(getVSpaceField(), gridBagConstraints11);
-            attribPanel.add(getHSpaceField(), gridBagConstraints12);
-            attribPanel.add(getAlignCombo(), gridBagConstraints13);
+            attribPanel.add(getWidthCB(), gbc2);
+            attribPanel.add(getHeightCB(), gbc3);
+            attribPanel.add(getBorderCB(), gbc4);
+            attribPanel.add(getWidthField(), gbc5);
+            attribPanel.add(getHeightField(), gbc6);
+            attribPanel.add(getBorderField(), gbc7);
+            attribPanel.add(getVSpaceCB(), gbc8);
+            attribPanel.add(getHSpaceCB(), gbc9);
+            attribPanel.add(getAlignCB(), gbc10);
+            attribPanel.add(getVSpaceField(), gbc11);
+            attribPanel.add(getHSpaceField(), gbc12);
+            attribPanel.add(getAlignCombo(), gbc13);
         }
         return attribPanel;
     }

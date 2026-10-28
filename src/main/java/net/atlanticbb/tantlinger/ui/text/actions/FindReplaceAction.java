@@ -21,10 +21,10 @@ public class FindReplaceAction extends BasicEditAction {
         super(null);
 
         if (isReplace) {
-            putValue(NAME, i18n.str("replace_")); //$NON-NLS-1$
+            putValue(NAME, i18n.str("replace_"));
             putValue(MNEMONIC_KEY, i18n.mnem("replace_"));
         } else {
-            putValue(NAME, i18n.str("find_")); //$NON-NLS-1$
+            putValue(NAME, i18n.str("find_"));
             putValue(MNEMONIC_KEY, i18n.mnem("find_"));
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(
                     KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));

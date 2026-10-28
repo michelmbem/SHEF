@@ -43,7 +43,7 @@ public class TextFinderDialog extends JDialog {
     public static final int REPLACE = 1;
     private static final long serialVersionUID = 1L;
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    private static final String TITLE = i18n.str("find_and_replace"); //$NON-NLS-1$
+    private static final String TITLE = i18n.str("find_and_replace");
     protected Frame owner;
     protected JTextComponent monitor;
     protected JTabbedPane tb;
@@ -517,7 +517,7 @@ public class TextFinderDialog extends JDialog {
                     h = d.height;
                     return new Dimension(w * v.size() - m_hGap, h);
             }
-            throw new IllegalArgumentException("Illegal type " + type); //$NON-NLS-1$
+            throw new IllegalArgumentException("Illegal type " + type);
         }
 
         public Dimension minimumLayoutSize(Container parent) {
@@ -589,7 +589,7 @@ public class TextFinderDialog extends JDialog {
                     }
                     return y + d.height;
             }
-            throw new IllegalArgumentException("Illegal type " + type); //$NON-NLS-1$
+            throw new IllegalArgumentException("Illegal type " + type);
         }
 
         public int getHGap() {

@@ -17,8 +17,8 @@ public class SpecialCharAction extends BasicEditAction {
     SpecialCharDialog dialog;
 
     public SpecialCharAction() {
-        super(i18n.str("special_character_"));  //$NON-NLS-1$
-        putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "copyright.png")); //$NON-NLS-1$
+        super(i18n.str("special_character_"));
+        putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "copyright.png"));
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
@@ -40,6 +40,7 @@ public class SpecialCharAction extends BasicEditAction {
         }
     }
 
+    @Override
     protected void updateContextState(JEditorPane editor) {
         if (dialog != null) {
             dialog.setInsertEntity(getEditMode() == SOURCE);

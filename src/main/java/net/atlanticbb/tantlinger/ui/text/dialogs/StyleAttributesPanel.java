@@ -38,41 +38,41 @@ public class StyleAttributesPanel extends HTMLAttributeEditorPanel {
      *
      */
     private void initialize() {
-        GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-        gridBagConstraints4.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints4.gridy = 1;
-        gridBagConstraints4.weightx = 1.0;
-        gridBagConstraints4.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints4.gridx = 1;
-        GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-        gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints3.gridy = 0;
-        gridBagConstraints3.weightx = 1.0;
-        gridBagConstraints3.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints3.weighty = 0.0;
-        gridBagConstraints3.gridx = 1;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.insets = new java.awt.Insets(0, 0, 5, 5);
-        gridBagConstraints1.gridy = 1;
+        GridBagConstraints gbc4 = new GridBagConstraints();
+        gbc4.fill = GridBagConstraints.HORIZONTAL;
+        gbc4.gridy = 1;
+        gbc4.weightx = 1.0;
+        gbc4.insets = new Insets(0, 0, 5, 0);
+        gbc4.gridx = 1;
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.fill = GridBagConstraints.HORIZONTAL;
+        gbc3.gridy = 0;
+        gbc3.weightx = 1.0;
+        gbc3.insets = new Insets(0, 0, 5, 0);
+        gbc3.weighty = 0.0;
+        gbc3.gridx = 1;
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 0;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.insets = new Insets(0, 0, 5, 5);
+        gbc1.gridy = 1;
         idLabel = new JLabel();
-        idLabel.setText(i18n.str("id")); //$NON-NLS-1$
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        gridBagConstraints.gridy = 0;
+        idLabel.setText(i18n.str("id"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.insets = new Insets(0, 0, 5, 5);
+        gbc.gridy = 0;
         classLabel = new JLabel();
-        classLabel.setText(i18n.str("class")); //$NON-NLS-1$
+        classLabel.setText(i18n.str("class"));
         this.setLayout(new GridBagLayout());
-        this.setSize(new java.awt.Dimension(210, 60));
-        this.setPreferredSize(new java.awt.Dimension(210, 60));
-        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        this.add(classLabel, gridBagConstraints);
-        this.add(idLabel, gridBagConstraints1);
-        this.add(getClassField(), gridBagConstraints3);
-        this.add(getIdField(), gridBagConstraints4);
+        this.setSize(new Dimension(210, 60));
+        this.setPreferredSize(new Dimension(210, 60));
+        this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        this.add(classLabel, gbc);
+        this.add(idLabel, gbc1);
+        this.add(getClassField(), gbc3);
+        this.add(getIdField(), gbc4);
 
         TextEditPopupManager popupMan = TextEditPopupManager.getInstance();
         popupMan.registerJTextComponent(classField);
@@ -81,27 +81,27 @@ public class StyleAttributesPanel extends HTMLAttributeEditorPanel {
     }
 
     public void updateComponentsFromAttribs() {
-        if (attribs.containsKey("class")) //$NON-NLS-1$
-            classField.setText(attribs.get("class").toString()); //$NON-NLS-1$
+        if (attribs.containsKey("class"))
+            classField.setText(attribs.get("class").toString());
         else
-            classField.setText(""); //$NON-NLS-1$
+            classField.setText("");
 
-        if (attribs.containsKey("id")) //$NON-NLS-1$
-            idField.setText(attribs.get("id").toString()); //$NON-NLS-1$
+        if (attribs.containsKey("id"))
+            idField.setText(attribs.get("id").toString());
         else
-            idField.setText("");         //$NON-NLS-1$
+            idField.setText("");
     }
 
     public void updateAttribsFromComponents() {
-        if (!classField.getText().equals("")) //$NON-NLS-1$
-            attribs.put("class", classField.getText()); //$NON-NLS-1$
+        if (!classField.getText().equals(""))
+            attribs.put("class", classField.getText());
         else
-            attribs.remove("class"); //$NON-NLS-1$
+            attribs.remove("class");
 
-        if (!idField.getText().equals("")) //$NON-NLS-1$
-            attribs.put("id", idField.getText()); //$NON-NLS-1$
+        if (!idField.getText().equals(""))
+            attribs.put("id", idField.getText());
         else
-            attribs.remove("id"); //$NON-NLS-1$
+            attribs.remove("id");
 
     }
 

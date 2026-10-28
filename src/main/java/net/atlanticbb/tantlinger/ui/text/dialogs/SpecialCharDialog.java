@@ -18,14 +18,14 @@ import java.awt.event.*;
 public class SpecialCharDialog extends JDialog {
     private static final long serialVersionUID = 1L;
 
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs"); //$NON-NLS-1$
+    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
 
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "copyright.png"); //$NON-NLS-1$
-    private static String title = i18n.str("special_character"); //$NON-NLS-1$
-    private static String desc = i18n.str("special_character_desc"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "copyright.png");
+    private static String title = i18n.str("special_character");
+    private static String desc = i18n.str("special_character_desc");
 
-    private Font plainFont = new Font("Dialog", Font.PLAIN, 12); //$NON-NLS-1$
-    private Font rollFont = new Font("Dialog", Font.BOLD, 14); //$NON-NLS-1$
+    private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
+    private Font rollFont = new Font("Dialog", Font.BOLD, 14);
 
     private MouseListener mouseHandler = new MouseHandler();
     private ActionListener buttonHandler = new ButtonHandler();
@@ -54,7 +54,7 @@ public class SpecialCharDialog extends JDialog {
         charPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         for (int i = 160; i <= 255; i++) {
-            String ent = "&#" + i + ";"; //$NON-NLS-1$ //$NON-NLS-2$
+            String ent = "&#" + i + ";";
             JButton chLabel = new JButton(Entities.HTML32.unescape(ent));
             chLabel.setFont(plainFont);
             chLabel.setOpaque(true);
@@ -68,7 +68,7 @@ public class SpecialCharDialog extends JDialog {
             charPanel.add(chLabel);
         }
 
-        JButton close = new JButton(i18n.str("close")); //$NON-NLS-1$
+        JButton close = new JButton(i18n.str("close"));
         close.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);

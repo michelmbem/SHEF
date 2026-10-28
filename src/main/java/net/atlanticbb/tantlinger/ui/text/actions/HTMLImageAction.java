@@ -26,8 +26,8 @@ public class HTMLImageAction extends HTMLTextEditAction {
 
 
     public HTMLImageAction() {
-        super(i18n.str("image_"));         //$NON-NLS-1$
-        putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "image.png")); //$NON-NLS-1$
+        super(i18n.str("image_"));
+        putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "image.png"));
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
@@ -49,11 +49,11 @@ public class HTMLImageAction extends HTMLTextEditAction {
 
         String tagText = d.getHTML();
         if (editor.getCaretPosition() == editor.getDocument().getLength())
-            tagText += "&nbsp;"; //$NON-NLS-1$
+            tagText += "&nbsp;";
 
-        editor.replaceSelection(""); //$NON-NLS-1$
+        editor.replaceSelection("");
         HTML.Tag tag = HTML.Tag.IMG;
-        if (tagText.startsWith("<a")) //$NON-NLS-1$
+        if (tagText.startsWith("<a"))
             tag = HTML.Tag.A;
 
         HTMLUtils.insertHTML(tagText, tag, editor);

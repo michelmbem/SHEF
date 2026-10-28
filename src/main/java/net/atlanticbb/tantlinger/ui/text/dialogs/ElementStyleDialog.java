@@ -18,9 +18,9 @@ public class ElementStyleDialog extends OptionDialog {
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
 
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "pencil.png"); //$NON-NLS-1$
-    private static String title = i18n.str("element_style"); //$NON-NLS-1$
-    private static String desc = i18n.str("element_style_desc"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "pencil.png");
+    private static String title = i18n.str("element_style");
+    private static String desc = i18n.str("element_style_desc");
 
     private StyleAttributesPanel stylePanel;
 

@@ -13,7 +13,7 @@ public class ExceptionDialog extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private static final int PREFERRED_WIDTH = 450;
-    private static final String DEFAULT_TITLE = i18n.str("error");  //  @jve:decl-index=0: //$NON-NLS-1$
+    private static final String DEFAULT_TITLE = i18n.str("error");  //  @jve:decl-index=0:
 
     private JPanel jContentPane = null;
     private JLabel iconLabel = null;
@@ -71,63 +71,63 @@ public class ExceptionDialog extends JDialog {
      */
     private JPanel getJContentPane() {
         if (jContentPane == null) {
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 0;
-            gridBagConstraints4.gridwidth = 3;
-            gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints4.anchor = GridBagConstraints.WEST;
-            gridBagConstraints4.insets = new Insets(0, 0, 0, 0);
-            gridBagConstraints4.gridy = 3;
-            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.fill = GridBagConstraints.BOTH;
-            gridBagConstraints11.gridy = 4;
-            gridBagConstraints11.weightx = 1.0;
-            gridBagConstraints11.weighty = 1.0;
-            gridBagConstraints11.gridwidth = 3;
-            gridBagConstraints11.insets = new Insets(0, 0, 0, 0);
-            gridBagConstraints11.gridx = 0;
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 2;
-            gridBagConstraints3.fill = GridBagConstraints.VERTICAL;
-            gridBagConstraints3.gridheight = 3;
-            gridBagConstraints3.insets = new Insets(0, 0, 10, 0);
-            gridBagConstraints3.anchor = GridBagConstraints.WEST;
-            gridBagConstraints3.gridy = 0;
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 1;
-            gridBagConstraints2.anchor = GridBagConstraints.WEST;
-            gridBagConstraints2.insets = new Insets(0, 20, 5, 5);
-            gridBagConstraints2.gridy = 1;
+            GridBagConstraints gbc4 = new GridBagConstraints();
+            gbc4.gridx = 0;
+            gbc4.gridwidth = 3;
+            gbc4.fill = GridBagConstraints.HORIZONTAL;
+            gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc4.insets = new Insets(0, 0, 0, 0);
+            gbc4.gridy = 3;
+            GridBagConstraints gbc11 = new GridBagConstraints();
+            gbc11.fill = GridBagConstraints.BOTH;
+            gbc11.gridy = 4;
+            gbc11.weightx = 1.0;
+            gbc11.weighty = 1.0;
+            gbc11.gridwidth = 3;
+            gbc11.insets = new Insets(0, 0, 0, 0);
+            gbc11.gridx = 0;
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.gridx = 2;
+            gbc3.fill = GridBagConstraints.VERTICAL;
+            gbc3.gridheight = 3;
+            gbc3.insets = new Insets(0, 0, 10, 0);
+            gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc3.gridy = 0;
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.gridx = 1;
+            gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc2.insets = new Insets(0, 20, 5, 5);
+            gbc2.gridy = 1;
             msgLabel = new JLabel();
-            msgLabel.setText(""); //$NON-NLS-1$
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 1;
-            gridBagConstraints1.anchor = GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new Insets(0, 10, 5, 5);
-            gridBagConstraints1.fill = GridBagConstraints.NONE;
-            gridBagConstraints1.weightx = 1.0;
-            gridBagConstraints1.gridy = 0;
+            msgLabel.setText("");
+            GridBagConstraints gbc1 = new GridBagConstraints();
+            gbc1.gridx = 1;
+            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc1.insets = new Insets(0, 10, 5, 5);
+            gbc1.fill = GridBagConstraints.NONE;
+            gbc1.weightx = 1.0;
+            gbc1.gridy = 0;
             titleLabel = new JLabel();
-            titleLabel.setText(i18n.str("error_prompt")); //$NON-NLS-1$
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridheight = 3;
-            gridBagConstraints.anchor = GridBagConstraints.NORTH;
-            gridBagConstraints.weighty = 0.0;
-            gridBagConstraints.insets = new Insets(0, 0, 0, 0);
-            gridBagConstraints.gridy = 0;
+            titleLabel.setText(i18n.str("error_prompt"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridheight = 3;
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.weighty = 0.0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.gridy = 0;
             iconLabel = new JLabel();
-            iconLabel.setText(""); //$NON-NLS-1$
-            iconLabel.setIcon(UIManager.getIcon("OptionPane.errorIcon")); //$NON-NLS-1$
+            iconLabel.setText("");
+            iconLabel.setIcon(UIManager.getIcon("OptionPane.errorIcon"));
             jContentPane = new JPanel();
             jContentPane.setLayout(new GridBagLayout());
             jContentPane.setBorder(BorderFactory.createEmptyBorder(12, 5, 10, 5));
-            jContentPane.add(iconLabel, gridBagConstraints);
-            jContentPane.add(titleLabel, gridBagConstraints1);
-            jContentPane.add(msgLabel, gridBagConstraints2);
-            jContentPane.add(getButtonPanel(), gridBagConstraints3);
-            jContentPane.add(getScrollPane(), gridBagConstraints11);
-            jContentPane.add(getSeparator(), gridBagConstraints4);
+            jContentPane.add(iconLabel, gbc);
+            jContentPane.add(titleLabel, gbc1);
+            jContentPane.add(msgLabel, gbc2);
+            jContentPane.add(getButtonPanel(), gbc3);
+            jContentPane.add(getScrollPane(), gbc11);
+            jContentPane.add(getSeparator(), gbc4);
         }
         return jContentPane;
     }
@@ -160,7 +160,7 @@ public class ExceptionDialog extends JDialog {
     private JButton getOkButton() {
         if (okButton == null) {
             okButton = new JButton();
-            okButton.setText(i18n.str("ok")); //$NON-NLS-1$
+            okButton.setText(i18n.str("ok"));
             okButton.addActionListener(e -> dispose());
         }
         return okButton;
@@ -174,7 +174,7 @@ public class ExceptionDialog extends JDialog {
     private JButton getDetailsButton() {
         if (detailsButton == null) {
             detailsButton = new JButton();
-            detailsButton.setText(i18n.str("_details")); //$NON-NLS-1$
+            detailsButton.setText(i18n.str("_details"));
             detailsButton.addActionListener(e -> toggleDetails());
         }
         return detailsButton;
@@ -186,11 +186,11 @@ public class ExceptionDialog extends JDialog {
 
     public void showDetails(boolean b) {
         if (b) {
-            detailsButton.setText(i18n.str("details_")); //$NON-NLS-1$
+            detailsButton.setText(i18n.str("details_"));
             scrollPane.setVisible(true);
             separator.setVisible(false);
         } else {
-            detailsButton.setText(i18n.str("_details")); //$NON-NLS-1$
+            detailsButton.setText(i18n.str("_details"));
             scrollPane.setVisible(false);
             separator.setVisible(true);
         }
@@ -205,8 +205,8 @@ public class ExceptionDialog extends JDialog {
     }
 
     public void setThrowable(Throwable th) {
-        String msg = i18n.str("no_message_given"); //$NON-NLS-1$
-        if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().isEmpty()) //$NON-NLS-1$
+        String msg = i18n.str("no_message_given");
+        if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().isEmpty())
             msg = th.getLocalizedMessage();
         msgLabel.setText(msg);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();

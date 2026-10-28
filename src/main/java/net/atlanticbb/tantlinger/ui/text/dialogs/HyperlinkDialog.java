@@ -18,9 +18,9 @@ public class HyperlinkDialog extends HTMLOptionDialog {
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
 
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "link.png"); //$NON-NLS-1$
-    private static String title = i18n.str("hyperlink"); //$NON-NLS-1$
-    private static String desc = i18n.str("hyperlink_desc"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "link.png");
+    private static String title = i18n.str("hyperlink");
+    private static String desc = i18n.str("hyperlink_desc");
 
     private LinkPanel linkPanel;
 
@@ -67,14 +67,14 @@ public class HyperlinkDialog extends HTMLOptionDialog {
     }
 
     public String getHTML() {
-        String html = "<a"; //$NON-NLS-1$
+        String html = "<a";
         Map ht = getAttributes();
         for (Iterator e = ht.keySet().iterator(); e.hasNext(); ) {
             Object k = e.next();
-            html += " " + k + "=" + "\"" + ht.get(k) + "\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            html += " " + k + "=" + "\"" + ht.get(k) + "\"";
         }
 
-        html += ">" + getLinkText() + "</a>"; //$NON-NLS-1$ //$NON-NLS-2$
+        html += ">" + getLinkText() + "</a>";
 
 
         return html;

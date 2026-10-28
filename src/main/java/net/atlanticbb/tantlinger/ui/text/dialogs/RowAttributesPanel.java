@@ -68,30 +68,30 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
      * @return void
      */
     private void initialize() {
-        GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-        gridBagConstraints2.gridx = 0;
-        gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints2.weighty = 1.0;
-        gridBagConstraints2.gridy = 2;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.weightx = 1.0;
-        gridBagConstraints1.gridy = 1;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints.weightx = 0.0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.gridy = 0;
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 0;
+        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc2.fill = GridBagConstraints.HORIZONTAL;
+        gbc2.weighty = 1.0;
+        gbc2.gridy = 2;
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 0;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.weightx = 1.0;
+        gbc1.gridy = 1;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.insets = new Insets(0, 0, 5, 0);
+        gbc.weightx = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = 0;
         this.setLayout(new GridBagLayout());
         this.setSize(279, 140);
-        this.setPreferredSize(new java.awt.Dimension(215, 140));
-        this.add(getAlignPanel(), gridBagConstraints);
-        this.add(getBgColorPanel(), gridBagConstraints1);
-        this.add(getExpansionPanel(), gridBagConstraints2);
+        this.setPreferredSize(new Dimension(215, 140));
+        this.add(getAlignPanel(), gbc);
+        this.add(getBgColorPanel(), gbc1);
+        this.add(getExpansionPanel(), gbc2);
     }
 
     /**

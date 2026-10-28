@@ -7,7 +7,8 @@ package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A panel for editing table alignment attributes
@@ -17,80 +18,61 @@ import java.util.Hashtable;
  */
 public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
-    private static final String VERT_ALIGNMENTS[] = {"top", "middle", "bottom"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    private static final String HORIZ_ALIGNMENTS[] =
-            {
-                    "left", "center", "right", "justify" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            };
+    private static final String[] VERT_ALIGNMENTS = {"top", "middle", "bottom"};
+    private static final String[] HORIZ_ALIGNMENTS = {
+            "left", "center", "right", "justify"
+    };
 
 
     private JCheckBox vAlignCB = null;
     private JCheckBox hAlignCB = null;
-    private JComboBox vLocCombo = null;
-    private JComboBox hLocCombo = null;
+    private JComboBox<String> vLocCombo = null;
+    private JComboBox<String> hLocCombo = null;
 
 
     public AlignmentAttributesPanel() {
-        this(new Hashtable());
+        this(new HashMap<>());
     }
 
-    public AlignmentAttributesPanel(Hashtable attr) {
+    public AlignmentAttributesPanel(Map<String, String> attr) {
         super(attr);
         initialize();
         updateComponentsFromAttribs();
     }
 
     public void updateComponentsFromAttribs() {
-        if (attribs.containsKey("align")) //$NON-NLS-1$
-        {
-            hAlignCB.setSelected(true);
-            hLocCombo.setEnabled(true);
-            hLocCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
-        } else {
-            hAlignCB.setSelected(false);
-            hLocCombo.setEnabled(false);
-        }
-
-        if (attribs.containsKey("valign")) //$NON-NLS-1$
-        {
-            vAlignCB.setSelected(true);
-            vLocCombo.setEnabled(true);
-            vLocCombo.setSelectedItem(attribs.get("valign")); //$NON-NLS-1$
-        } else {
-            vAlignCB.setSelected(false);
-            vLocCombo.setEnabled(false);
-        }
+        setComponentStates(attribs);
     }
 
 
     public void updateAttribsFromComponents() {
         if (vAlignCB.isSelected())
-            attribs.put("valign", vLocCombo.getSelectedItem().toString()); //$NON-NLS-1$
+            attribs.put("valign", vLocCombo.getSelectedItem().toString());
         else
-            attribs.remove("valign"); //$NON-NLS-1$
+            attribs.remove("valign");
 
         if (hAlignCB.isSelected())
-            attribs.put("align", hLocCombo.getSelectedItem().toString()); //$NON-NLS-1$
+            attribs.put("align", hLocCombo.getSelectedItem().toString());
         else
-            attribs.remove("align"); //$NON-NLS-1$
+            attribs.remove("align");
     }
 
-    public void setComponentStates(Hashtable attribs) {
-        if (attribs.containsKey("align")) //$NON-NLS-1$
+    public void setComponentStates(Map<String, String> attribs) {
+        if (attribs.containsKey("align"))
         {
             hAlignCB.setSelected(true);
             hLocCombo.setEnabled(true);
-            hLocCombo.setSelectedItem(attribs.get("align")); //$NON-NLS-1$
+            hLocCombo.setSelectedItem(attribs.get("align"));
         } else {
             hAlignCB.setSelected(false);
             hLocCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("valign")) //$NON-NLS-1$
+        if (attribs.containsKey("valign"))
         {
             vAlignCB.setSelected(true);
             vLocCombo.setEnabled(true);
-            vLocCombo.setSelectedItem(attribs.get("valign")); //$NON-NLS-1$
+            vLocCombo.setSelectedItem(attribs.get("valign"));
         } else {
             vAlignCB.setSelected(false);
             vLocCombo.setEnabled(false);
@@ -104,40 +86,50 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
      * @return void
      */
     private void initialize() {
-        GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-        gridBagConstraints3.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints3.gridy = 1;
-        gridBagConstraints3.weightx = 1.0;
-        gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints3.gridx = 1;
-        GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-        gridBagConstraints2.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints2.gridy = 0;
-        gridBagConstraints2.weightx = 1.0;
-        gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints2.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints2.gridx = 1;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints1.gridy = 1;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        gridBagConstraints.gridy = 0;
-        this.setLayout(new GridBagLayout());
-        this.setSize(185, 95);
-        this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(i18n.str("content_alignment")), javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5))); //$NON-NLS-1$
+        final int anchor = GridBagConstraints.BASELINE_LEADING;
+        final Insets leftInsets = new Insets(0, 0, 5, 5);
+        final Insets rightInsets = new Insets(0, 5, 5, 0);
 
-        this.setPreferredSize(new java.awt.Dimension(185, 95));
-        this.setMaximumSize(this.getPreferredSize());
-        this.setMinimumSize(this.getPreferredSize());
-        this.add(getVAlignCB(), gridBagConstraints);
-        this.add(getHAlignCB(), gridBagConstraints1);
-        this.add(getVLocCombo(), gridBagConstraints2);
-        this.add(getHLocCombo(), gridBagConstraints3);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gbc.gridy = 0;
+        gbc.anchor = anchor;
+        gbc.insets = leftInsets;
+
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 0;
+        gbc1.gridy = 1;
+        gbc1.anchor = anchor;
+        gbc1.insets = leftInsets;
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 1;
+        gbc2.gridy = 0;
+        gbc2.weightx = 1.0;
+        gbc2.fill = GridBagConstraints.HORIZONTAL;
+        gbc2.anchor = anchor;
+        gbc2.insets = rightInsets;
+
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.gridx = gbc3.gridy = 1;
+        gbc3.weightx = 1.0;
+        gbc3.fill = GridBagConstraints.HORIZONTAL;
+        gbc3.anchor = anchor;
+        gbc3.insets = rightInsets;
+
+        setLayout(new GridBagLayout());
+        setSize(185, 95);
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(i18n.str("content_alignment")),
+                BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+
+        final Dimension fixeSize = new Dimension(185, 95);
+        setPreferredSize(fixeSize);
+        setMaximumSize(fixeSize);
+        setMinimumSize(fixeSize);
+        add(getVAlignCB(), gbc);
+        add(getHAlignCB(), gbc1);
+        add(getVLocCombo(), gbc2);
+        add(getHLocCombo(), gbc3);
     }
 
     /**
@@ -148,14 +140,10 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getVAlignCB() {
         if (vAlignCB == null) {
             vAlignCB = new JCheckBox();
-            vAlignCB.setText(i18n.str("vertical")); //$NON-NLS-1$
-
-            vAlignCB.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    vLocCombo.setEnabled(vAlignCB.isSelected());
-                }
-            });
+            vAlignCB.setText(i18n.str("vertical"));
+            vAlignCB.addActionListener(e -> vLocCombo.setEnabled(vAlignCB.isSelected()));
         }
+
         return vAlignCB;
     }
 
@@ -167,14 +155,10 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getHAlignCB() {
         if (hAlignCB == null) {
             hAlignCB = new JCheckBox();
-            hAlignCB.setText(i18n.str("horizontal")); //$NON-NLS-1$
-
-            hAlignCB.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    hLocCombo.setEnabled(hAlignCB.isSelected());
-                }
-            });
+            hAlignCB.setText(i18n.str("horizontal"));
+            hAlignCB.addActionListener(e -> hLocCombo.setEnabled(hAlignCB.isSelected()));
         }
+
         return hAlignCB;
     }
 
@@ -183,10 +167,11 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
      *
      * @return javax.swing.JComboBox
      */
-    private JComboBox getVLocCombo() {
+    private JComboBox<String> getVLocCombo() {
         if (vLocCombo == null) {
-            vLocCombo = new JComboBox(VERT_ALIGNMENTS);
+            vLocCombo = new JComboBox<>(VERT_ALIGNMENTS);
         }
+
         return vLocCombo;
     }
 
@@ -195,11 +180,12 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
      *
      * @return javax.swing.JComboBox
      */
-    private JComboBox getHLocCombo() {
+    private JComboBox<String> getHLocCombo() {
         if (hLocCombo == null) {
-            hLocCombo = new JComboBox(HORIZ_ALIGNMENTS);
+            hLocCombo = new JComboBox<>(HORIZ_ALIGNMENTS);
 
         }
+
         return hLocCombo;
     }
 

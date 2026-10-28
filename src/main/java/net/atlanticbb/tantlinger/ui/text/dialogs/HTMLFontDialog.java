@@ -26,9 +26,9 @@ public class HTMLFontDialog extends HTMLOptionDialog {
                     new Integer(24),
                     new Integer(36)
             };
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "fontsize.png"); //$NON-NLS-1$
-    private static String title = i18n.str("font"); //$NON-NLS-1$
-    private static String desc = i18n.str("font_desc"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "fontsize.png");
+    private static String title = i18n.str("font");
+    private static String desc = i18n.str("font_desc");
     private JPanel jContentPane = null;
     private JLabel fontLabel = null;
     private JComboBox fontCombo = null;
@@ -41,7 +41,7 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     private JLabel previewLabel = null;
     private JPanel spacerPanel = null;
 
-    private String text = "";   //$NON-NLS-1$
+    private String text = "";
 
     public HTMLFontDialog(Frame parent, String text) {
         super(parent, title, desc, icon);
@@ -100,26 +100,26 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     }
 
     public String getHTML() {
-        String html = "<font "; //$NON-NLS-1$
-        html += "name=\"" + fontCombo.getSelectedItem() + "\" "; //$NON-NLS-1$ //$NON-NLS-2$
-        html += "size=\"" + (sizeCombo.getSelectedIndex() + 1) + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
+        String html = "<font ";
+        html += "name=\"" + fontCombo.getSelectedItem() + "\" ";
+        html += "size=\"" + (sizeCombo.getSelectedIndex() + 1) + "\">";
         if (boldCB.isSelected())
-            html += "<b>"; //$NON-NLS-1$
+            html += "<b>";
         if (italicCB.isSelected())
-            html += "<i>"; //$NON-NLS-1$
+            html += "<i>";
         if (ulCB.isSelected())
-            html += "<u>"; //$NON-NLS-1$
+            html += "<u>";
 
         html += text;
 
         if (boldCB.isSelected())
-            html += "</b>"; //$NON-NLS-1$
+            html += "</b>";
         if (italicCB.isSelected())
-            html += "</i>"; //$NON-NLS-1$
+            html += "</i>";
         if (ulCB.isSelected())
-            html += "</u>"; //$NON-NLS-1$
+            html += "</u>";
 
-        html += "</font>";         //$NON-NLS-1$
+        html += "</font>";
         return html;
     }
 
@@ -164,39 +164,39 @@ public class HTMLFontDialog extends HTMLOptionDialog {
      */
     private JPanel getJContentPane() {
         if (jContentPane == null) {
-            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.gridx = 0;
-            gridBagConstraints21.gridwidth = 3;
-            gridBagConstraints21.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints21.insets = new java.awt.Insets(5, 0, 0, 0);
-            gridBagConstraints21.gridy = 1;
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.fill = java.awt.GridBagConstraints.NONE;
-            gridBagConstraints2.gridy = 0;
-            gridBagConstraints2.weightx = 1.0;
-            gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints2.gridx = 2;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints1.gridy = 0;
-            gridBagConstraints1.weightx = 1.0;
-            gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints1.gridx = 1;
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints.gridy = 0;
+            GridBagConstraints gbc21 = new GridBagConstraints();
+            gbc21.gridx = 0;
+            gbc21.gridwidth = 3;
+            gbc21.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc21.fill = GridBagConstraints.HORIZONTAL;
+            gbc21.insets = new Insets(5, 0, 0, 0);
+            gbc21.gridy = 1;
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.fill = GridBagConstraints.NONE;
+            gbc2.gridy = 0;
+            gbc2.weightx = 1.0;
+            gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc2.gridx = 2;
+            GridBagConstraints gbc1 = new GridBagConstraints();
+            gbc1.fill = GridBagConstraints.HORIZONTAL;
+            gbc1.gridy = 0;
+            gbc1.weightx = 1.0;
+            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc1.insets = new Insets(0, 0, 0, 5);
+            gbc1.gridx = 1;
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.insets = new Insets(0, 0, 0, 5);
+            gbc.gridy = 0;
             fontLabel = new JLabel();
-            fontLabel.setText(i18n.str("font")); //$NON-NLS-1$
+            fontLabel.setText(i18n.str("font"));
             jContentPane = new JPanel();
             jContentPane.setLayout(new GridBagLayout());
-            jContentPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            jContentPane.add(fontLabel, gridBagConstraints);
-            jContentPane.add(getFontCombo(), gridBagConstraints1);
-            jContentPane.add(getSizeCombo(), gridBagConstraints2);
-            jContentPane.add(getStylePanel(), gridBagConstraints21);
+            jContentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            jContentPane.add(fontLabel, gbc);
+            jContentPane.add(getFontCombo(), gbc1);
+            jContentPane.add(getSizeCombo(), gbc2);
+            jContentPane.add(getStylePanel(), gbc21);
 
             sizeCombo.setSelectedItem(new Integer(previewLabel.getFont().getSize()));
         }
@@ -214,9 +214,9 @@ public class HTMLFontDialog extends HTMLOptionDialog {
                     GraphicsEnvironment.getLocalGraphicsEnvironment();
             String envfonts[] = gEnv.getAvailableFontFamilyNames();
             Vector fonts = new Vector();
-            fonts.add("Default"); //$NON-NLS-1$
-            fonts.add("serif"); //$NON-NLS-1$
-            fonts.add("sans-serif"); //$NON-NLS-1$
+            fonts.add("Default");
+            fonts.add("serif");
+            fonts.add("sans-serif");
             fonts.add("monospaced");
             for (int i = 0; i < envfonts.length; i++)
                 fonts.add(envfonts[i]);
@@ -256,44 +256,44 @@ public class HTMLFontDialog extends HTMLOptionDialog {
      */
     private JPanel getStylePanel() {
         if (stylePanel == null) {
-            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.gridx = 0;
-            gridBagConstraints7.anchor = java.awt.GridBagConstraints.NORTHWEST;
-            gridBagConstraints7.weighty = 1.0;
-            gridBagConstraints7.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints7.gridy = 3;
-            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-            gridBagConstraints6.gridx = 1;
-            gridBagConstraints6.gridwidth = 1;
-            gridBagConstraints6.gridheight = 4;
-            gridBagConstraints6.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints6.weightx = 1.0;
-            gridBagConstraints6.weighty = 1.0;
-            gridBagConstraints6.anchor = java.awt.GridBagConstraints.NORTHWEST;
-            gridBagConstraints6.gridy = 0;
-            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 0;
-            gridBagConstraints5.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints5.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints5.weighty = 0.0;
-            gridBagConstraints5.gridy = 2;
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 0;
-            gridBagConstraints4.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints4.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints4.gridy = 1;
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 0;
-            gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints3.insets = new java.awt.Insets(5, 0, 0, 5);
-            gridBagConstraints3.gridy = 0;
+            GridBagConstraints gbc7 = new GridBagConstraints();
+            gbc7.gridx = 0;
+            gbc7.anchor = GridBagConstraints.NORTHWEST;
+            gbc7.weighty = 1.0;
+            gbc7.fill = GridBagConstraints.BOTH;
+            gbc7.gridy = 3;
+            GridBagConstraints gbc6 = new GridBagConstraints();
+            gbc6.gridx = 1;
+            gbc6.gridwidth = 1;
+            gbc6.gridheight = 4;
+            gbc6.fill = GridBagConstraints.BOTH;
+            gbc6.weightx = 1.0;
+            gbc6.weighty = 1.0;
+            gbc6.anchor = GridBagConstraints.NORTHWEST;
+            gbc6.gridy = 0;
+            GridBagConstraints gbc5 = new GridBagConstraints();
+            gbc5.gridx = 0;
+            gbc5.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc5.insets = new Insets(0, 0, 0, 5);
+            gbc5.weighty = 0.0;
+            gbc5.gridy = 2;
+            GridBagConstraints gbc4 = new GridBagConstraints();
+            gbc4.gridx = 0;
+            gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc4.insets = new Insets(0, 0, 0, 5);
+            gbc4.gridy = 1;
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.gridx = 0;
+            gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc3.insets = new Insets(5, 0, 0, 5);
+            gbc3.gridy = 0;
             stylePanel = new JPanel();
             stylePanel.setLayout(new GridBagLayout());
-            stylePanel.add(getBoldCB(), gridBagConstraints3);
-            stylePanel.add(getItalicCB(), gridBagConstraints4);
-            stylePanel.add(getUlCB(), gridBagConstraints5);
-            stylePanel.add(getPreviewPanel(), gridBagConstraints6);
-            stylePanel.add(getSpacerPanel(), gridBagConstraints7);
+            stylePanel.add(getBoldCB(), gbc3);
+            stylePanel.add(getItalicCB(), gbc4);
+            stylePanel.add(getUlCB(), gbc5);
+            stylePanel.add(getPreviewPanel(), gbc6);
+            stylePanel.add(getSpacerPanel(), gbc7);
         }
         return stylePanel;
     }
@@ -306,7 +306,7 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     private JCheckBox getBoldCB() {
         if (boldCB == null) {
             boldCB = new JCheckBox();
-            boldCB.setText(i18n.str("bold")); //$NON-NLS-1$
+            boldCB.setText(i18n.str("bold"));
             boldCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
@@ -324,7 +324,7 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     private JCheckBox getItalicCB() {
         if (italicCB == null) {
             italicCB = new JCheckBox();
-            italicCB.setText(i18n.str("italic")); //$NON-NLS-1$
+            italicCB.setText(i18n.str("italic"));
             italicCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
@@ -342,7 +342,7 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     private JCheckBox getUlCB() {
         if (ulCB == null) {
             ulCB = new JCheckBox();
-            ulCB.setText(i18n.str("underline")); //$NON-NLS-1$
+            ulCB.setText(i18n.str("underline"));
             ulCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     updatePreview();
@@ -360,14 +360,14 @@ public class HTMLFontDialog extends HTMLOptionDialog {
     private JPanel getPreviewPanel() {
         if (previewPanel == null) {
             previewLabel = new JLabel();
-            previewLabel.setText("AaBbYyZz"); //$NON-NLS-1$
+            previewLabel.setText("AaBbYyZz");
             JPanel spacer = new JPanel(new FlowLayout(FlowLayout.LEFT));
             spacer.setBackground(Color.WHITE);
             spacer.add(previewLabel);
             previewPanel = new JPanel();
             previewPanel.setLayout(new BorderLayout());
-            previewPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("preview"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED))))); //$NON-NLS-1$
-            previewPanel.setPreferredSize(new java.awt.Dimension(90, 100));
+            previewPanel.setBorder(BorderFactory.createCompoundBorder(null, BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, i18n.str("preview"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5), BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED)))));
+            previewPanel.setPreferredSize(new Dimension(90, 100));
             previewPanel.setMaximumSize(previewPanel.getPreferredSize());
             previewPanel.setMinimumSize(previewPanel.getPreferredSize());
             previewPanel.add(spacer, null);

@@ -25,7 +25,7 @@ public class HTMLFontAction extends HTMLTextEditAction {
     private static final long serialVersionUID = 1L;
 
     public HTMLFontAction() {
-        super(i18n.str("font_"));         //$NON-NLS-1$
+        super(i18n.str("font_"));
     }
 
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
@@ -78,7 +78,7 @@ public class HTMLFontAction extends HTMLTextEditAction {
 
     private HTMLFontDialog createDialog(JTextComponent ed) {
         Window w = SwingUtilities.getWindowAncestor(ed);
-        String t = ""; //$NON-NLS-1$
+        String t = "";
         if (ed.getSelectedText() != null)
             t = ed.getSelectedText();
 

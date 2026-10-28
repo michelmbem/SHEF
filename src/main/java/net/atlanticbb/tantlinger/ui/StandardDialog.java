@@ -129,7 +129,7 @@ public class StandardDialog extends JDialog {
         };
 
 
-        Action cancelAction = new AbstractAction(i18n.str("cancel")) //$NON-NLS-1$
+        Action cancelAction = new AbstractAction(i18n.str("cancel"))
         {
             private static final long serialVersionUID = 1L;
 

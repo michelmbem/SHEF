@@ -18,31 +18,31 @@ public class NewTableDialog extends OptionDialog {
     private static final long serialVersionUID = 1L;
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "table.png"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "table.png");
     private LayoutPanel layoutPanel = new LayoutPanel();
     private TableAttributesPanel propsPanel;
 
     public NewTableDialog(Frame parent) {
-        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);         //$NON-NLS-1$ //$NON-NLS-2$
+        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);
         init();
     }
 
     public NewTableDialog(Dialog parent) {
-        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);         //$NON-NLS-1$ //$NON-NLS-2$
+        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);
         init();
     }
 
     private void init() {
         //default attribs
         Hashtable ht = new Hashtable();
-        ht.put("border", "1"); //$NON-NLS-1$ //$NON-NLS-2$
-        ht.put("width", "100%"); //$NON-NLS-1$ //$NON-NLS-2$
+        ht.put("border", "1");
+        ht.put("width", "100%");
         propsPanel = new TableAttributesPanel();
         propsPanel.setAttributes(ht);
 
         propsPanel.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(i18n.str("properties")),  //$NON-NLS-1$
+                        BorderFactory.createTitledBorder(i18n.str("properties")),
                         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -55,28 +55,28 @@ public class NewTableDialog extends OptionDialog {
     }
 
     public String getHTML() {
-        String html = "<table"; //$NON-NLS-1$
+        String html = "<table";
         Map attribs = propsPanel.getAttributes();
 
         for (Iterator e = attribs.keySet().iterator(); e.hasNext(); ) {
             String key = e.next().toString();
             String val = attribs.get(key).toString();
-            html += ' ' + key + "=\"" + val + "\"";             //$NON-NLS-1$ //$NON-NLS-2$
+            html += ' ' + key + "=\"" + val + "\"";
         }
 
-        html += ">\n"; //$NON-NLS-1$
+        html += ">\n";
 
         int numRows = layoutPanel.getRows();
         int numCols = layoutPanel.getColumns();
         for (int row = 1; row <= numRows; row++) {
-            html += "<tr>\n"; //$NON-NLS-1$
+            html += "<tr>\n";
             for (int col = 1; col <= numCols; col++) {
-                html += "\t<td>\n</td>\n"; //$NON-NLS-1$
+                html += "\t<td>\n</td>\n";
             }
-            html += "</tr>\n"; //$NON-NLS-1$
+            html += "</tr>\n";
         }
 
-        return html + "</table>"; //$NON-NLS-1$
+        return html + "</table>";
     }
 
     private class LayoutPanel extends JPanel {
@@ -118,43 +118,43 @@ public class NewTableDialog extends OptionDialog {
          * @return void
          */
         private void initialize() {
-            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.fill = java.awt.GridBagConstraints.NONE;
-            gridBagConstraints7.gridy = 0;
-            gridBagConstraints7.weightx = 1.0;
-            gridBagConstraints7.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints7.gridx = 3;
-            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-            gridBagConstraints6.fill = java.awt.GridBagConstraints.NONE;
-            gridBagConstraints6.gridy = 0;
-            gridBagConstraints6.weightx = 0.0;
-            gridBagConstraints6.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints6.insets = new java.awt.Insets(0, 0, 0, 15);
-            gridBagConstraints6.gridx = 1;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 2;
-            gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints1.gridy = 0;
+            GridBagConstraints gbc7 = new GridBagConstraints();
+            gbc7.fill = GridBagConstraints.NONE;
+            gbc7.gridy = 0;
+            gbc7.weightx = 1.0;
+            gbc7.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc7.gridx = 3;
+            GridBagConstraints gbc6 = new GridBagConstraints();
+            gbc6.fill = GridBagConstraints.NONE;
+            gbc6.gridy = 0;
+            gbc6.weightx = 0.0;
+            gbc6.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc6.insets = new Insets(0, 0, 0, 15);
+            gbc6.gridx = 1;
+            GridBagConstraints gbc1 = new GridBagConstraints();
+            gbc1.gridx = 2;
+            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc1.insets = new Insets(0, 0, 0, 5);
+            gbc1.gridy = 0;
             colsLabel = new JLabel();
-            colsLabel.setText(i18n.str("columns")); //$NON-NLS-1$
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints.weighty = 0.0;
-            gridBagConstraints.gridy = 0;
+            colsLabel.setText(i18n.str("columns"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc.insets = new Insets(0, 0, 0, 5);
+            gbc.weighty = 0.0;
+            gbc.gridy = 0;
             rowsLabel = new JLabel();
-            rowsLabel.setText(i18n.str("rows")); //$NON-NLS-1$
+            rowsLabel.setText(i18n.str("rows"));
             this.setLayout(new GridBagLayout());
             this.setSize(330, 60);
-            this.setPreferredSize(new java.awt.Dimension(330, 60));
+            this.setPreferredSize(new Dimension(330, 60));
             //this.setMaximumSize(this.getPreferredSize());
-            this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("layout"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5))); //$NON-NLS-1$
-            this.add(rowsLabel, gridBagConstraints);
-            this.add(colsLabel, gridBagConstraints1);
-            this.add(getRowsField(), gridBagConstraints6);
-            this.add(getColsField(), gridBagConstraints7);
+            this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, i18n.str("layout"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+            this.add(rowsLabel, gbc);
+            this.add(colsLabel, gbc1);
+            this.add(getRowsField(), gbc6);
+            this.add(getColsField(), gbc7);
         }
 
         /**

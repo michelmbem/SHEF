@@ -18,7 +18,7 @@ import java.util.Hashtable;
 public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
 
-    private static final String MEASUREMENTS[] = {"percent", "pixels"};     //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String MEASUREMENTS[] = {"percent", "pixels"};
 
     private JCheckBox widthCB = null;
     private JCheckBox heightCB = null;
@@ -38,11 +38,11 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
     }
 
     public void updateComponentsFromAttribs() {
-        if (attribs.containsKey("width")) //$NON-NLS-1$
+        if (attribs.containsKey("width"))
         {
             widthCB.setSelected(true);
-            String w = attribs.get("width").toString(); //$NON-NLS-1$
-            if (w.endsWith("%"))                             //$NON-NLS-1$
+            String w = attribs.get("width").toString();
+            if (w.endsWith("%"))
                 w = w.substring(0, w.length() - 1);
             else
                 wMeasurementCombo.setSelectedIndex(1);
@@ -59,11 +59,11 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
             wMeasurementCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("height")) //$NON-NLS-1$
+        if (attribs.containsKey("height"))
         {
             heightCB.setSelected(true);
-            String h = attribs.get("height").toString(); //$NON-NLS-1$
-            if (h.endsWith("%"))                             //$NON-NLS-1$
+            String h = attribs.get("height").toString();
+            if (h.endsWith("%"))
                 h = h.substring(0, h.length() - 1);
             else
                 hMeasurementCombo.setSelectedIndex(1);
@@ -86,27 +86,27 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
         if (widthCB.isSelected()) {
             String w = widthField.getModel().getValue().toString();
             if (wMeasurementCombo.getSelectedIndex() == 0)
-                w += "%"; //$NON-NLS-1$
-            attribs.put("width", w); //$NON-NLS-1$
+                w += "%";
+            attribs.put("width", w);
         } else
-            attribs.remove("width"); //$NON-NLS-1$
+            attribs.remove("width");
 
         if (heightCB.isSelected()) {
             String h = heightField.getModel().getValue().toString();
             if (hMeasurementCombo.getSelectedIndex() == 0)
-                h += "%"; //$NON-NLS-1$
-            attribs.put("height", h); //$NON-NLS-1$
+                h += "%";
+            attribs.put("height", h);
         } else
-            attribs.remove("height"); //$NON-NLS-1$
+            attribs.remove("height");
     }
 
 
     public void setComponentStates(Hashtable attribs) {
-        if (attribs.containsKey("width")) //$NON-NLS-1$
+        if (attribs.containsKey("width"))
         {
             widthCB.setSelected(true);
-            String w = attribs.get("width").toString(); //$NON-NLS-1$
-            if (w.endsWith("%"))                             //$NON-NLS-1$
+            String w = attribs.get("width").toString();
+            if (w.endsWith("%"))
                 w = w.substring(0, w.length() - 1);
             else
                 wMeasurementCombo.setSelectedIndex(1);
@@ -123,11 +123,11 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
             wMeasurementCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("height")) //$NON-NLS-1$
+        if (attribs.containsKey("height"))
         {
             heightCB.setSelected(true);
-            String h = attribs.get("height").toString(); //$NON-NLS-1$
-            if (h.endsWith("%"))                             //$NON-NLS-1$
+            String h = attribs.get("height").toString();
+            if (h.endsWith("%"))
                 h = h.substring(0, h.length() - 1);
             else
                 hMeasurementCombo.setSelectedIndex(1);
@@ -152,59 +152,59 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
      * @return void
      */
     private void initialize() {
-        GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-        gridBagConstraints5.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints5.gridy = 1;
-        gridBagConstraints5.weightx = 0.0;
-        gridBagConstraints5.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints5.ipadx = 0;
-        gridBagConstraints5.gridx = 2;
-        GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-        gridBagConstraints4.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints4.gridy = 0;
-        gridBagConstraints4.weightx = 1.0;
-        gridBagConstraints4.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints4.insets = new java.awt.Insets(0, 0, 5, 0);
-        gridBagConstraints4.gridx = 2;
-        GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-        gridBagConstraints3.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints3.gridy = 1;
-        gridBagConstraints3.weightx = 0.0;
-        gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints3.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints3.ipadx = 0;
-        gridBagConstraints3.gridx = 1;
-        GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-        gridBagConstraints2.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints2.gridy = 0;
-        gridBagConstraints2.weightx = 0.0;
-        gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints2.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints2.ipadx = 0;
-        gridBagConstraints2.gridx = 1;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 0;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints1.gridy = 1;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
-        gridBagConstraints.gridy = 0;
+        GridBagConstraints gbc5 = new GridBagConstraints();
+        gbc5.fill = GridBagConstraints.NONE;
+        gbc5.gridy = 1;
+        gbc5.weightx = 0.0;
+        gbc5.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc5.ipadx = 0;
+        gbc5.gridx = 2;
+        GridBagConstraints gbc4 = new GridBagConstraints();
+        gbc4.fill = GridBagConstraints.NONE;
+        gbc4.gridy = 0;
+        gbc4.weightx = 1.0;
+        gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc4.insets = new Insets(0, 0, 5, 0);
+        gbc4.gridx = 2;
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.fill = GridBagConstraints.NONE;
+        gbc3.gridy = 1;
+        gbc3.weightx = 0.0;
+        gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc3.insets = new Insets(0, 0, 0, 5);
+        gbc3.ipadx = 0;
+        gbc3.gridx = 1;
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.fill = GridBagConstraints.NONE;
+        gbc2.gridy = 0;
+        gbc2.weightx = 0.0;
+        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc2.insets = new Insets(0, 0, 0, 5);
+        gbc2.ipadx = 0;
+        gbc2.gridx = 1;
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 0;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.insets = new Insets(0, 0, 0, 5);
+        gbc1.gridy = 1;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.insets = new Insets(0, 0, 5, 5);
+        gbc.gridy = 0;
 
         this.setLayout(new GridBagLayout());
         this.setSize(215, 95);
-        this.setPreferredSize(new java.awt.Dimension(215, 95));
+        this.setPreferredSize(new Dimension(215, 95));
         this.setMaximumSize(getPreferredSize());
         this.setMinimumSize(getPreferredSize());
-        this.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("size"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5))); //$NON-NLS-1$
-        this.add(getWidthCB(), gridBagConstraints);
-        this.add(getHeightCB(), gridBagConstraints1);
-        this.add(getWidthField(), gridBagConstraints2);
-        this.add(getHeightField(), gridBagConstraints3);
-        this.add(getWMeasurementCombo(), gridBagConstraints4);
-        this.add(getHMeasurementCombo(), gridBagConstraints5);
+        this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, i18n.str("size"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+        this.add(getWidthCB(), gbc);
+        this.add(getHeightCB(), gbc1);
+        this.add(getWidthField(), gbc2);
+        this.add(getHeightField(), gbc3);
+        this.add(getWMeasurementCombo(), gbc4);
+        this.add(getHMeasurementCombo(), gbc5);
     }
 
     /**
@@ -215,7 +215,7 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getWidthCB() {
         if (widthCB == null) {
             widthCB = new JCheckBox();
-            widthCB.setText(i18n.str("width")); //$NON-NLS-1$
+            widthCB.setText(i18n.str("width"));
 
             widthCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -235,7 +235,7 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
     private JCheckBox getHeightCB() {
         if (heightCB == null) {
             heightCB = new JCheckBox();
-            heightCB.setText(i18n.str("height")); //$NON-NLS-1$
+            heightCB.setText(i18n.str("height"));
 
             heightCB.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent e) {

@@ -7,7 +7,6 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 import net.atlanticbb.tantlinger.ui.text.ElementWriter;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -35,18 +34,17 @@ public class TableEditAction extends HTMLTextEditAction {
     public static final int INSERT_COL = 4;
     public static final int DELETE_COL = 5;
     private static final long serialVersionUID = 1L;
-    private static final String NAMES[] =
-            {
-                    i18n.str("insert_cell"),
-                    i18n.str("delete_cell"),
-                    i18n.str("insert_row"),
-                    i18n.str("delete_row"),
-                    i18n.str("insert_column"),
-                    i18n.str("delete_column")
-            };
+    private static final String[] NAMES = {
+            i18n.str("insert_cell"),
+            i18n.str("delete_cell"),
+            i18n.str("insert_row"),
+            i18n.str("delete_row"),
+            i18n.str("insert_column"),
+            i18n.str("delete_column")
+    };
 
 
-    private int type;
+    private final int type;
 
     public TableEditAction(int type) throws IllegalArgumentException {
         super("");
@@ -54,23 +52,17 @@ public class TableEditAction extends HTMLTextEditAction {
             throw new IllegalArgumentException("Invalid type");
         this.type = type;
         putValue(NAME, NAMES[type]);
-        addShouldBeEnabledDelegate(new ShouldBeEnabledDelegate() {
-            public boolean shouldBeEnabled(Action a) {
-                return (getEditMode() != SOURCE) && isInTD(getCurrentEditor());
-            }
-        });
+        addShouldBeEnabledDelegate(a -> (getEditMode() != SOURCE) && isInTD(getCurrentEditor()));
     }
 
 
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane ed) {
         HTMLDocument document = (HTMLDocument) ed.getDocument();
-
         Element curElem = document.getParagraphElement(ed.getCaretPosition());
         Element td = HTMLUtils.getParent(curElem, HTML.Tag.TD);
         Element tr = HTMLUtils.getParent(curElem, HTML.Tag.TR);
-        //HTMLDocument document = getDocument();
-        if (td == null || tr == null || document == null)
-            return;
+
+        if (td == null || tr == null) return;
 
         CompoundUndoManager.beginCompoundEdit(document);
         try {
@@ -88,8 +80,9 @@ public class TableEditAction extends HTMLTextEditAction {
                 removeColumn(td);
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            CompoundUndoManager.endCompoundEdit(document);
         }
-        CompoundUndoManager.endCompoundEdit(document);
     }
 
     private void removeCell(Element td) throws Exception {
@@ -214,8 +207,7 @@ public class TableEditAction extends HTMLTextEditAction {
         HTMLDocument doc = (HTMLDocument) tr.getDocument();
 
         int tdIndex = getCellIndex(tr, td);
-        if (tdIndex == -1)
-            return;
+        if (tdIndex == -1) return;
 
         Element table = HTMLUtils.getParent(tr, HTML.Tag.TABLE);
         for (int i = 0; i < table.getElementCount(); i++) {
@@ -224,36 +216,37 @@ public class TableEditAction extends HTMLTextEditAction {
                 AttributeSet attr = row.getAttributes();
                 int cellCount = row.getElementCount();
 
-                String rowHTML = "";
+                StringBuilder rowHTML = new StringBuilder();
                 String cell = "<td></td>";
+
                 for (int j = 0; j < cellCount; j++) {
                     Element e = row.getElement(j);
-                    rowHTML += HTMLUtils.getElementHTML(e, true);
+                    rowHTML.append(HTMLUtils.getElementHTML(e, true));
                     if (j == tdIndex)
-                        rowHTML += cell;
+                        rowHTML.append(cell);
                 }
 
                 int tds = row.getElementCount() - 1;
                 if (tds < tdIndex) {
                     for (; tds <= tdIndex; tds++)
-                        rowHTML += cell;
+                        rowHTML.append(cell);
                 }
 
-                rowHTML = HTMLUtils.createTag(HTML.Tag.TR, attr, rowHTML);
-                doc.setOuterHTML(row, rowHTML);
+                String tag = HTMLUtils.createTag(HTML.Tag.TR, attr, rowHTML.toString());
+                doc.setOuterHTML(row, tag);
             }
         }
     }
 
     private String getRowHTML(Element tr) {
-        String trTag = "<tr>";
+        StringBuilder trTag = new StringBuilder("<tr>");
         if (tr.getName().equals("tr")) {
             for (int i = 0; i < tr.getElementCount(); i++)
                 if (tr.getElement(i).getName().equals("td"))
-                    trTag += "<td></td>";
+                    trTag.append("<td></td>");
         }
-        trTag += "</tr>";
-        return trTag;
+
+        return trTag.append("</tr>").toString();
     }
 
     private boolean isInTD(JEditorPane tc) {
@@ -263,13 +256,14 @@ public class TableEditAction extends HTMLTextEditAction {
             try {
                 Element curElem = doc.getParagraphElement(tc.getCaretPosition());
                 td = HTMLUtils.getParent(curElem, HTML.Tag.TD);
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
 
         return td != null;
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane wysEditor) {
         boolean isInTd = isInTD(wysEditor);
         if ((isInTd && !isEnabled()) || (isEnabled() && !isInTd))
@@ -280,7 +274,8 @@ public class TableEditAction extends HTMLTextEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
+    @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
-
+        // Does nothing
     }
 }

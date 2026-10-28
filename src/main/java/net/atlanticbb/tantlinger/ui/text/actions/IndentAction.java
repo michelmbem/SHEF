@@ -52,7 +52,7 @@ public class IndentAction extends HTMLTextEditAction {
 
     private void insertHTML(String html, HTML.Tag tag, HTML.Tag root, ActionEvent e) {
         HTMLEditorKit.InsertHTMLTextAction a =
-                new HTMLEditorKit.InsertHTMLTextAction("insertHTML", html, root, tag);//$NON-NLS-1$
+                new HTMLEditorKit.InsertHTMLTextAction("insertHTML", html, root, tag);
         a.actionPerformed(e);
     }
 

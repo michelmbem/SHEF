@@ -48,15 +48,15 @@ public class LinkPanel extends HTMLAttributeEditorPanel {
 
     public void updateComponentsFromAttribs() {
         linkAttrPanel.updateComponentsFromAttribs();
-        if (attribs.containsKey("href"))         //$NON-NLS-1$
-            urlField.setText(attribs.get("href").toString()); //$NON-NLS-1$
+        if (attribs.containsKey("href"))
+            urlField.setText(attribs.get("href").toString());
         else
-            urlField.setText("");                        //$NON-NLS-1$
+            urlField.setText("");
     }
 
     public void updateAttribsFromComponents() {
         linkAttrPanel.updateAttribsFromComponents();
-        attribs.put("href", urlField.getText());               //$NON-NLS-1$
+        attribs.put("href", urlField.getText());
     }
 
     public void setAttributes(Map at) {
@@ -95,38 +95,38 @@ public class LinkPanel extends HTMLAttributeEditorPanel {
      */
     private JPanel getHlinkPanel() {
         if (hlinkPanel == null) {
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints3.gridy = 1;
-            gridBagConstraints3.weightx = 1.0;
-            gridBagConstraints3.gridx = 1;
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints2.gridy = 0;
-            gridBagConstraints2.weightx = 1.0;
-            gridBagConstraints2.insets = new java.awt.Insets(0, 0, 5, 0);
-            gridBagConstraints2.gridx = 1;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 0;
-            gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints1.gridy = 1;
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.fill = GridBagConstraints.HORIZONTAL;
+            gbc3.gridy = 1;
+            gbc3.weightx = 1.0;
+            gbc3.gridx = 1;
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.fill = GridBagConstraints.HORIZONTAL;
+            gbc2.gridy = 0;
+            gbc2.weightx = 1.0;
+            gbc2.insets = new Insets(0, 0, 5, 0);
+            gbc2.gridx = 1;
+            GridBagConstraints gbc1 = new GridBagConstraints();
+            gbc1.gridx = 0;
+            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc1.insets = new Insets(0, 0, 0, 5);
+            gbc1.gridy = 1;
             textLabel = new JLabel();
-            textLabel.setText(i18n.str("text")); //$NON-NLS-1$
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-            gridBagConstraints.gridy = 0;
+            textLabel.setText(i18n.str("text"));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc.insets = new Insets(0, 0, 0, 5);
+            gbc.gridy = 0;
             urlLabel = new JLabel();
-            urlLabel.setText(i18n.str("url")); //$NON-NLS-1$
+            urlLabel.setText(i18n.str("url"));
             hlinkPanel = new JPanel();
-            hlinkPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, i18n.str("link"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5))); //$NON-NLS-1$
+            hlinkPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, i18n.str("link"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
             hlinkPanel.setLayout(new GridBagLayout());
-            hlinkPanel.add(urlLabel, gridBagConstraints);
-            hlinkPanel.add(textLabel, gridBagConstraints1);
-            hlinkPanel.add(getUrlField(), gridBagConstraints2);
-            hlinkPanel.add(getTextField(), gridBagConstraints3);
+            hlinkPanel.add(urlLabel, gbc);
+            hlinkPanel.add(textLabel, gbc1);
+            hlinkPanel.add(getUrlField(), gbc2);
+            hlinkPanel.add(getTextField(), gbc3);
         }
         return hlinkPanel;
     }

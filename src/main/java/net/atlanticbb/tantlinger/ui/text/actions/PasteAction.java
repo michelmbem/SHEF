@@ -8,7 +8,6 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,26 +31,21 @@ public class PasteAction extends HTMLTextEditAction {
 
     public PasteAction() {
         super(i18n.str("paste"));
-        putValue(MNEMONIC_KEY, new Integer(i18n.mnem("paste")));
+        putValue(MNEMONIC_KEY, i18n.mnem("paste"));
         putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "paste.png"));
         putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "paste.png"));
         putValue(ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        addShouldBeEnabledDelegate(new ShouldBeEnabledDelegate() {
-            public boolean shouldBeEnabled(Action a) {
-                //return getCurrentEditor() != null &&
-                //    Toolkit.getDefaultToolkit().getSystemClipboard().getContents(PasteAction.this) != null;
-                return true;
-            }
-        });
-
+                KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        addShouldBeEnabledDelegate(a -> true);
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
+    @Override
     protected void updateWysiwygContextState(JEditorPane wysEditor) {
         this.updateEnabledState();
     }
 
+    @Override
     protected void updateSourceContextState(JEditorPane srcEditor) {
         this.updateEnabledState();
     }
@@ -63,8 +57,8 @@ public class PasteAction extends HTMLTextEditAction {
         editor.paste();
     }
 
-
-    private void pasteText(JEditorPane editor) throws UnsupportedFlavorException, IOException, BadLocationException {
+    private void pasteText(JEditorPane editor)
+            throws UnsupportedFlavorException, IOException, BadLocationException {
 
         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         HTMLEditorKit ekit = (HTMLEditorKit) editor.getEditorKit();
@@ -74,24 +68,13 @@ public class PasteAction extends HTMLTextEditAction {
         document.replace(editor.getSelectionStart(),
                 editor.getSelectionEnd() - editor.getSelectionStart(),
                 txt, ekit.getInputAttributes());
-
-
     }
 
     private void pasteImage(JEditorPane editor) throws IOException, UnsupportedFlavorException {
-
         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-
         Image i = (Image) systemClipboard.getContents(null).getTransferData(DataFlavor.imageFlavor);
-
-        boolean alpha = true;
-        if (i instanceof BufferedImage) {
-            if (!((BufferedImage) i).getColorModel().hasAlpha())
-                alpha = false;
-        }
-
+        boolean alpha = !(i instanceof BufferedImage) || ((BufferedImage) i).getColorModel().hasAlpha();
         int type = alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-
 
         BufferedImage bi = new BufferedImage(i.getWidth(null), i.getHeight(null), type);
         Graphics2D g = bi.createGraphics();
@@ -103,25 +86,19 @@ public class PasteAction extends HTMLTextEditAction {
         File tempFile = File.createTempFile("pastedImage", "png");
         ImageIO.write(bi, "png", tempFile);
 
-
-        String tagText = "<img src=\"file:" + tempFile.getAbsolutePath() + "\">";
-
+        StringBuilder tagText = new StringBuilder("<img src=\"file:")
+                .append(tempFile.getAbsolutePath()).append("\">");
         if (editor.getCaretPosition() == editor.getDocument().getLength())
-            tagText += "&nbsp;"; //$NON-NLS-1$
-
-        editor.replaceSelection(""); //$NON-NLS-1$
-        HTML.Tag tag = HTML.Tag.IMG;
-        if (tagText.startsWith("<a")) //$NON-NLS-1$
-            tag = HTML.Tag.A;
-
-        HTMLUtils.insertHTML(tagText, tag, editor);
-
+            tagText.append("&nbsp;");
+        editor.replaceSelection("");
+        HTMLUtils.insertHTML(tagText.toString(), HTML.Tag.IMG, editor);
     }
 
 
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#wysiwygEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
+    @Override
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
         HTMLDocument document = (HTMLDocument) editor.getDocument();
         Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -131,11 +108,8 @@ public class PasteAction extends HTMLTextEditAction {
 
             if (clip.isDataFlavorAvailable(DataFlavor.stringFlavor))
                 pasteText(editor);
-
             else if (clip.isDataFlavorAvailable(DataFlavor.imageFlavor))
                 pasteImage(editor);
-
-
         } catch (Exception ex) {
             System.err.println(ex);
         } finally {

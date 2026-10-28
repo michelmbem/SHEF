@@ -9,12 +9,12 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 
 public class BGColorPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
 
     private JCheckBox bgColorCB = null;
@@ -51,32 +51,34 @@ public class BGColorPanel extends JPanel {
     /**
      * This method initializes this
      *
-     * @return void
      */
     private void initialize() {
-        GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-        gridBagConstraints2.gridx = 2;
-        gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints2.weightx = 1.0;
-        gridBagConstraints2.gridy = 0;
-        GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.gridx = 1;
-        gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints1.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints1.gridy = 0;
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-        gridBagConstraints.gridy = 0;
-        this.setLayout(new GridBagLayout());
-        this.setSize(175, 30);
-        this.setPreferredSize(new java.awt.Dimension(175, 30));
-        this.setMinimumSize(getPreferredSize());
-        this.setMaximumSize(getPreferredSize());
-        this.add(getBgColorCB(), gridBagConstraints);
-        this.add(getColorPanel(), gridBagConstraints1);
-        this.add(getColorButton(), gridBagConstraints2);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.insets = new Insets(0, 0, 0, 5);
+        
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 1;
+        gbc1.gridy = 0;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.insets = new Insets(0, 0, 0, 5);
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 2;
+        gbc2.gridy = 0;
+        gbc2.weightx = 1.0;
+        gbc2.fill = GridBagConstraints.HORIZONTAL;
+        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+
+        setLayout(new GridBagLayout());
+        setSize(175, 30);
+        setPreferredSize(new Dimension(175, 30));
+        setMinimumSize(getPreferredSize());
+        setMaximumSize(getPreferredSize());
+        add(getBgColorCB(), gbc);
+        add(getColorPanel(), gbc1);
+        add(getColorButton(), gbc2);
 
         colorButton.setEnabled(bgColorCB.isSelected());
     }
@@ -89,18 +91,17 @@ public class BGColorPanel extends JPanel {
     private JCheckBox getBgColorCB() {
         if (bgColorCB == null) {
             bgColorCB = new JCheckBox();
-            bgColorCB.setText(i18n.str("background")); //$NON-NLS-1$
+            bgColorCB.setText(i18n.str("background"));
 
-            bgColorCB.addItemListener(new java.awt.event.ItemListener() {
-                public void itemStateChanged(java.awt.event.ItemEvent e) {
-                    colorButton.setEnabled(bgColorCB.isSelected());
-                    if (bgColorCB.isSelected())
-                        colorPanel.setBackground(selColor);
-                    else
-                        colorPanel.setBackground(getBackground());
-                }
+            bgColorCB.addItemListener(e -> {
+                colorButton.setEnabled(bgColorCB.isSelected());
+                if (bgColorCB.isSelected())
+                    colorPanel.setBackground(selColor);
+                else
+                    colorPanel.setBackground(getBackground());
             });
         }
+        
         return bgColorCB;
     }
 
@@ -112,10 +113,10 @@ public class BGColorPanel extends JPanel {
     private JPanel getColorPanel() {
         if (colorPanel == null) {
             colorPanel = new JPanel();
-            colorPanel.setPreferredSize(new java.awt.Dimension(50, 20));
-            colorPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
+            colorPanel.setPreferredSize(new Dimension(50, 20));
+            colorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         }
+        
         return colorPanel;
     }
 
@@ -127,19 +128,20 @@ public class BGColorPanel extends JPanel {
     private JButton getColorButton() {
         if (colorButton == null) {
             colorButton = new JButton();
-            colorButton.setIcon(UIUtils.getIcon(UIUtils.X16, "color.png")); //$NON-NLS-1$
-            colorButton.setPreferredSize(new java.awt.Dimension(20, 20));
-            colorButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    Color c = JColorChooser.showDialog(BGColorPanel.this, i18n.str("color"), selColor); //$NON-NLS-1$
-                    if (c != null) {
-                        selColor = c;
-                        colorPanel.setBackground(c);
-                        colorPanel.setToolTipText(HTMLUtils.colorToHex(c));
-                    }
+            colorButton.setIcon(UIUtils.getIcon(UIUtils.X16, "color.png"));
+            colorButton.setPreferredSize(new Dimension(20, 20));
+            colorButton.addActionListener(e -> {
+                Color c = JColorChooser.showDialog(
+                        BGColorPanel.this, i18n.str("color"), selColor); //
+                // $NON-NLS-1$
+                if (c != null) {
+                    selColor = c;
+                    colorPanel.setBackground(c);
+                    colorPanel.setToolTipText(HTMLUtils.colorToHex(c));
                 }
             });
         }
+
         return colorButton;
     }
 

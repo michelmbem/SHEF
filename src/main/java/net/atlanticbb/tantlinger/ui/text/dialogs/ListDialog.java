@@ -17,9 +17,9 @@ public class ListDialog extends OptionDialog {
     public static final int ORDERED = ListAttributesPanel.OL_LIST;
     private static final long serialVersionUID = 1L;
     private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "categories.png"); //$NON-NLS-1$
-    private static final String TITLE = I18N.str("list_properties"); //$NON-NLS-1$
-    private static final String DESC = I18N.str("list_properties_desc"); //$NON-NLS-1$
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "categories.png");
+    private static final String TITLE = I18N.str("list_properties");
+    private static final String DESC = I18N.str("list_properties_desc");
 
     private ListAttributesPanel listAttrPanel;
 

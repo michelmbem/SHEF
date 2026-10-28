@@ -18,9 +18,9 @@ public class ImageDialog extends HTMLOptionDialog {
 
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
 
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "image.png"); //$NON-NLS-1$
-    private static String title = i18n.str("image"); //$NON-NLS-1$
-    private static String desc = i18n.str("image_desc"); //$NON-NLS-1$
+    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "image.png");
+    private static String title = i18n.str("image");
+    private static String desc = i18n.str("image_desc");
 
     private ImagePanel imagePanel;
 
@@ -50,12 +50,12 @@ public class ImageDialog extends HTMLOptionDialog {
     }
 
     private String createImgAttributes(Map ht) {
-        String html = ""; //$NON-NLS-1$
+        String html = "";
         for (Iterator e = ht.keySet().iterator(); e.hasNext(); ) {
             Object k = e.next();
-            if (k.toString().equals("a") || k.toString().equals("name")) //$NON-NLS-1$ //$NON-NLS-2$
+            if (k.toString().equals("a") || k.toString().equals("name"))
                 continue;
-            html += " " + k + "=" + "\"" + ht.get(k) + "\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            html += " " + k + "=" + "\"" + ht.get(k) + "\"";
         }
 
         return html;
@@ -63,15 +63,15 @@ public class ImageDialog extends HTMLOptionDialog {
 
     public String getHTML() {
         Map imgAttr = imagePanel.getAttributes();
-        boolean hasLink = imgAttr.containsKey("a"); //$NON-NLS-1$
-        String html = ""; //$NON-NLS-1$
+        boolean hasLink = imgAttr.containsKey("a");
+        String html = "";
         if (hasLink) {
-            html = "<a " + imgAttr.get("a") + ">";             //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            html = "<a " + imgAttr.get("a") + ">";
         }
-        html += "<img" + createImgAttributes(imgAttr) + ">"; //$NON-NLS-1$ //$NON-NLS-2$
+        html += "<img" + createImgAttributes(imgAttr) + ">";
 
         if (hasLink)
-            html += "</a>"; //$NON-NLS-1$
+            html += "</a>";
 
         return html;
     }

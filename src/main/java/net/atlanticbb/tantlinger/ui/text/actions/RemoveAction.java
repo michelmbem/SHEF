@@ -24,17 +24,16 @@ public class RemoveAction extends DecoratedTextAction {
     public static final int DELETE = 1;
     private static final long serialVersionUID = 1L;
     private int type = BACKSPACE;
-    //private Action delegate = null;
 
     public RemoveAction(int type, Action defaultAction) {
         super("RemoveAction", defaultAction);
-        //delegate = defaultAction;
         this.type = type;
     }
 
     /* (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         JEditorPane editor;
         HTMLDocument document;
@@ -78,8 +77,9 @@ public class RemoveAction extends DecoratedTextAction {
                 editor.setCaretPosition(caretPos);
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                CompoundUndoManager.endCompoundEdit(document);
             }
-            CompoundUndoManager.endCompoundEdit(document);
 
             return;
         }
@@ -109,8 +109,9 @@ public class RemoveAction extends DecoratedTextAction {
                 editor.setCaretPosition(newPos - 1);
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                CompoundUndoManager.endCompoundEdit(document);
             }
-            CompoundUndoManager.endCompoundEdit(document);
 
             return;
         }

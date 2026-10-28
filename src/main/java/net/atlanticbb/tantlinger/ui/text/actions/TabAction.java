@@ -22,23 +22,19 @@ public class TabAction extends DecoratedTextAction {
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
     private static final long serialVersionUID = 1L;
-    //private Action delegate;
-    private int type;
+    private final int type;
 
     public TabAction(int type, Action defaultTabAction) {
         super("tabAction", defaultTabAction);
-        //delegate = defaultTabAction;
         this.type = type;
     }
 
     public void actionPerformed(ActionEvent e) {
-        JEditorPane editor;
-        HTMLDocument document;
-
-        editor = (JEditorPane) getTextComponent(e);
-        document = (HTMLDocument) editor.getDocument();
+        JEditorPane editor = (JEditorPane) getTextComponent(e);
+        HTMLDocument document = (HTMLDocument) editor.getDocument();
         Element elem = document.getParagraphElement(editor.getCaretPosition());
         Element tdElem = HTMLUtils.getParent(elem, HTML.Tag.TD);
+
         if (tdElem != null) {
             try {
                 if (type == FORWARD)
@@ -48,8 +44,9 @@ public class TabAction extends DecoratedTextAction {
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
-        } else
+        } else {
             delegate.actionPerformed(e);
+        }
     }
 
 }
