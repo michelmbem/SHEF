@@ -8,8 +8,8 @@ import java.util.Map;
 
 /**
  * This abstract class should be subclassed to create any
- * sort of panel that is used to modify html element attributes..
- * e.g an HTML table dialog
+ * sort of panel that is used to modify HTML element attributes.
+ * e.g. an HTML table dialog
  *
  * @author Bob Tantlinger
  *

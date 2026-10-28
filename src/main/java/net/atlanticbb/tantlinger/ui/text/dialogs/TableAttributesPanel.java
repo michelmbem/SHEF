@@ -2,17 +2,18 @@ package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TableAttributesPanel extends HTMLAttributeEditorPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final String ALIGNMENTS[] = {"left", "center", "right"};
-    private static final String MEASUREMENTS[] = {"percent", "pixels"};
+    private static final String[] ALIGNMENTS = {"left", "center", "right"};
+    private static final String[] MEASUREMENTS = {"percent", "pixels"};
 
     private JCheckBox widthCB = null;
     private JSpinner widthField = null;
-    private JComboBox widthCombo = null;
+    private JComboBox<String> widthCombo = null;
     private JCheckBox alignCB = null;
     private JCheckBox cellSpacingCB = null;
     private JSpinner cellSpacingField = null;
@@ -20,7 +21,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner borderField = null;
     private JCheckBox cellPaddingCB = null;
     private JSpinner cellPaddingField = null;
-    private JComboBox alignCombo = null;
+    private JComboBox<String> alignCombo = null;
     private BGColorPanel bgPanel = null;
     private JPanel expansionPanel = null;
 
@@ -28,26 +29,20 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
      * This is the default constructor
      */
     public TableAttributesPanel() {
-        this(new Hashtable());
-        //super();
-        //initialize();
-        //Hashtable ht = new Hashtable();
-        //ht.put("width", "100%");
-        //ht.put("border", "1");        
-        //setComponentStates(ht);
+        this(new HashMap<>());
     }
 
-    public TableAttributesPanel(Hashtable attribs) {
+    public TableAttributesPanel(Map<String, String> attribs) {
         super(attribs);
         initialize();
         updateComponentsFromAttribs();
     }
 
+    @Override
     public void updateComponentsFromAttribs() {
-        if (attribs.containsKey("width"))
-        {
+        if (attribs.containsKey("width")) {
             widthCB.setSelected(true);
-            String w = attribs.get("width").toString();
+            String w = attribs.get("width");
             if (w.endsWith("%"))
                 w = w.substring(0, w.length() - 1);
             else
@@ -55,7 +50,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             widthField.setEnabled(true);
 
             try {
-                widthField.getModel().setValue(new Integer(w));
+                widthField.getModel().setValue(Integer.valueOf(w));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -65,8 +60,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             widthCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("align"))
-        {
+        if (attribs.containsKey("align")) {
             alignCB.setSelected(true);
             alignCombo.setEnabled(true);
             alignCombo.setSelectedItem(attribs.get("align"));
@@ -75,13 +69,13 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             alignCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("border"))
-        {
+        if (attribs.containsKey("border")) {
             borderCB.setSelected(true);
             borderField.setEnabled(true);
+
             try {
                 borderField.getModel().setValue(
-                        new Integer(attribs.get("border").toString()));
+                        Integer.valueOf(attribs.get("border")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -90,13 +84,13 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             borderField.setEnabled(false);
         }
 
-        if (attribs.containsKey("cellpadding"))
-        {
+        if (attribs.containsKey("cellpadding")) {
             cellPaddingCB.setSelected(true);
             cellPaddingField.setEnabled(true);
+
             try {
                 cellPaddingField.getModel().setValue(
-                        new Integer(attribs.get("cellpadding").toString()));
+                        Integer.valueOf(attribs.get("cellpadding")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -105,13 +99,12 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             cellPaddingField.setEnabled(false);
         }
 
-        if (attribs.containsKey("cellspacing"))
-        {
+        if (attribs.containsKey("cellspacing")) {
             cellSpacingCB.setSelected(true);
             cellSpacingField.setEnabled(true);
             try {
                 cellSpacingField.getModel().setValue(
-                        new Integer(attribs.get("cellspacing").toString()));
+                        Integer.valueOf(attribs.get("cellspacing")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -120,10 +113,9 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             cellSpacingField.setEnabled(false);
         }
 
-        if (attribs.containsKey("bgcolor"))
-        {
+        if (attribs.containsKey("bgcolor")) {
             bgPanel.setSelected(true);
-            bgPanel.setColor(attribs.get("bgcolor").toString());
+            bgPanel.setColor(attribs.get("bgcolor"));
         } else {
             bgPanel.setSelected(false);
         }
@@ -132,11 +124,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     public void updateAttribsFromComponents() {
         if (widthCB.isSelected()) {
             String w = widthField.getModel().getValue().toString();
-            if (widthCombo.getSelectedIndex() == 0)
-                w += "%";
+            if (widthCombo.getSelectedIndex() == 0) w += "%";
             attribs.put("width", w);
-        } else
+        } else {
             attribs.remove("width");
+        }
 
         if (alignCB.isSelected())
             attribs.put("align", alignCombo.getSelectedItem().toString());
@@ -167,15 +159,16 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             attribs.remove("bgcolor");
     }
 
-    public void setComponentStates(Hashtable attribs) {
-        if (attribs.containsKey("width"))
-        {
+    public void setComponentStates(Map<String, String> attribs) {
+        if (attribs.containsKey("width")) {
             widthCB.setSelected(true);
-            String w = attribs.get("width").toString();
+            String w = attribs.get("width");
+
             if (w.endsWith("%"))
                 w = w.substring(0, w.length() - 1);
             else
                 widthCombo.setSelectedIndex(1);
+
             try {
                 widthField.getModel().setValue(new Integer(w));
             } catch (Exception ex) {
@@ -187,8 +180,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             widthCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("align"))
-        {
+        if (attribs.containsKey("align")) {
             alignCB.setSelected(true);
             alignCombo.setSelectedItem(attribs.get("align"));
         } else {
@@ -196,12 +188,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             alignCombo.setEnabled(false);
         }
 
-        if (attribs.containsKey("border"))
-        {
+        if (attribs.containsKey("border")) {
             borderCB.setSelected(true);
             try {
                 borderField.getModel().setValue(
-                        new Integer(attribs.get("border").toString()));
+                        Integer.valueOf(attribs.get("border")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -210,12 +201,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             borderField.setEnabled(false);
         }
 
-        if (attribs.containsKey("cellpadding"))
-        {
+        if (attribs.containsKey("cellpadding")) {
             cellPaddingCB.setSelected(true);
             try {
                 cellPaddingField.getModel().setValue(
-                        new Integer(attribs.get("cellpadding").toString()));
+                        Integer.valueOf(attribs.get("cellpadding")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -224,12 +214,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             cellPaddingField.setEnabled(false);
         }
 
-        if (attribs.containsKey("cellspacing"))
-        {
+        if (attribs.containsKey("cellspacing")) {
             cellSpacingCB.setSelected(true);
             try {
                 cellSpacingField.getModel().setValue(
-                        new Integer(attribs.get("cellspacing").toString()));
+                        Integer.valueOf(attribs.get("cellspacing")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -238,121 +227,130 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             cellSpacingField.setEnabled(false);
         }
 
-        if (attribs.containsKey("bgcolor"))
-        {
+        if (attribs.containsKey("bgcolor")) {
             bgPanel.setSelected(true);
-            bgPanel.setColor(attribs.get("bgcolor").toString());
+            bgPanel.setColor(attribs.get("bgcolor"));
         } else {
             bgPanel.setSelected(false);
         }
-
     }
 
     /**
      * This method initializes this
      */
     private void initialize() {
-        GridBagConstraints gbc12 = new GridBagConstraints();
-        gbc12.gridx = 0;
-        gbc12.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc12.gridwidth = 4;
-        gbc12.fill = GridBagConstraints.HORIZONTAL;
-        gbc12.weightx = 0.0;
-        gbc12.weighty = 1.0;
-        gbc12.gridy = 4;
-        GridBagConstraints gbc11 = new GridBagConstraints();
-        gbc11.gridx = 0;
-        gbc11.gridwidth = 4;
-        gbc11.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc11.weighty = 0.0;
-        gbc11.gridy = 3;
-        GridBagConstraints gbc4 = new GridBagConstraints();
-        gbc4.fill = GridBagConstraints.NONE;
-        gbc4.gridy = 1;
-        gbc4.weightx = 0.0;
-        gbc4.gridwidth = 2;
-        gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc4.insets = new Insets(0, 0, 5, 15);
-        gbc4.gridx = 1;
-        GridBagConstraints gbc10 = new GridBagConstraints();
-        gbc10.fill = GridBagConstraints.NONE;
-        gbc10.gridy = 2;
-        gbc10.weightx = 1.0;
-        gbc10.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc10.insets = new Insets(0, 0, 10, 0);
-        gbc10.gridx = 4;
-        GridBagConstraints gbc9 = new GridBagConstraints();
-        gbc9.gridx = 3;
-        gbc9.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc9.insets = new Insets(0, 0, 10, 3);
-        gbc9.gridy = 2;
-        GridBagConstraints gbc8 = new GridBagConstraints();
-        gbc8.fill = GridBagConstraints.NONE;
-        gbc8.gridy = 2;
-        gbc8.weightx = 0.0;
-        gbc8.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc8.insets = new Insets(0, 0, 10, 15);
-        gbc8.gridx = 1;
-        GridBagConstraints gbc7 = new GridBagConstraints();
-        gbc7.gridx = 0;
-        gbc7.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc7.insets = new Insets(0, 0, 10, 3);
-        gbc7.gridy = 2;
-        GridBagConstraints gbc6 = new GridBagConstraints();
-        gbc6.fill = GridBagConstraints.NONE;
-        gbc6.gridy = 1;
-        gbc6.weightx = 1.0;
-        gbc6.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc6.insets = new Insets(0, 0, 2, 0);
-        gbc6.gridx = 4;
-        GridBagConstraints gbc5 = new GridBagConstraints();
-        gbc5.gridx = 3;
-        gbc5.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc5.insets = new Insets(0, 0, 2, 3);
-        gbc5.gridy = 1;
-        GridBagConstraints gbc3 = new GridBagConstraints();
-        gbc3.gridx = 0;
-        gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc3.insets = new Insets(0, 0, 2, 3);
-        gbc3.gridy = 1;
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.fill = GridBagConstraints.NONE;
-        gbc2.gridy = 0;
-        gbc2.weightx = 0.0;
-        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc2.gridwidth = 2;
-        gbc2.insets = new Insets(0, 0, 10, 0);
-        gbc2.gridx = 2;
-        GridBagConstraints gbc1 = new GridBagConstraints();
-        gbc1.fill = GridBagConstraints.NONE;
-        gbc1.gridy = 0;
-        gbc1.weightx = 0.0;
-        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc1.insets = new Insets(0, 0, 10, 0);
-        gbc1.gridx = 1;
+        final int anchor = GridBagConstraints.BASELINE_LEADING;
+        final int fill = GridBagConstraints.HORIZONTAL;
+        final Insets leftInsets = new Insets(0, 0, 5, 5);
+        final Insets rightInsets = new Insets(0, 0, 5, 0);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc.insets = new Insets(0, 0, 10, 3);
         gbc.gridy = 0;
-        this.setLayout(new GridBagLayout());
-        this.setSize(320, 140);
-        this.setPreferredSize(new Dimension(320, 140));
+        gbc.anchor = anchor;
+        gbc.fill = fill;
+        gbc.insets = leftInsets;
 
-        this.add(getWidthCB(), gbc);
-        this.add(getWidthField(), gbc1);
-        this.add(getWidthCombo(), gbc2);
-        this.add(getAlignCB(), gbc3);
-        this.add(getCellSpacingCB(), gbc5);
-        this.add(getCellSpacingField(), gbc6);
-        this.add(getBorderCB(), gbc7);
-        this.add(getBorderField(), gbc8);
-        this.add(getCellPaddingCB(), gbc9);
-        this.add(getCellPaddingField(), gbc10);
-        this.add(getAlignCombo(), gbc4);
-        this.add(getBGPanel(), gbc11);
-        this.add(getExpansionPanel(), gbc12);
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 1;
+        gbc1.gridy = 0;
+        gbc1.anchor = anchor;
+        gbc1.fill = fill;
+        gbc1.insets = leftInsets;
 
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 2;
+        gbc2.gridy = 0;
+        gbc2.anchor = anchor;
+        gbc2.insets = rightInsets;
+
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.gridx = 0;
+        gbc3.gridy = 1;
+        gbc3.anchor = anchor;
+        gbc3.fill = fill;
+        gbc3.insets = leftInsets;
+
+        GridBagConstraints gbc4 = new GridBagConstraints();
+        gbc4.gridx = 1;
+        gbc4.gridy = 1;
+        gbc4.anchor = anchor;
+        gbc4.fill = fill;
+        gbc4.insets = leftInsets;
+
+        GridBagConstraints gbc5 = new GridBagConstraints();
+        gbc5.gridx = 2;
+        gbc5.gridy = 1;
+        gbc5.anchor = anchor;
+        gbc5.fill = fill;
+        gbc5.insets = leftInsets;
+
+        GridBagConstraints gbc6 = new GridBagConstraints();
+        gbc6.gridx = 3;
+        gbc6.gridy = 1;
+        gbc6.anchor = anchor;
+        gbc6.fill = fill;
+        gbc6.insets = rightInsets;
+
+        GridBagConstraints gbc7 = new GridBagConstraints();
+        gbc7.gridx = 0;
+        gbc7.gridy = 2;
+        gbc7.anchor = anchor;
+        gbc7.fill = fill;
+        gbc7.insets = leftInsets;
+
+        GridBagConstraints gbc8 = new GridBagConstraints();
+        gbc8.gridx = 1;
+        gbc8.gridy = 2;
+        gbc8.anchor = anchor;
+        gbc8.fill = fill;
+        gbc8.insets = leftInsets;
+
+        GridBagConstraints gbc9 = new GridBagConstraints();
+        gbc9.gridx = 2;
+        gbc9.gridy = 2;
+        gbc9.anchor = anchor;
+        gbc9.fill = fill;
+        gbc9.insets = leftInsets;
+
+        GridBagConstraints gbc10 = new GridBagConstraints();
+        gbc10.gridx = 3;
+        gbc10.gridy = 2;
+        gbc10.anchor = anchor;
+        gbc10.fill = fill;
+        gbc10.insets = rightInsets;
+
+        GridBagConstraints gbc11 = new GridBagConstraints();
+        gbc11.gridx = 0;
+        gbc11.gridy = 3;
+        gbc11.gridwidth = 4;
+        gbc11.anchor = anchor;
+
+        GridBagConstraints gbc12 = new GridBagConstraints();
+        gbc12.gridx = 0;
+        gbc12.gridy = 4;
+        gbc12.gridwidth = 4;
+        gbc12.anchor = anchor;
+        gbc12.fill = GridBagConstraints.BOTH;
+
+        GridBagLayout gbl = new GridBagLayout();
+        gbl.columnWeights = new double[] {0.0, 1.0, 0.0, 1.0};
+        gbl.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 1.0};
+
+        setLayout(gbl);
+        add(getWidthCB(), gbc);
+        add(getWidthField(), gbc1);
+        add(getWidthCombo(), gbc2);
+        add(getAlignCB(), gbc3);
+        add(getCellSpacingCB(), gbc5);
+        add(getCellSpacingField(), gbc6);
+        add(getBorderCB(), gbc7);
+        add(getBorderField(), gbc8);
+        add(getCellPaddingCB(), gbc9);
+        add(getCellPaddingField(), gbc10);
+        add(getAlignCombo(), gbc4);
+        add(getBGPanel(), gbc11);
+        add(getExpansionPanel(), gbc12);
     }
 
     /**
@@ -369,6 +367,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
                 widthCombo.setEnabled(widthCB.isSelected());
             });
         }
+
         return widthCB;
     }
 
@@ -380,8 +379,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner getWidthField() {
         if (widthField == null) {
             widthField = new JSpinner(new SpinnerNumberModel(100, 1, 999, 1));
-
         }
+
         return widthField;
     }
 
@@ -390,10 +389,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
      *
      * @return javax.swing.JComboBox
      */
-    private JComboBox getWidthCombo() {
+    private JComboBox<String> getWidthCombo() {
         if (widthCombo == null) {
-            widthCombo = new JComboBox(MEASUREMENTS);
+            widthCombo = new JComboBox<>(MEASUREMENTS);
         }
+
         return widthCombo;
     }
 
@@ -421,12 +421,10 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
         if (cellSpacingCB == null) {
             cellSpacingCB = new JCheckBox();
             cellSpacingCB.setText(i18n.str("cellspacing"));
-            cellSpacingCB.addItemListener(new java.awt.event.ItemListener() {
-                public void itemStateChanged(java.awt.event.ItemEvent e) {
-                    cellSpacingField.setEnabled(cellSpacingCB.isSelected());
-                }
-            });
+            cellSpacingCB.addItemListener(e ->
+                    cellSpacingField.setEnabled(cellSpacingCB.isSelected()));
         }
+
         return cellSpacingCB;
     }
 
@@ -438,8 +436,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner getCellSpacingField() {
         if (cellSpacingField == null) {
             cellSpacingField = new JSpinner(new SpinnerNumberModel(1, 0, 999, 1));
-
         }
+
         return cellSpacingField;
     }
 
@@ -452,12 +450,9 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
         if (borderCB == null) {
             borderCB = new JCheckBox();
             borderCB.setText(i18n.str("border"));
-            borderCB.addItemListener(new java.awt.event.ItemListener() {
-                public void itemStateChanged(java.awt.event.ItemEvent e) {
-                    borderField.setEnabled(borderCB.isSelected());
-                }
-            });
+            borderCB.addItemListener(e -> borderField.setEnabled(borderCB.isSelected()));
         }
+
         return borderCB;
     }
 
@@ -469,8 +464,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner getBorderField() {
         if (borderField == null) {
             borderField = new JSpinner(new SpinnerNumberModel(1, 0, 999, 1));
-
         }
+
         return borderField;
     }
 
@@ -483,12 +478,10 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
         if (cellPaddingCB == null) {
             cellPaddingCB = new JCheckBox();
             cellPaddingCB.setText(i18n.str("cellpadding"));
-            cellPaddingCB.addItemListener(new java.awt.event.ItemListener() {
-                public void itemStateChanged(java.awt.event.ItemEvent e) {
-                    cellPaddingField.setEnabled(cellPaddingCB.isSelected());
-                }
-            });
+            cellPaddingCB.addItemListener(e ->
+                    cellPaddingField.setEnabled(cellPaddingCB.isSelected()));
         }
+
         return cellPaddingCB;
     }
 
@@ -500,8 +493,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner getCellPaddingField() {
         if (cellPaddingField == null) {
             cellPaddingField = new JSpinner(new SpinnerNumberModel(1, 0, 999, 1));
-
         }
+
         return cellPaddingField;
     }
 
@@ -510,10 +503,11 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
      *
      * @return javax.swing.JComboBox
      */
-    private JComboBox getAlignCombo() {
+    private JComboBox<String> getAlignCombo() {
         if (alignCombo == null) {
-            alignCombo = new JComboBox(ALIGNMENTS);
+            alignCombo = new JComboBox<>(ALIGNMENTS);
         }
+
         return alignCombo;
     }
 
@@ -525,8 +519,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JPanel getBGPanel() {
         if (bgPanel == null) {
             bgPanel = new BGColorPanel();
-
         }
+
         return bgPanel;
     }
 
@@ -539,6 +533,7 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
         if (expansionPanel == null) {
             expansionPanel = new JPanel();
         }
+
         return expansionPanel;
     }
 

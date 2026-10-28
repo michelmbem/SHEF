@@ -5,26 +5,23 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
 import java.util.Map;
 
 public class HyperlinkDialog extends HTMLOptionDialog {
     private static final long serialVersionUID = 1L;
-
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "link.png");
-    private static String title = i18n.str("hyperlink");
-    private static String desc = i18n.str("hyperlink_desc");
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "link.png");
+    private static final String TITLE = I18N.str("hyperlink");
+    private static final String DESC = I18N.str("hyperlink_desc");
 
     private LinkPanel linkPanel;
 
     public HyperlinkDialog(Frame parent) {
-        this(parent, title, desc, icon, true);
+        this(parent, TITLE, DESC, ICON, true);
     }
 
     public HyperlinkDialog(Dialog parent) {
-        this(parent, title, desc, icon, true);
+        this(parent, TITLE, DESC, ICON, true);
     }
 
     public HyperlinkDialog(Dialog parent, String title, String desc, Icon ico, boolean urlFieldEnabled) {
@@ -45,11 +42,11 @@ public class HyperlinkDialog extends HTMLOptionDialog {
         setResizable(false);
     }
 
-    public Map getAttributes() {
+    public Map<String, String> getAttributes() {
         return linkPanel.getAttributes();
     }
 
-    public void setAttributes(Map attribs) {
+    public void setAttributes(Map<String, String> attribs) {
         linkPanel.setAttributes(attribs);
     }
 
@@ -62,16 +59,14 @@ public class HyperlinkDialog extends HTMLOptionDialog {
     }
 
     public String getHTML() {
-        String html = "<a";
-        Map ht = getAttributes();
-        for (Iterator e = ht.keySet().iterator(); e.hasNext(); ) {
-            Object k = e.next();
-            html += " " + k + "=" + "\"" + ht.get(k) + "\"";
+        StringBuilder html = new StringBuilder("<a");
+        for (Map.Entry<String, String> at: getAttributes().entrySet()) {
+            html.append(" ").append(at.getKey()).append("=")
+                    .append("\"").append(at.getValue()).append("\"");
         }
 
-        html += ">" + getLinkText() + "</a>";
-
-        return html;
+        html.append(">").append(getLinkText()).append("</a>");
+        return html.toString();
     }
 
 }

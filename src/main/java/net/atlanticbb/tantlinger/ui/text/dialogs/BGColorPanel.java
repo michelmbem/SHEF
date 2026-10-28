@@ -65,14 +65,8 @@ public class BGColorPanel extends JPanel {
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.gridx = 2;
         gbc2.gridy = 0;
-        gbc2.weightx = 1.0;
-        gbc2.fill = GridBagConstraints.HORIZONTAL;
         gbc2.anchor = anchor;
 
-        final Dimension fixeSize = new Dimension(175, 30);
-        setPreferredSize(fixeSize);
-        setMaximumSize(fixeSize);
-        setMinimumSize(fixeSize);
         setLayout(new GridBagLayout());
         add(getBgColorCB(), gbc);
         add(getColorPanel(), gbc1);

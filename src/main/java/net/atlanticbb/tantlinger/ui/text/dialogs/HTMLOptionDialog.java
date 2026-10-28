@@ -10,16 +10,16 @@ import java.awt.*;
  * <p>
  * Subclasses should implement dialogs for inserting HTML elements
  * such as tables, links, images, etc.
+ * </p>
  *
  * @author Bob Tantlinger
- *
  */
 public abstract class HTMLOptionDialog extends OptionDialog {
-    public HTMLOptionDialog(Frame parent, String title, String desc, Icon ico) {
+    protected HTMLOptionDialog(Frame parent, String title, String desc, Icon ico) {
         super(parent, title, desc, ico);
     }
 
-    public HTMLOptionDialog(Dialog parent, String title, String desc, Icon ico) {
+    protected HTMLOptionDialog(Dialog parent, String title, String desc, Icon ico) {
         super(parent, title, desc, ico);
     }
 

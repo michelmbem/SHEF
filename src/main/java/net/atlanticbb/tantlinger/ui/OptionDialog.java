@@ -1,8 +1,3 @@
-/*
- * Created on Jan 10, 2006
- *
- */
-
 package net.atlanticbb.tantlinger.ui;
 
 import javax.swing.*;
