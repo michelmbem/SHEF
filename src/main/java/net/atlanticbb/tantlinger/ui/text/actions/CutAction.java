@@ -1,6 +1,3 @@
-/*
- * Created on Nov 2, 2007
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -11,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-
 /**
  * @author Bob Tantlinger
  *
@@ -19,7 +15,6 @@ import java.awt.event.KeyEvent;
 public class CutAction extends BasicEditAction {
 
     private static final long serialVersionUID = 1L;
-
 
     public CutAction() {
         super("");

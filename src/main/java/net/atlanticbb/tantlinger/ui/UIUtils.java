@@ -1,6 +1,3 @@
-/*
- * Created on Oct 30, 2007
- */
 package net.atlanticbb.tantlinger.ui;
 
 import org.bushe.swing.action.ActionUIFactory;
@@ -8,7 +5,6 @@ import org.bushe.swing.action.ActionUIFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-
 
 /**
  * A collection of static UI helper methods.
@@ -37,7 +33,6 @@ public final class UIUtils {
      * The 48 x 48 icon package
      */
     public static final String X48 = "images/x48/";
-
 
     /**
      * Misc icons that are unsized
@@ -141,7 +136,6 @@ public final class UIUtils {
         th.printStackTrace();
     }
 
-
     /**
      * Shows an exception dialog
      *
@@ -168,7 +162,6 @@ public final class UIUtils {
         d.setVisible(true);
         th.printStackTrace();
     }
-
 
     /**
      * Shows an exception dialog

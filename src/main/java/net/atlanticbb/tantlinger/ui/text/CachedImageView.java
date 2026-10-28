@@ -1,7 +1,3 @@
-/*
- * Created on Jan 20, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import javax.imageio.ImageIO;
@@ -87,7 +83,6 @@ public class CachedImageView extends ImageView {
         th.setPriority(Thread.NORM_PRIORITY);
         th.start();
     }
-
 
     /**
      * Gets the real image URL as specified in the src attribute of the image tag

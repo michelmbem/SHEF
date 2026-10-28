@@ -1,14 +1,9 @@
-/*
- * Created on Mar 4, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.OptionDialog;
 
 import javax.swing.*;
 import java.awt.*;
-
 
 /**
  * An abstract OptionDialog for HTML editor dialog boxes.

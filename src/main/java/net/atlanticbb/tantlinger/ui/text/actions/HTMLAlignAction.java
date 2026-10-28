@@ -1,7 +1,3 @@
-/*
- * Created on Feb 25, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -17,7 +13,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action which aligns HTML elements
@@ -48,7 +43,6 @@ public class HTMLAlignAction extends HTMLTextEditAction {
             { "al_left.png", "al_center.png", "al_right.png", "al_just.png" };
 
     private final int align;
-
 
     /**
      * Creates a new HTMLAlignAction

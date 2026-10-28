@@ -574,7 +574,6 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit {
                 r.x = e.getX();
             }
 
-
             e.getComponent().repaint();
         }
 

@@ -1,7 +1,3 @@
-/*
- * Created on Jan 10, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui;
 
 import javax.swing.*;
@@ -44,8 +40,6 @@ public class HeaderPanel extends JPanel {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         GridBagConstraints gbc3 = new GridBagConstraints();
@@ -106,4 +100,4 @@ public class HeaderPanel extends JPanel {
 
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

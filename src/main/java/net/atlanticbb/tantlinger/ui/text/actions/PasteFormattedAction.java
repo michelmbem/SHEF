@@ -1,6 +1,3 @@
-/*
- * Created on Nov 25, 2007
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -20,7 +17,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 /**
  * @author Bob Tantlinger
@@ -97,7 +93,6 @@ public class PasteFormattedAction extends HTMLTextEditAction {
             CompoundUndoManager.endCompoundEdit(editor.getDocument());
         }
     }
-
 
     /**
      * Get the HTML text from the content if any

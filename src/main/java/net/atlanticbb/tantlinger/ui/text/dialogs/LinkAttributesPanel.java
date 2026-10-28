@@ -1,14 +1,9 @@
-/*
- * Created on Jan 15, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
 import javax.swing.*;
 import java.awt.*;
-
 
 public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
@@ -26,7 +21,6 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
     private JComboBox openInCombo = null;
     private JPanel spacerPanel = null;
 
-
     /**
      * This method initializes
      *
@@ -36,7 +30,6 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
         initialize();
         updateComponentsFromAttribs();
     }
-
 
     public void setEnabled(boolean b) {
         super.setEnabled(b);
@@ -108,7 +101,6 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
         this.add(getOpenInCombo(), gbc5);
         this.add(getSpacerPanel(), gbc6);
 
-
         TextEditPopupManager.getInstance().registerJTextComponent(nameField);
         TextEditPopupManager.getInstance().registerJTextComponent(titleField);
 
@@ -124,7 +116,6 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
             nameCB.setSelected(false);
             nameField.setEditable(false);
         }
-
 
         if (attribs.containsKey("title"))
         {
@@ -272,4 +263,4 @@ public class LinkAttributesPanel extends HTMLAttributeEditorPanel {
         return spacerPanel;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

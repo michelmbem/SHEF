@@ -1,7 +1,3 @@
-/*
- * Created on Jan 17, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -10,7 +6,6 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Vector;
-
 
 public class HTMLFontDialog extends HTMLOptionDialog {
     private static final long serialVersionUID = 1L;
@@ -125,8 +120,6 @@ public class HTMLFontDialog extends HTMLOptionDialog {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize(String text) {
         setContentPane(getJContentPane());
@@ -387,5 +380,4 @@ public class HTMLFontDialog extends HTMLOptionDialog {
         return spacerPanel;
     }
 
-
-}  //  @jve:decl-index=0:visual-constraint="48,14"
+}

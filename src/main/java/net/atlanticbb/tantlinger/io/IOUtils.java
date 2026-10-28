@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  *
  * Various IO utility methods
@@ -15,7 +14,6 @@ import java.util.List;
 public class IOUtils {
     private static final int BUFFER_SIZE = 1024 * 4;
     private static final NullCopyMonitor nullMon = new NullCopyMonitor();
-
 
     private static void getDirectoryContents(List<File> onlyFiles, File rootdir) {
         for (File file : rootdir.listFiles()) {
@@ -148,7 +146,6 @@ public class IOUtils {
         copy(src, dst, nullMon);
     }
 
-
     /**
      * Copies an InputStream to an OutputStream
      *
@@ -240,7 +237,6 @@ public class IOUtils {
         }
     }
 
-
     /**
      * Copies the file at the specified source path to the destination path.
      * Overwrites the destination file if it already exists.
@@ -283,7 +279,6 @@ public class IOUtils {
         copy(new File(srcPath), new File(dstPath), overwrite);
     }
 
-
     /**
      * Copies the file at the specified source path to the destination path.
      *
@@ -298,7 +293,6 @@ public class IOUtils {
             throws FileNotFoundException, IOException {
         copy(new File(srcPath), new File(dstPath), mon, overwrite);
     }
-
 
     public static void copyFiles(File src, File dest)
             throws IOException, FileNotFoundException {
@@ -319,7 +313,6 @@ public class IOUtils {
         copyFilesRecursively(src, dest, mon);
         //mon.copyComplete();
     }
-
 
     private static void copyFilesRecursively(File src, File dest, FileCopyMonitor mon)
             throws FileNotFoundException, IOException {
@@ -366,7 +359,6 @@ public class IOUtils {
         return bytes;
     }
 
-
     public static String read(InputStream input) throws IOException {
         return read(new InputStreamReader(input));
     }
@@ -402,7 +394,6 @@ public class IOUtils {
 
         return sb.toString();
     }
-
 
     /**
      * Writes a String to a File using a PrintWriter
@@ -496,7 +487,6 @@ public class IOUtils {
             }
         }
     }
-
 
     private static class NullCopyMonitor implements FileCopyMonitor {
         public void bytesCopied(int numBytes) {

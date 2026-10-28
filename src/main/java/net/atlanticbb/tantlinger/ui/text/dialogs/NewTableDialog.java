@@ -1,7 +1,3 @@
-/*
- * Created on Dec 24, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -114,8 +110,6 @@ public class NewTableDialog extends OptionDialog {
 
         /**
          * This method initializes this
-         *
-         * @return void
          */
         private void initialize() {
             GridBagConstraints gbc7 = new GridBagConstraints();

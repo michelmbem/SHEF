@@ -1,7 +1,3 @@
-/*
- * Created on Feb 25, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -13,7 +9,6 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
-
 
 /**
  *
@@ -29,7 +24,6 @@ public class HTMLLineBreakAction extends HTMLTextEditAction {
                 KeyStroke.getKeyStroke(Event.ENTER, InputEvent.SHIFT_MASK));
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
-
 
     @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {

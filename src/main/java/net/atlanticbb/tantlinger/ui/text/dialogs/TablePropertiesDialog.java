@@ -1,9 +1,4 @@
-/*
- * Created on Dec 21, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
-
 
 import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.OptionDialog;

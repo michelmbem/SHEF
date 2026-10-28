@@ -1,6 +1,3 @@
-/*
- * Created on Aug 18, 2006
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -19,7 +16,6 @@ import javax.swing.undo.UndoableEdit;
 import java.awt.event.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
-
 
 /**
  * Manages an application-wide popup menu for JTextComponents. Any

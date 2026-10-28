@@ -1,7 +1,3 @@
-/*
- * Created on Jan 14, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
@@ -10,7 +6,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-
 
 public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
@@ -150,7 +145,6 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
         }
     }
 
-
     public void updateAttribsFromComponents() {
         attribs.put("src", imgUrlField.getText());
 
@@ -192,8 +186,6 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
 
@@ -619,4 +611,4 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
         return spacerPanel;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

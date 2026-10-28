@@ -1,7 +1,3 @@
-/*
- * Created on Jan 18, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
@@ -13,7 +9,6 @@ import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action which edits an HTML font

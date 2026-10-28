@@ -1,9 +1,4 @@
-/*
- * Created on Dec 21, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,12 +18,10 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
             "left", "center", "right", "justify"
     };
 
-
     private JCheckBox vAlignCB = null;
     private JCheckBox hAlignCB = null;
     private JComboBox<String> vLocCombo = null;
     private JComboBox<String> hLocCombo = null;
-
 
     public AlignmentAttributesPanel() {
         this(new HashMap<>());
@@ -43,7 +36,6 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
     public void updateComponentsFromAttribs() {
         setComponentStates(attribs);
     }
-
 
     public void updateAttribsFromComponents() {
         if (vAlignCB.isSelected())
@@ -79,11 +71,8 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
         }
     }
 
-
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         final int anchor = GridBagConstraints.BASELINE_LEADING;
@@ -189,4 +178,4 @@ public class AlignmentAttributesPanel extends HTMLAttributeEditorPanel {
         return hLocCombo;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

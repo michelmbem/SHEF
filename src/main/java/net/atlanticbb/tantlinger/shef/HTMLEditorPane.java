@@ -577,7 +577,6 @@ public class HTMLEditorPane extends JPanel {
         actionList.updateEnabledForAll();
     }
 
-
     private class CaretHandler implements CaretListener {
         /* (non-Javadoc)
          * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
@@ -718,7 +717,6 @@ public class HTMLEditorPane extends JPanel {
          * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
          */
         public void itemStateChanged(ItemEvent e) {
-
 
         }
     }

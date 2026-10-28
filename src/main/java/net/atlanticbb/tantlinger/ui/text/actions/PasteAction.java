@@ -1,7 +1,3 @@
-/*
- * Created on Jun 19, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -24,7 +20,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 
 public class PasteAction extends HTMLTextEditAction {
     private static final long serialVersionUID = 1L;
@@ -93,7 +88,6 @@ public class PasteAction extends HTMLTextEditAction {
         editor.replaceSelection("");
         HTMLUtils.insertHTML(tagText.toString(), HTML.Tag.IMG, editor);
     }
-
 
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#wysiwygEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)

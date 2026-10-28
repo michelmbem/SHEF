@@ -1,11 +1,7 @@
-/*
- * Created on Nov 2, 2007
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action suitable for when wysiwyg or source context does not matter.

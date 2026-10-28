@@ -30,7 +30,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
-
 /**
  * A find and replace dialog for JTextComponents
  *
@@ -77,7 +76,6 @@ public class TextFinderDialog extends JDialog {
         setJTextComponent(tc);
 
         tb = new JTabbedPane(SwingConstants.TOP);
-
 
         // "Find" panel
         JPanel p1 = new JPanel(new BorderLayout());
@@ -163,7 +161,6 @@ public class TextFinderDialog extends JDialog {
         JPanel pc = new JPanel();
         pc.setLayout(new DialogLayout(20, 5));
         pc.setBorder(new EmptyBorder(8, 5, 8, 0));
-
 
         pc.add(new JLabel(i18n.str("find_what")));
         txtFind2 = new JTextField();
@@ -426,7 +423,6 @@ public class TextFinderDialog extends JDialog {
         JOptionPane.showMessageDialog(owner,
                 message, TITLE, JOptionPane.INFORMATION_MESSAGE, warnIcon);
     }
-
 
     private class DialogLayout implements LayoutManager {
         protected static final int COMP_TWO_COL = 0;

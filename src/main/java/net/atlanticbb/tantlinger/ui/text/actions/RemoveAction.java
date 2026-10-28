@@ -1,7 +1,3 @@
-/*
- * Created on Jun 12, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;

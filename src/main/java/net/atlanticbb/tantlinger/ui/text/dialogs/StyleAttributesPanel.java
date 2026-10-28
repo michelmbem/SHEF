@@ -1,7 +1,3 @@
-/*
- * Created on Jan 17, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
@@ -9,7 +5,6 @@ import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Hashtable;
-
 
 public class StyleAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
@@ -129,4 +124,4 @@ public class StyleAttributesPanel extends HTMLAttributeEditorPanel {
         return idField;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

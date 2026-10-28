@@ -24,7 +24,6 @@ public class ElementWriter extends HTMLWriter {
                 Math.min(root.getDocument().getLength(),
                         getEndPos(root, endPos) - getStartPos(root, startPos)));
 
-
         this.root = root;
 
         setLineLength(Integer.MAX_VALUE);

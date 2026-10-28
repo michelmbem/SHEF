@@ -1,7 +1,3 @@
-/*
- * Created on Jan 24, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.dialogs.TextFinderDialog;
@@ -10,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 
 public class FindReplaceAction extends BasicEditAction {
     private static final long serialVersionUID = 1L;

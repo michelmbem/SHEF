@@ -1,7 +1,3 @@
-/*
- * Created on Dec 22, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
@@ -27,7 +23,6 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
     private JComboBox alignCombo = null;
     private BGColorPanel bgPanel = null;
     private JPanel expansionPanel = null;
-
 
     /**
      * This is the default constructor
@@ -192,7 +187,6 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
             widthCombo.setEnabled(false);
         }
 
-
         if (attribs.containsKey("align"))
         {
             alignCB.setSelected(true);
@@ -254,11 +248,8 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
 
     }
 
-
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         GridBagConstraints gbc12 = new GridBagConstraints();
@@ -551,4 +542,4 @@ public class TableAttributesPanel extends HTMLAttributeEditorPanel {
         return expansionPanel;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="16,10"
+}

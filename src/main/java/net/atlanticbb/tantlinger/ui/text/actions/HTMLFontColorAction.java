@@ -1,7 +1,3 @@
-/*
- * Created on Feb 28, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -11,7 +7,6 @@ import javax.swing.*;
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action which edits HTML font color

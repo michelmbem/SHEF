@@ -8,7 +8,6 @@ package net.atlanticbb.tantlinger.ui;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class OptionDialog extends StandardDialog {
     private static final long serialVersionUID = 1L;
     private JPanel internalContentPane;

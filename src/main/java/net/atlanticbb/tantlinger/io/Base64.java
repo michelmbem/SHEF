@@ -51,7 +51,6 @@ public class Base64 {
 
     /* ********  P U B L I C   F I E L D S  ******** */
 
-
     /**
      * No options specified. Value is zero.
      */
@@ -62,51 +61,42 @@ public class Base64 {
      */
     public final static int ENCODE = 1;
 
-
     /**
      * Specify decoding.
      */
     public final static int DECODE = 0;
-
 
     /**
      * Specify that data should be gzip-compressed.
      */
     public final static int GZIP = 2;
 
-
     /**
      * Don't break lines when encoding (violates strict Base64 specification)
      */
     public final static int DONT_BREAK_LINES = 8;
 
-
     /* ********  P R I V A T E   F I E L D S  ******** */
-
 
     /**
      * Maximum line length (76) of Base64 output.
      */
     private final static int MAX_LINE_LENGTH = 76;
 
-
     /**
      * The equals sign (=) as a byte.
      */
     private final static byte EQUALS_SIGN = (byte) '=';
-
 
     /**
      * The new line character (\n) as a byte.
      */
     private final static byte NEW_LINE = (byte) '\n';
 
-
     /**
      * Preferred encoding.
      */
     private final static String PREFERRED_ENCODING = "UTF-8";
-
 
     /**
      * The 64 valid Base64 values.
@@ -180,7 +170,6 @@ public class Base64 {
         ALPHABET = __bytes;
     }   // end static
 
-
     /**
      * Defeats instantiation.
      */
@@ -188,9 +177,7 @@ public class Base64 {
     }
 
 
-
     /* ********  E N C O D I N G   M E T H O D S  ******** */
-
 
     /**
      * Encodes up to the first three bytes of array <var>threeBytes</var>
@@ -211,7 +198,6 @@ public class Base64 {
         encode3to4(threeBytes, 0, numSigBytes, b4, 0);
         return b4;
     }   // end encode3to4
-
 
     /**
      * Encodes up to three bytes of the array <var>source</var>
@@ -279,7 +265,6 @@ public class Base64 {
         }   // end switch
     }   // end encode3to4
 
-
     /**
      * Serializes an object and returns the Base64-encoded
      * version of that serialized object. If the object
@@ -294,7 +279,6 @@ public class Base64 {
     public static String encodeObject(java.io.Serializable serializableObject) {
         return encodeObject(serializableObject, NO_OPTIONS);
     }   // end encodeObject
-
 
     /**
      * Serializes an object and returns the Base64-encoded
@@ -378,7 +362,6 @@ public class Base64 {
 
     }   // end encode
 
-
     /**
      * Encodes a byte array into Base64 notation.
      * Does not GZip-compress data.
@@ -389,7 +372,6 @@ public class Base64 {
     public static String encodeBytes(byte[] source) {
         return encodeBytes(source, 0, source.length, NO_OPTIONS);
     }   // end encodeBytes
-
 
     /**
      * Encodes a byte array into Base64 notation.
@@ -414,7 +396,6 @@ public class Base64 {
         return encodeBytes(source, 0, source.length, options);
     }   // end encodeBytes
 
-
     /**
      * Encodes a byte array into Base64 notation.
      * Does not GZip-compress data.
@@ -427,7 +408,6 @@ public class Base64 {
     public static String encodeBytes(byte[] source, int off, int len) {
         return encodeBytes(source, off, len, NO_OPTIONS);
     }   // end encodeBytes
-
 
     /**
      * Encodes a byte array into Base64 notation.
@@ -460,7 +440,6 @@ public class Base64 {
             java.io.ByteArrayOutputStream baos = null;
             java.util.zip.GZIPOutputStream gzos = null;
             Base64.OutputStream b64os = null;
-
 
             try {
                 // GZip -> Base64 -> ByteArray
@@ -528,7 +507,6 @@ public class Base64 {
                 e += 4;
             }   // end if: some padding needed
 
-
             // Return value according to relevant encoding.
             try {
                 return new String(outBuff, 0, e, PREFERRED_ENCODING);
@@ -543,10 +521,7 @@ public class Base64 {
 
 
 
-
-
     /* ********  D E C O D I N G   M E T H O D S  ******** */
-
 
     /**
      * Decodes four bytes from array <var>source</var>
@@ -610,7 +585,6 @@ public class Base64 {
                         | ((DECODABET[source[srcOffset + 2]] & 0xFF) << 6)
                         | ((DECODABET[source[srcOffset + 3]] & 0xFF));
 
-
                 destination[destOffset] = (byte) (outBuff >> 16);
                 destination[destOffset + 1] = (byte) (outBuff >> 8);
                 destination[destOffset + 2] = (byte) (outBuff);
@@ -625,7 +599,6 @@ public class Base64 {
             }   //e nd catch
         }
     }   // end decodeToBytes
-
 
     /**
      * Very low-level access to decoding ASCII characters in
@@ -679,7 +652,6 @@ public class Base64 {
         return out;
     }   // end decode
 
-
     /**
      * Decodes data from Base64 notation, automatically
      * detecting gzip-compressed data and decompressing it.
@@ -700,7 +672,6 @@ public class Base64 {
 
         // Decode
         bytes = decode(bytes, 0, bytes.length);
-
 
         // Check to see if it's gzip-compressed
         // GZIP Magic Two-Byte Number: 0x8b1f (35615)
@@ -751,7 +722,6 @@ public class Base64 {
         return bytes;
     }   // end decode
 
-
     /**
      * Attempts to decode Base64 data and deserialize a Java
      * Object within. Returns <tt>null</tt> if there was an error.
@@ -796,7 +766,6 @@ public class Base64 {
         return obj;
     }   // end decodeObject
 
-
     /**
      * Convenience method for encoding data to a file.
      *
@@ -828,7 +797,6 @@ public class Base64 {
         return success;
     }   // end encodeToFile
 
-
     /**
      * Convenience method for decoding data to a file.
      *
@@ -858,7 +826,6 @@ public class Base64 {
 
         return success;
     }   // end decodeToFile
-
 
     /**
      * Convenience method for reading a base64-encoded
@@ -912,7 +879,6 @@ public class Base64 {
         return decodedData;
     }   // end decodeFromFile
 
-
     /**
      * Convenience method for reading a binary file
      * and base64-encoding it.
@@ -959,9 +925,7 @@ public class Base64 {
 
 
 
-
     /* ********  I N N E R   C L A S S   I N P U T S T R E A M  ******** */
-
 
     /**
      * A {@link Base64.InputStream} will read data from another
@@ -980,7 +944,6 @@ public class Base64 {
         private int lineLength;
         private boolean breakLines;     // Break lines at less than 80 characters
 
-
         /**
          * Constructs a {@link Base64.InputStream} in DECODE mode.
          *
@@ -990,7 +953,6 @@ public class Base64 {
         public InputStream(java.io.InputStream in) {
             this(in, DECODE);
         }   // end constructor
-
 
         /**
          * Constructs a {@link Base64.InputStream} in
@@ -1129,7 +1091,6 @@ public class Base64 {
             }   // end else
         }   // end read
 
-
         /**
          * Calls {@link #read()} repeatedly until the end of stream
          * is reached or <var>len</var> bytes are read.
@@ -1162,8 +1123,6 @@ public class Base64 {
         }   // end read
 
     }   // end inner class InputStream
-
-
 
 
 

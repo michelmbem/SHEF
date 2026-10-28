@@ -1,7 +1,3 @@
-/*
- * Created on Jan 24, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -13,7 +9,6 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
-
 
 public class SpecialCharDialog extends JDialog {
     private static final long serialVersionUID = 1L;
@@ -29,7 +24,6 @@ public class SpecialCharDialog extends JDialog {
 
     private MouseListener mouseHandler = new MouseHandler();
     private ActionListener buttonHandler = new ButtonHandler();
-
 
     private boolean insertEntity;
 
@@ -147,6 +141,5 @@ public class SpecialCharDialog extends JDialog {
         }
 
     }
-
 
 }

@@ -1,13 +1,8 @@
-/*
- * Created on Dec 21, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Hashtable;
-
 
 /**
  * Panel for editing the size of a table cell
@@ -81,7 +76,6 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
         }
     }
 
-
     public void updateAttribsFromComponents() {
         if (widthCB.isSelected()) {
             String w = widthField.getModel().getValue().toString();
@@ -99,7 +93,6 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
         } else
             attribs.remove("height");
     }
-
 
     public void setComponentStates(Hashtable attribs) {
         if (attribs.containsKey("width"))
@@ -145,11 +138,8 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
         }
     }
 
-
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         GridBagConstraints gbc5 = new GridBagConstraints();
@@ -303,4 +293,4 @@ public class SizeAttributesPanel extends HTMLAttributeEditorPanel {
         return hMeasurementCombo;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

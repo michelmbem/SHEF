@@ -1,7 +1,3 @@
-/*
- * Created on Jan 13, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
@@ -10,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Hashtable;
 import java.util.Map;
-
 
 public class LinkPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
@@ -45,7 +40,6 @@ public class LinkPanel extends HTMLAttributeEditorPanel {
         updateComponentsFromAttribs();
     }
 
-
     public void updateComponentsFromAttribs() {
         linkAttrPanel.updateComponentsFromAttribs();
         if (attribs.containsKey("href"))
@@ -74,8 +68,6 @@ public class LinkPanel extends HTMLAttributeEditorPanel {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         this.setLayout(new BorderLayout(5, 5));
@@ -165,4 +157,4 @@ public class LinkPanel extends HTMLAttributeEditorPanel {
         return linkAttrPanel;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="29,25"
+}

@@ -1,7 +1,3 @@
-/*
- * Created on Jan 18, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
@@ -205,7 +201,6 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
         return typeCombo;
     }
 
-
     /**
      * This method initializes styleCombo
      *
@@ -263,4 +258,4 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
         return startAtCB;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.io.StringWriter;
 import java.util.Enumeration;
 
-
 /**
  * Action which properly inserts breaks for an HTMLDocument
  *
@@ -212,7 +211,6 @@ public class EnterKeyAction extends DecoratedTextAction {
         //if this is an implied para, make the new para a div
         if (t == null || elem.getName().equals("p-implied"))
             t = HTML.Tag.DIV;
-
 
         String html;
         //got to test for this here, otherwise <hr> and <br> get duplicated

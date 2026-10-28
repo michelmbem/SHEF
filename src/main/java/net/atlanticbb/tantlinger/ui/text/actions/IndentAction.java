@@ -1,6 +1,3 @@
-/*
- * Created on Nov 19, 2007
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
@@ -13,7 +10,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.event.ActionEvent;
 import java.util.*;
-
 
 /**
  * @author Bob Tantlinger
@@ -68,7 +64,6 @@ public class IndentAction extends HTMLTextEditAction {
 
         return root;
     }
-
 
     private int getIndentationLevel(Element el) {
         int level = 0;
@@ -132,7 +127,6 @@ public class IndentAction extends HTMLTextEditAction {
         adjustListElemsIndent(listElems, doc);
         blockquoteElements(new ArrayList<>(elsToIndent), doc);
         unblockquoteElements(new ArrayList<>(elsToOutdent), doc);
-
 
     }
 

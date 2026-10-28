@@ -1,6 +1,5 @@
 package net.atlanticbb.tantlinger.ui.text;
 
-
 import javax.swing.text.*;
 
 /**
@@ -85,14 +84,12 @@ public class IndentationFilter extends DocumentFilter {
         return ws.toString();
     }
 
-
     /**
      * @return the isAutoIndent
      */
     public boolean isAutoIndent() {
         return isAutoIndent;
     }
-
 
     /**
      * @param isAutoIndent the isAutoIndent to set
@@ -101,14 +98,12 @@ public class IndentationFilter extends DocumentFilter {
         this.isAutoIndent = isAutoIndent;
     }
 
-
     /**
      * @return the isSoftTabs
      */
     public boolean isSoftTabs() {
         return isSoftTabs;
     }
-
 
     /**
      * @param isSoftTabs the isSoftTabs to set

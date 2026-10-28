@@ -1,7 +1,3 @@
-/*
- * Created on Feb 26, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -11,7 +7,6 @@ import javax.swing.*;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.event.ActionEvent;
-
 
 /**
  * @author Bob Tantlinger

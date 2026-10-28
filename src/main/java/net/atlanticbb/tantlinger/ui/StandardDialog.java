@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-
 /**
  * This class implements a standard data entry dialog with "OK" and
  * "Cancel" buttons. Subclasses can override the isDataValid(),
@@ -100,7 +99,6 @@ public class StandardDialog extends JDialog {
         init(orientation, COMPONENT_SPACING);
     }
 
-
     /**
      * This method sets up the default attributes of the dialog and
      * the content pane.
@@ -128,7 +126,6 @@ public class StandardDialog extends JDialog {
             }
         };
 
-
         Action cancelAction = new AbstractAction(i18n.str("cancel"))
         {
             private static final long serialVersionUID = 1L;
@@ -138,7 +135,6 @@ public class StandardDialog extends JDialog {
                 dispose();
             }
         };
-
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));

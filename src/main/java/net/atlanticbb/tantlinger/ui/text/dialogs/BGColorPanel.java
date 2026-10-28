@@ -1,7 +1,3 @@
-/*
- * Created on Dec 22, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -11,7 +7,6 @@ import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-
 
 public class BGColorPanel extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -53,29 +48,32 @@ public class BGColorPanel extends JPanel {
      *
      */
     private void initialize() {
+        final int anchor = GridBagConstraints.BASELINE_LEADING;
+        final Insets insets = new Insets(0, 0, 0, 5);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc.insets = new Insets(0, 0, 0, 5);
+        gbc.anchor = anchor;
+        gbc.insets = insets;
         
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.gridx = 1;
         gbc1.gridy = 0;
-        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc1.insets = new Insets(0, 0, 0, 5);
+        gbc1.anchor = anchor;
+        gbc1.insets = insets;
 
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.gridx = 2;
         gbc2.gridy = 0;
         gbc2.weightx = 1.0;
         gbc2.fill = GridBagConstraints.HORIZONTAL;
-        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc2.anchor = anchor;
 
+        final Dimension fixeSize = new Dimension(175, 30);
+        setPreferredSize(fixeSize);
+        setMaximumSize(fixeSize);
+        setMinimumSize(fixeSize);
         setLayout(new GridBagLayout());
-        setSize(175, 30);
-        setPreferredSize(new Dimension(175, 30));
-        setMinimumSize(getPreferredSize());
-        setMaximumSize(getPreferredSize());
         add(getBgColorCB(), gbc);
         add(getColorPanel(), gbc1);
         add(getColorButton(), gbc2);
@@ -132,8 +130,8 @@ public class BGColorPanel extends JPanel {
             colorButton.setPreferredSize(new Dimension(20, 20));
             colorButton.addActionListener(e -> {
                 Color c = JColorChooser.showDialog(
-                        BGColorPanel.this, i18n.str("color"), selColor); //
-                // $NON-NLS-1$
+                        BGColorPanel.this, i18n.str("color"), selColor);
+
                 if (c != null) {
                     selColor = c;
                     colorPanel.setBackground(c);
@@ -145,4 +143,4 @@ public class BGColorPanel extends JPanel {
         return colorButton;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

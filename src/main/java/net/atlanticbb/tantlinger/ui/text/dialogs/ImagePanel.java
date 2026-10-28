@@ -1,7 +1,3 @@
-/*
- * Created on Jan 16, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;

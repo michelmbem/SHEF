@@ -1,6 +1,3 @@
-/*
- * Created on Nov 3, 2007
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import novaworx.syntax.SyntaxFactory;
@@ -13,7 +10,6 @@ import java.awt.*;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
 
 /**
  * @author Bob Tantlinger
@@ -58,7 +54,6 @@ public class SourceCodeEditor extends SyntaxTextPane {
 
         setTheme(props, prefix);
     }
-
 
     /**
      * Set a color theme from a properties file

@@ -7,7 +7,6 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-
 public class ExceptionDialog extends JDialog {
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
 
@@ -25,7 +24,6 @@ public class ExceptionDialog extends JDialog {
     private JScrollPane scrollPane = null;
     private JTextArea textArea = null;
     private JSeparator separator = null;
-
 
     public ExceptionDialog() {
         super();
@@ -56,8 +54,6 @@ public class ExceptionDialog extends JDialog {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         this.setContentPane(getJContentPane());

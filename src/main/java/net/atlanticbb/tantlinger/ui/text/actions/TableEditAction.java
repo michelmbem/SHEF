@@ -1,7 +1,3 @@
-/*
- * Created on Jun 16, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
@@ -17,7 +13,6 @@ import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
 import java.io.StringWriter;
-
 
 /**
  *
@@ -43,7 +38,6 @@ public class TableEditAction extends HTMLTextEditAction {
             i18n.str("delete_column")
     };
 
-
     private final int type;
 
     public TableEditAction(int type) throws IllegalArgumentException {
@@ -54,7 +48,6 @@ public class TableEditAction extends HTMLTextEditAction {
         putValue(NAME, NAMES[type]);
         addShouldBeEnabledDelegate(a -> (getEditMode() != SOURCE) && isInTD(getCurrentEditor()));
     }
-
 
     protected void wysiwygEditPerformed(ActionEvent e, JEditorPane ed) {
         HTMLDocument document = (HTMLDocument) ed.getDocument();
@@ -269,7 +262,6 @@ public class TableEditAction extends HTMLTextEditAction {
         if ((isInTd && !isEnabled()) || (isEnabled() && !isInTd))
             updateEnabled();
     }
-
 
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)

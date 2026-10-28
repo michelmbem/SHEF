@@ -1,7 +1,3 @@
-/*
- * Created on Feb 26, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -13,7 +9,6 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action which displays a dialog to insert a hyperlink

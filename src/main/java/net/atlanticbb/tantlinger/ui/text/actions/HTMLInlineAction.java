@@ -1,7 +1,3 @@
-/*
- * Created on Feb 25, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -19,7 +15,6 @@ import javax.swing.text.html.HTML;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 
 /**
  * Action which toggles inline HTML elements
@@ -148,7 +143,6 @@ public class HTMLInlineAction extends HTMLTextEditAction {
         toggleStyle(editor);
         CompoundUndoManager.endCompoundEdit(editor.getDocument());
     }
-
 
     private boolean isDefined(AttributeSet attr) {
         boolean hasSC = false;

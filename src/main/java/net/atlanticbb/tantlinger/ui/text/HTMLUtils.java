@@ -1,7 +1,3 @@
-/*
- * Created on Jun 16, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import org.w3c.dom.Document;
@@ -25,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
-
 
 /**
  * A collection of static convenience methods for working with HTML,
@@ -53,7 +48,6 @@ public final class HTMLUtils {
         tidy.setTrimEmptyElements(true);
         tidy.setXHTML(true);
     }
-
 
     /**
      * Tests if an element is an implied paragraph (p-implied)
@@ -298,7 +292,6 @@ public final class HTMLUtils {
         }
     }
 
-
     public static HTML.Tag getStartTag(String text) {
         String html = text.trim();
         int s = html.indexOf('<');
@@ -327,7 +320,6 @@ public final class HTMLUtils {
 
         return depth;
     }
-
 
     /**
      * Inserts an arbitrary chunk of HTML into the JEditorPane at the current
@@ -385,7 +377,6 @@ public final class HTMLUtils {
 
         return null;
     }
-
 
     /**
      * Inserts a string of html into the {@link JEditorPane}'s {@link HTMLDocument}
@@ -728,7 +719,6 @@ public final class HTMLUtils {
         return attribs;
     }
 
-
     /**
      * Converts a Color to a hex string
      * in the format "#RRGGBB"
@@ -765,7 +755,6 @@ public final class HTMLUtils {
 
         return colorstr;
     }
-
 
     /**
      * Convert a "#FFFFFF" hex string to a Color.

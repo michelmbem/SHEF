@@ -1,8 +1,4 @@
-/*
- * Created on Nov 6, 2007
- */
 package net.atlanticbb.tantlinger.i18n;
-
 
 import java.io.File;
 import java.io.FileFilter;
@@ -10,7 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
-
 
 /**
  * @author Bob Tantlinger

@@ -1,7 +1,3 @@
-/*
- * Created on Jan 13, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.UIUtils;
@@ -14,7 +10,6 @@ import javax.swing.text.html.HTML;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-
 /**
  * Action which desplays a dialog to insert an image
  *
@@ -23,7 +18,6 @@ import java.awt.event.ActionEvent;
  */
 public class HTMLImageAction extends HTMLTextEditAction {
     private static final long serialVersionUID = 1L;
-
 
     public HTMLImageAction() {
         super(i18n.str("image_"));
@@ -58,7 +52,6 @@ public class HTMLImageAction extends HTMLTextEditAction {
 
         HTMLUtils.insertHTML(tagText, tag, editor);
     }
-
 
     protected ImageDialog createDialog(JTextComponent ed) {
         Window w = SwingUtilities.getWindowAncestor(ed);

@@ -1,7 +1,3 @@
-/*
- * Created on Feb 27, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
@@ -12,7 +8,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import java.awt.event.ActionEvent;
-
 
 /**
  * Action which edits HTML font size
@@ -71,7 +66,6 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     protected void updateSourceContextState(JEditorPane ed) {
         setSelected(false);
     }
-
 
     @Override
     protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {

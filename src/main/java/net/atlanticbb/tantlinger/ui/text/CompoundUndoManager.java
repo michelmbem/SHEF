@@ -1,7 +1,3 @@
-/*
- * Created on Jun 7, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -21,7 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
-
 
 //TODO add static method to unregister documents
 

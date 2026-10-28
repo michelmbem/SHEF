@@ -1,7 +1,3 @@
-/*
- * Created on Jan 14, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import net.atlanticbb.tantlinger.i18n.I18n;
@@ -11,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.Map;
-
 
 public class HyperlinkDialog extends HTMLOptionDialog {
     private static final long serialVersionUID = 1L;
@@ -75,7 +70,6 @@ public class HyperlinkDialog extends HTMLOptionDialog {
         }
 
         html += ">" + getLinkText() + "</a>";
-
 
         return html;
     }

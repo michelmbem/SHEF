@@ -1,7 +1,3 @@
-/*
- * Created on Jan 21, 2006
- *
- */
 package net.atlanticbb.tantlinger.ui.text;
 
 import javax.swing.event.DocumentEvent;

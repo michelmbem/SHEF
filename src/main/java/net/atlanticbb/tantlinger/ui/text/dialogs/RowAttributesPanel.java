@@ -1,7 +1,3 @@
-/*
- * Created on Dec 24, 2005
- *
- */
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
@@ -38,7 +34,6 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
         alignPanel.updateComponentsFromAttribs();
     }
 
-
     public void updateAttribsFromComponents() {
         if (bgColorPanel.isSelected())
             attribs.put("bgcolor", bgColorPanel.getColor());
@@ -64,8 +59,6 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
 
     /**
      * This method initializes this
-     *
-     * @return void
      */
     private void initialize() {
         GridBagConstraints gbc2 = new GridBagConstraints();
@@ -130,4 +123,4 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
         return expansionPanel;
     }
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}

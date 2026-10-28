@@ -1,11 +1,7 @@
-/*
- * Created on Nov 16, 2007
- */
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import javax.swing.*;
 import javax.swing.text.TextAction;
-
 
 /**
  * @author Bob Tantlinger
