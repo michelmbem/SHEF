@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ListAttributesPanel extends HTMLAttributeEditorPanel {
     public static final int UL_LIST = 0;
@@ -12,7 +13,6 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
     private static final String UL = i18n.str("unordered_list");
     private static final String OL = i18n.str("ordered_list");
     private static final String[] LIST_TYPES = {UL, OL};
-
     private static final String[] OL_TYPES = {"1", "a", "A", "i", "I"};
     private static final String[] OL_TYPE_LABELS = {
             "1, 2, 3, ...",
@@ -62,14 +62,16 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
 
     private void updateForType() {
         styleCombo.removeAllItems();
-        if (typeCombo.getSelectedItem().equals(UL)) {
-            for (int i = 0; i < UL_TYPE_LABELS.length; i++)
-                styleCombo.addItem(UL_TYPE_LABELS[i]);
+        if (Objects.equals(typeCombo.getSelectedItem(), UL)) {
+            for (String ulTypeLabel : UL_TYPE_LABELS) {
+                styleCombo.addItem(ulTypeLabel);
+            }
             startAtCB.setEnabled(false);
             startAtField.setEnabled(false);
         } else {
-            for (int i = 0; i < OL_TYPE_LABELS.length; i++)
-                styleCombo.addItem(OL_TYPE_LABELS[i]);
+            for (String olTypeLabel : OL_TYPE_LABELS) {
+                styleCombo.addItem(olTypeLabel);
+            }
             startAtCB.setEnabled(true);
             startAtField.setEnabled(startAtCB.isSelected());
         }
@@ -94,65 +96,73 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
      *
      */
     private void initialize() {
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridx = 0;
-        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc2.gridy = 2;
-
-        GridBagConstraints gbc1 = new GridBagConstraints();
-        gbc1.gridx = 0;
-        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc1.insets = new Insets(0, 0, 5, 5);
-        gbc1.gridy = 1;
-
-        GridBagConstraints gbc5 = new GridBagConstraints();
-        gbc5.fill = GridBagConstraints.NONE;
-        gbc5.gridy = 2;
-        gbc5.weightx = 1.0;
-        gbc5.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc5.gridx = 1;
-
-        GridBagConstraints gbc4 = new GridBagConstraints();
-        gbc4.fill = GridBagConstraints.HORIZONTAL;
-        gbc4.gridy = 1;
-        gbc4.weightx = 1.0;
-        gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc4.insets = new Insets(0, 0, 5, 0);
-        gbc4.gridx = 1;
-
-        GridBagConstraints gbc3 = new GridBagConstraints();
-        gbc3.fill = GridBagConstraints.HORIZONTAL;
-        gbc3.gridy = 0;
-        gbc3.weightx = 1.0;
-        gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc3.insets = new Insets(0, 0, 5, 0);
-        gbc3.gridx = 1;
+        final int anchor = GridBagConstraints.BASELINE_LEADING;
+        final int fill = GridBagConstraints.HORIZONTAL;
+        final Insets leftInsets = new Insets(0, 0, 5, 5);
+        final Insets rightInsets = new Insets(0, 0, 5, 0);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc.insets = new Insets(0, 0, 5, 5);
-        gbc.gridy = 0;
+        gbc.gridx = gbc.gridy = 0;
+        gbc.anchor = anchor;
+        gbc.fill = fill;
+        gbc.insets = leftInsets;
 
-        typeLabel = new JLabel();
-        typeLabel.setText(i18n.str("list_type"));
-        this.setLayout(new GridBagLayout());
-        this.setSize(new Dimension(234, 159));
-        this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        this.add(typeLabel, gbc);
-        this.add(getTypeCombo(), gbc3);
-        this.add(getStyleCombo(), gbc4);
-        this.add(getStartAtField(), gbc5);
-        this.add(getStyleCB(), gbc1);
-        this.add(getStartAtCB(), gbc2);
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.gridx = 1;
+        gbc1.gridy = 0;
+        gbc1.anchor = anchor;
+        gbc1.fill = fill;
+        gbc1.insets = rightInsets;
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 0;
+        gbc2.gridy = 1;
+        gbc2.anchor = anchor;
+        gbc2.fill = fill;
+        gbc2.insets = leftInsets;
+
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.gridx = gbc3.gridy = 1;
+        gbc3.anchor = anchor;
+        gbc3.fill = fill;
+        gbc3.insets = rightInsets;
+
+        GridBagConstraints gbc4 = new GridBagConstraints();
+        gbc4.gridx = 0;
+        gbc4.gridy = 2;
+        gbc4.anchor = anchor;
+        gbc4.fill = fill;
+        gbc4.insets = leftInsets;
+
+        GridBagConstraints gbc5 = new GridBagConstraints();
+        gbc5.gridx = 1;
+        gbc5.gridy = 2;
+        gbc5.anchor = anchor;
+        gbc5.fill = fill;
+        gbc5.insets = rightInsets;
+
+        typeLabel = new JLabel(i18n.str("list_type"));
+
+        GridBagLayout gbl = new GridBagLayout();
+        gbl.columnWeights = new double[] {0.0, 1.0};
+        gbl.rowWeights = new double[] {0.0, 0.0, 0.0};
+
+        setLayout(gbl);
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(typeLabel, gbc);
+        add(getTypeCombo(), gbc1);
+        add(getStyleCB(), gbc2);
+        add(getStyleCombo(), gbc3);
+        add(getStartAtCB(), gbc4);
+        add(getStartAtField(), gbc5);
     }
 
     public void updateComponentsFromAttribs() {
         if (attribs.containsKey("type")) {
             styleCB.setSelected(true);
             styleCombo.setEnabled(true);
-            int i = getIndexForStyle(attribs.get("type").toString());
-            styleCombo.setSelectedIndex(i);
+            styleCombo.setSelectedIndex(
+                    getIndexForStyle(attribs.get("type")));
         } else {
             styleCB.setSelected(false);
             styleCombo.setEnabled(false);
@@ -161,9 +171,10 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
         if (attribs.containsKey("start")) {
             startAtCB.setSelected(true);
             startAtField.setEnabled(true);
+
             try {
-                int n = Integer.parseInt(attribs.get("start").toString());
-                startAtField.getModel().setValue(new Integer(n));
+                int n = Integer.parseInt(attribs.get("start"));
+                startAtField.getModel().setValue(n);
             } catch (Exception ignored) {
             }
         } else {
@@ -222,7 +233,6 @@ public class ListAttributesPanel extends HTMLAttributeEditorPanel {
     private JSpinner getStartAtField() {
         if (startAtField == null) {
             startAtField = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
-
         }
         
         return startAtField;

@@ -5,27 +5,24 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ImageDialog extends HTMLOptionDialog {
     private static final long serialVersionUID = 1L;
-
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "image.png");
-    private static String title = i18n.str("image");
-    private static String desc = i18n.str("image_desc");
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "image.png");
+    private static final String TITLE = I18N.str("image");
+    private static final String DESC = I18N.str("image_desc");
 
     private ImagePanel imagePanel;
 
     public ImageDialog(Frame parent) {
-        super(parent, title, desc, icon);
+        super(parent, TITLE, DESC, ICON);
         init();
     }
 
     public ImageDialog(Dialog parent) {
-        super(parent, title, desc, icon);
+        super(parent, TITLE, DESC, ICON);
         init();
     }
 
@@ -36,39 +33,38 @@ public class ImageDialog extends HTMLOptionDialog {
         setResizable(false);
     }
 
-    public Map getImageAttributes() {
+    public Map<String, String> getImageAttributes() {
         return imagePanel.getAttributes();
     }
 
-    public void setImageAttributes(Map attr) {
-        imagePanel.setAttributes(attr);
+    public void setImageAttributes(Map<String, String> attrs) {
+        imagePanel.setAttributes(attrs);
     }
 
-    private String createImgAttributes(Map ht) {
-        String html = "";
-        for (Iterator e = ht.keySet().iterator(); e.hasNext(); ) {
-            Object k = e.next();
-            if (k.toString().equals("a") || k.toString().equals("name"))
-                continue;
-            html += " " + k + "=" + "\"" + ht.get(k) + "\"";
+    private String createImgAttributes(Map<String, String> attrs) {
+        StringBuilder html = new StringBuilder();
+
+        for (Map.Entry<String, String> attr : attrs.entrySet()) {
+            String name = attr.getKey();
+            if (!(name.equals("a") || name.equals("name"))) {
+                html.append(" ").append(name).append("=\"")
+                        .append(attr.getValue()).append("\"");
+            }
         }
 
-        return html;
+        return html.toString();
     }
 
     public String getHTML() {
-        Map imgAttr = imagePanel.getAttributes();
+        Map<String, String> imgAttr = imagePanel.getAttributes();
         boolean hasLink = imgAttr.containsKey("a");
-        String html = "";
-        if (hasLink) {
-            html = "<a " + imgAttr.get("a") + ">";
-        }
-        html += "<img" + createImgAttributes(imgAttr) + ">";
 
-        if (hasLink)
-            html += "</a>";
+        StringBuilder html = new StringBuilder();
+        if (hasLink) html.append("<a ").append(imgAttr.get("a")).append(">");
+        html.append("<img").append(createImgAttributes(imgAttr)).append(">");
+        if (hasLink) html.append("</a>");
 
-        return html;
+        return html.toString();
     }
 
 }

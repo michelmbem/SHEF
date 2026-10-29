@@ -33,7 +33,7 @@ public class ListDialog extends OptionDialog {
         listAttrPanel = new ListAttributesPanel();
         setContentPane(listAttrPanel);
         pack();
-        setSize(220, getHeight());
+        setSize(250, 250);
         setResizable(false);
     }
 

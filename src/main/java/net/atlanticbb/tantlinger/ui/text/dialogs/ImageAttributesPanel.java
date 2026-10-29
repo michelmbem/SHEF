@@ -219,6 +219,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
         GridBagConstraints gbc4 = new GridBagConstraints();
         gbc4.gridx = 1;
         gbc4.gridy = 1;
+        gbc4.gridwidth = 2;
         gbc4.anchor = anchor;
         gbc4.fill = fill;
         gbc4.insets = rightInsets;
