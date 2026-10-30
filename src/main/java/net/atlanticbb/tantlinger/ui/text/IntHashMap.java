@@ -320,6 +320,7 @@ class IntHashMap {
                 return oldValue;
             }
         }
+
         return null;
     }
 

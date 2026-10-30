@@ -696,8 +696,9 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit {
                 document.setOuterHTML(elem, html);
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                CompoundUndoManager.endCompoundEdit(document);
             }
-            CompoundUndoManager.endCompoundEdit(document);
         }
     }
 }

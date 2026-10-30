@@ -30,7 +30,6 @@ import java.util.*;
  * </code></pre>
  *
  * @author Bob Tantlinger
- * TODO Internationalize, add mnemonics, etc
  */
 
 public class TextEditPopupManager {

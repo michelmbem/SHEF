@@ -11,9 +11,13 @@ import java.util.List;
  * @author Bob Tantlinger
  *
  */
-public class IOUtils {
+public final class IOUtils {
     private static final int BUFFER_SIZE = 1024 * 4;
     private static final NullCopyMonitor nullMon = new NullCopyMonitor();
+
+    private IOUtils() {
+        /* This utility class should not be instantiated */
+    }
 
     private static void getDirectoryContents(List<File> onlyFiles, File rootdir) {
         for (File file : rootdir.listFiles()) {
@@ -87,13 +91,10 @@ public class IOUtils {
      */
     public static File createUniqueFile(File f) {
         while (f.exists()) {
-            /*String uniqueName = (getExtension(f).equals("")) ? 
-                (getName(f) + count) : 
-                (count + "." + getExtension(f));*/
-
             String ext = getExtension(f);
             String name = getName(f);
             int dashPos = name.lastIndexOf('-');
+
             if (dashPos == -1) {
                 name = name + "-1";
             } else {

@@ -12,7 +12,7 @@ import java.io.Writer;
  *
  */
 public class ElementWriter extends HTMLWriter {
-    private Element root;
+    private final Element root;
 
     public ElementWriter(Writer out, Element root) {
         this(out, root, root.getStartOffset(), root.getEndOffset());
@@ -30,21 +30,21 @@ public class ElementWriter extends HTMLWriter {
     }
 
     private static int getStartPos(Element root, int start) {
-        if (start >= root.getStartOffset() && start <= root.getEndOffset())
-            return start;
-        return root.getStartOffset();
+        return start >= root.getStartOffset() && start <= root.getEndOffset()
+                ? start
+                : root.getStartOffset();
     }
 
     private static int getEndPos(Element root, int end) {
-        if (end >= root.getStartOffset() && end <= root.getEndOffset())
-            return end;
-        return root.getEndOffset();
+        return end >= root.getStartOffset() && end <= root.getEndOffset()
+                ? end
+                : root.getEndOffset();
     }
 
     private static boolean isAncestor(Element a, Element d) {
-        for (Element e = d.getParentElement(); e != null; e = e.getParentElement())
-            if (e == a)
-                return true;
+        for (Element e = d.getParentElement(); e != null; e = e.getParentElement()) {
+            if (e == a) return true;
+        }
 
         return false;
     }

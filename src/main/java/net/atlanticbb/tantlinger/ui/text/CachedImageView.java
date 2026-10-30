@@ -55,14 +55,14 @@ public class CachedImageView extends ImageView {
     /**
      * Writes an image out to the cache
      *
-     * @param image
+     * @param image the {@link Image} to cache
      */
     private void cacheImage(final Image image) {
         final File cImg = getCachedImg();
         if (image == null || cImg == null || cImg.exists())
             return;
 
-        hasCached = true;//set the hasCached flag so we dont write it twice
+        hasCached = true;//set the hasCached flag so we don't write it twice
 
         Runnable runner = () -> {
             String type = "png";//assume png for non-jpegs
@@ -87,7 +87,7 @@ public class CachedImageView extends ImageView {
     /**
      * Gets the real image URL as specified in the src attribute of the image tag
      *
-     * @return
+     * @return the <em>src</em> attribute of the associated <em>img</em> tag
      */
     private String srcAttribute() {
         return (String) getElement().getAttributes().getAttribute(HTML.Attribute.SRC);
@@ -104,8 +104,7 @@ public class CachedImageView extends ImageView {
     @Override
     public URL getImageURL() {
         String src = srcAttribute();
-        if (src == null)
-            return null;
+        if (src == null) return null;
 
         URL imgURL = null;
         File diskCachedImg = getCachedImg();
@@ -124,16 +123,14 @@ public class CachedImageView extends ImageView {
     }
 
     private BufferedImage makeBufferedImage(Image image) {
-        BufferedImage buffered;
-        Graphics2D g2;
-
-        buffered = new BufferedImage(image.getWidth(null),
+        BufferedImage buffered = new BufferedImage(
+                image.getWidth(null),
                 image.getHeight(null),
                 BufferedImage.TYPE_INT_RGB);
 
-        g2 = buffered.createGraphics();
-        g2.drawImage(image, null, null);
-        g2.dispose();
+        Graphics2D g = buffered.createGraphics();
+        g.drawImage(image, null, null);
+        g.dispose();
 
         return buffered;
     }
@@ -143,15 +140,15 @@ public class CachedImageView extends ImageView {
      * The local file is named with the absolute value of the hashcode for the
      * actual image url and a "png" or "jpg" file extension
      *
-     * @return
+     * @return A {@link File} instance representing the cached image file on the local drive
      */
     private File getCachedImg() {
         String iUrl = srcAttribute();
-        if (iUrl == null)
-            return null;
+        if (iUrl == null) return null;
 
         String imgType = ".png";
-        if (iUrl.toLowerCase().endsWith(".jpg") || iUrl.toLowerCase().endsWith(".jpeg"))
+        if (iUrl.toLowerCase().endsWith(".jpg") ||
+                iUrl.toLowerCase().endsWith(".jpeg"))
             imgType = ".jpg";
 
         int hc = Math.abs(iUrl.hashCode());

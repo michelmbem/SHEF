@@ -11,42 +11,37 @@ import java.util.*;
  * @author Bob Tantlinger
  *
  */
-public class I18n {
-
-    public static final Properties BUNDLE_PROPS = new Properties();
-    public static final Map I18NS = new HashMap();
+public final class I18n {
+    private static final Map<String, I18n> MAP = new HashMap<>();
+    private static final Properties PROPERTIES = new Properties();
     private static final File LANG_PACK_DIR = new File(System.getProperty("user.dir"), "languages");
     private static final String DEFAULT_BUNDLE_NAME = "messages";
     private static final String MNEM_POSTFIX = ".mnemonic";
+
     public static Locale locale = Locale.getDefault();
 
-    private ResourceBundle bundle;
-    private String _package;
+    private final String packageName;
 
-    private I18n(String _package) {
-        this._package = _package;
+    private ResourceBundle bundle;
+
+    private I18n(String packageName) {
+        this.packageName = packageName;
     }
 
-    public static I18n getInstance(String _package) {
-        I18n i18n = (I18n) I18NS.get(_package);
-        if (i18n == null) {
-            i18n = new I18n(_package);
-            I18NS.put(_package, i18n);
-        }
-
-        return i18n;
+    public static I18n getInstance(String packageName) {
+        return MAP.computeIfAbsent(packageName, I18n::new);
     }
 
     public static Locale getLocale() {
         if (locale == null)
-            Locale.getDefault();
+            locale = Locale.getDefault();
+
         return locale;
     }
 
     public static void setLocale(Locale loc) {
         locale = loc;
-        for (Object o : I18NS.values()) {
-            I18n i18n = (I18n) o;
+        for (I18n i18n : MAP.values()) {
             i18n.bundle = null; //reset so bundle with new locale gets created...
         }
     }
@@ -59,46 +54,36 @@ public class I18n {
     /**
      * Converts slashes to dots in a pathname
      *
-     * @param path
-     * @return
+     * @param path The string to convert
+     * @return a dotted string
      */
     private static String slashesToDots(String path) {
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(path, "/");
-        while (st.hasMoreTokens()) {
-            sb.append(".");
-            sb.append(st.nextToken());
-        }
-
-        if (sb.toString().startsWith("."))
-            sb.deleteCharAt(0);
-
-        return sb.toString();
+        String s = path.replace('/', '.');
+        return s.startsWith(".") ? s.substring(1) : s;
     }
 
     private static String createBundleName(String bundlePackage, String bundleName) {
         StringBuilder sb = new StringBuilder(slashesToDots(bundlePackage));
-        if (!sb.toString().endsWith("."))
-            sb.append('.');
+        if (!sb.toString().endsWith(".")) sb.append('.');
         sb.append(bundleName);
         return sb.toString();
     }
 
-    public static void setBundleForPackage(String _package, String bundle) {
+    public static void setBundleForPackage(String packageName, String bundle) {
         if (bundle == null)
-            BUNDLE_PROPS.remove(_package);
+            PROPERTIES.remove(packageName);
         else
-            BUNDLE_PROPS.setProperty(_package, bundle);
+            PROPERTIES.setProperty(packageName, bundle);
 
-        I18n i18n = (I18n) I18NS.get(_package);
+        I18n i18n = MAP.get(packageName);
         if (i18n != null)
             i18n.bundle = null; //reset to null so the bundle is recreated for the new name
     }
 
-    public static String getBundleForPackage(String _package) {
-        String bun = BUNDLE_PROPS.getProperty(_package);
+    public static String getBundleForPackage(String packageName) {
+        String bun = PROPERTIES.getProperty(packageName);
         if (bun == null)//use default
-            bun = createBundleName(_package, DEFAULT_BUNDLE_NAME);
+            bun = createBundleName(packageName, DEFAULT_BUNDLE_NAME);
 
         return bun;
     }
@@ -109,38 +94,40 @@ public class I18n {
 
     public static File[] getAvailableLanguagePacks() {
         Locale[] locs = getAvailableLanguagePackLocales();
-        List packs = new ArrayList();
+        List<File> packs = new ArrayList<>();
 
-        for (int i = 0; i < locs.length; i++) {
-            String name = locs[i].toString() + ".zip";
+        for (Locale loc : locs) {
+            String name = loc.toString() + ".zip";
             File f = new File(LANG_PACK_DIR, name);
             if (f.isFile() && f.canRead())
                 packs.add(f);
         }
 
-        return (File[]) packs.toArray(new File[packs.size()]);
+        return packs.toArray(File[]::new);
     }
 
     public static Locale[] getAvailableLanguagePackLocales() {
-        List locs = new ArrayList();
+        List<Locale> locs = new ArrayList<>();
         File dir = getLanguagePackDirectory();
+
         if (dir.isDirectory() && dir.canRead()) {
             File[] packs = dir.listFiles(new ZipFileFilter());
+
             if (packs != null) {
-                for (int i = 0; i < packs.length; i++) {
-                    String name = packs[i].getName();
+                for (File pack : packs) {
+                    String name = pack.getName();
                     int p = name.lastIndexOf(".");
+
                     if (p != -1) {
                         String locStr = name.substring(0, p);
                         Locale loc = localeFromString(locStr);
-                        if (loc != null)
-                            locs.add(loc);
+                        locs.add(loc);
                     }
                 }
             }
         }
 
-        return (Locale[]) locs.toArray(new Locale[locs.size()]);
+        return locs.toArray(Locale[]::new);
     }
 
     public static Locale localeFromString(String locStr) {
@@ -174,20 +161,16 @@ public class I18n {
 
     public int mnem(String key) {
         String s = str(key + MNEM_POSTFIX);
-        if (s != null && !s.isEmpty())
-            return s.charAt(0);
-        return '!';
+        return s.isEmpty() ? '!' : s.charAt(0);
     }
 
     public int mnem(String key, Locale loc) {
         String s = str(key + MNEM_POSTFIX, loc);
-        if (s != null && !s.isEmpty())
-            return s.charAt(0);
-        return '!';
+        return s.isEmpty() ? '!' : s.charAt(0);
     }
 
     private ResourceBundle createBundle(Locale loc) {
-        String bun = getBundleForPackage(_package);
+        String bun = getBundleForPackage(packageName);
 
         File[] packs = getAvailableLanguagePacks();
         if (packs.length > 0) {

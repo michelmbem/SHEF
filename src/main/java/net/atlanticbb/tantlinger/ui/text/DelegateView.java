@@ -9,7 +9,7 @@ import java.awt.*;
  * This class is essentially a wrapper for another view. The paint method
  * is left abstract so that custom drawing can be done.
  * <p>
- * This is useful for extending the functionallity of non-public Swing views
+ * This is useful for extending the functionality of non-public Swing views
  * such as javax.swing.text.html.TableView
  *
  * @author Bob Tantlinger
@@ -17,7 +17,7 @@ import java.awt.*;
 public abstract class DelegateView extends View {
     protected View delegate;
 
-    public DelegateView(View delegate) {
+    protected DelegateView(View delegate) {
         super(delegate.getElement());
         this.delegate = delegate;
     }
