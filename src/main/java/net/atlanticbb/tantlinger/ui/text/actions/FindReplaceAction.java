@@ -57,7 +57,7 @@ public class FindReplaceAction extends BasicEditAction {
     @Override
     protected void updateContextState(JEditorPane editor) {
         if (dialog != null) {
-            dialog.setJTextComponent(editor);
+            dialog.setMonitor(editor);
         }
     }
 
