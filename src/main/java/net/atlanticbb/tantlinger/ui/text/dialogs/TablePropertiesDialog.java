@@ -12,66 +12,64 @@ import java.util.Map;
 
 public class TablePropertiesDialog extends OptionDialog {
     private static final long serialVersionUID = 1L;
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "table.png");
+    private static final String TITLE = I18N.str("table_properties");
+    private static final String DESC = I18N.str("table_properties_desc");
 
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "table.png");
-    private static String title = i18n.str("table_properties");
-    private static String desc = i18n.str("table_properties_desc");
-
-    private TableAttributesPanel tableProps = new TableAttributesPanel();
-    private RowAttributesPanel rowProps = new RowAttributesPanel();
-    private CellAttributesPanel cellProps = new CellAttributesPanel();
+    private final TableAttributesPanel tableProps = new TableAttributesPanel();
+    private final RowAttributesPanel rowProps = new RowAttributesPanel();
+    private final CellAttributesPanel cellProps = new CellAttributesPanel();
 
     public TablePropertiesDialog(Frame parent) {
-        super(parent, title, desc, icon);
+        super(parent, TITLE, DESC, ICON);
         init();
     }
 
     public TablePropertiesDialog(Dialog parent) {
-        super(parent, title, desc, icon);
+        super(parent, TITLE, DESC, ICON);
         init();
     }
 
     private void init() {
         Border emptyBorder = new EmptyBorder(5, 5, 5, 5);
-        Border titleBorder = BorderFactory.createTitledBorder(i18n.str("table_properties"));
+        Border titleBorder = BorderFactory.createTitledBorder(I18N.str("table_properties"));
 
         tableProps.setBorder(BorderFactory.createCompoundBorder(emptyBorder, titleBorder));
         rowProps.setBorder(emptyBorder);
         cellProps.setBorder(emptyBorder);
 
         JTabbedPane tabs = new JTabbedPane();
-        tabs.add(tableProps, i18n.str("table"));
-        tabs.add(rowProps, i18n.str("row"));
-        tabs.add(cellProps, i18n.str("cell"));
+        tabs.add(tableProps, I18N.str("table"));
+        tabs.add(rowProps, I18N.str("row"));
+        tabs.add(cellProps, I18N.str("cell"));
 
         setContentPane(tabs);
-        setSize(440, 375);
+        setSize(525, 375);
         setResizable(false);
     }
 
-    public void setRowAttributes(Map at) {
+    public void setRowAttributes(Map<String, String> at) {
         rowProps.setAttributes(at);
     }
 
-    public Map getTableAttributes() {
+    public Map<String, String> getTableAttributes() {
         return tableProps.getAttributes();
     }
 
-    public void setTableAttributes(Map at) {
+    public void setTableAttributes(Map<String, String> at) {
         tableProps.setAttributes(at);
     }
 
-    public Map getRowAttribures() {
+    public Map<String, String> getRowAttributes() {
         return rowProps.getAttributes();
     }
 
-    public Map getCellAttributes() {
+    public Map<String, String> getCellAttributes() {
         return cellProps.getAttributes();
     }
 
-    public void setCellAttributes(Map at) {
+    public void setCellAttributes(Map<String, String> at) {
         cellProps.setAttributes(at);
     }
 }

@@ -241,11 +241,13 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
         imgUrlLabel = new JLabel(i18n.str("image_url"));
 
         selectFileButton = new JButton(UIUtils.getIcon(UIUtils.X16, "import.png"));
-        selectFileButton.setToolTipText("Select an image file");
+        selectFileButton.setToolTipText(i18n.str("browse_for_image"));
         selectFileButton.addActionListener(evt -> {
             JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
-            chooser.setDialogTitle("Select Image File");
-            chooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
+            chooser.setDialogTitle(i18n.str("select_image"));
+            chooser.addChoosableFileFilter(new FileNameExtensionFilter(i18n.str("image_files"),
+                    "jpg", "jpeg", "png", "gif", "webp", "avif", "svg", "apng", "bmp",
+                    "tif", "tiff", "ico", "jxl", "heif", "heic", "jp2", "j2k", "ppm", "pgm", "pbm"));
             chooser.setAcceptAllFileFilterUsed(false);
 
             int rc = chooser.showDialog(ImageAttributesPanel.this, "Select");
@@ -496,6 +498,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             final int anchor = GridBagConstraints.BASELINE_LEADING;
             final int fill = GridBagConstraints.HORIZONTAL;
             final Insets leftInsets = new Insets(0, 0, 5, 5);
+            final Insets middleInsets = new Insets(0, 10, 5, 5);
             final Insets rightInsets = new Insets(0, 0, 5, 0);
 
             GridBagConstraints gbc = new GridBagConstraints();
@@ -516,7 +519,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             gbc2.gridy = 0;
             gbc2.anchor = anchor;
             gbc2.fill = fill;
-            gbc2.insets = leftInsets;
+            gbc2.insets = middleInsets;
 
             GridBagConstraints gbc3 = new GridBagConstraints();
             gbc3.gridx = 3;
@@ -544,7 +547,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             gbc6.gridy = 1;
             gbc6.anchor = anchor;
             gbc6.fill = fill;
-            gbc6.insets = leftInsets;
+            gbc6.insets = middleInsets;
 
             GridBagConstraints gbc7 = new GridBagConstraints();
             gbc7.gridx = 3;
@@ -572,7 +575,7 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
             gbc10.gridy = 2;
             gbc10.anchor = anchor;
             gbc10.fill = fill;
-            gbc10.insets = leftInsets;
+            gbc10.insets = middleInsets;
 
             GridBagConstraints gbc11 = new GridBagConstraints();
             gbc11.gridx = 3;

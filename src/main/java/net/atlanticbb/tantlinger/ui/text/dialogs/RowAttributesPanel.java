@@ -2,11 +2,12 @@ package net.atlanticbb.tantlinger.ui.text.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RowAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
+
     private AlignmentAttributesPanel alignPanel = null;
     private BGColorPanel bgColorPanel = null;
     private JPanel expansionPanel = null;
@@ -15,10 +16,10 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
      * This is the default constructor
      */
     public RowAttributesPanel() {
-        this(new Hashtable());
+        this(new HashMap<>());
     }
 
-    public RowAttributesPanel(Hashtable attr) {
+    public RowAttributesPanel(Map<String, String> attr) {
         super(attr);
         initialize();
         alignPanel.setAttributes(getAttributes());
@@ -28,7 +29,7 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
     public void updateComponentsFromAttribs() {
         if (attribs.containsKey("bgcolor")) {
             bgColorPanel.setSelected(true);
-            bgColorPanel.setColor(attribs.get("bgcolor").toString());
+            bgColorPanel.setColor(attribs.get("bgcolor"));
         }
 
         alignPanel.updateComponentsFromAttribs();
@@ -39,20 +40,21 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
             attribs.put("bgcolor", bgColorPanel.getColor());
         else
             attribs.remove("bgcolor");
+
         alignPanel.updateAttribsFromComponents();
     }
 
-    public void setComponentStates(Hashtable attribs) {
+    public void setComponentStates(Map<String, String> attribs) {
         if (attribs.containsKey("bgcolor")) {
             bgColorPanel.setSelected(true);
-            bgColorPanel.setColor(attribs.get("bgcolor").toString());
+            bgColorPanel.setColor(attribs.get("bgcolor"));
         }
 
         alignPanel.setComponentStates(attribs);
-
     }
 
-    public void setAttributes(Map attr) {
+    @Override
+    public void setAttributes(Map<String, String> attr) {
         alignPanel.setAttributes(attr);
         super.setAttributes(attr);
     }
@@ -61,30 +63,36 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
      * This method initializes this
      */
     private void initialize() {
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridx = 0;
-        gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc2.fill = GridBagConstraints.HORIZONTAL;
-        gbc2.weighty = 1.0;
-        gbc2.gridy = 2;
+        final int anchor = GridBagConstraints.BASELINE_LEADING;
+        final int fill = GridBagConstraints.HORIZONTAL;
+        final Insets insets = new Insets(0, 0, 5, 0);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gbc.gridy = 0;
+        gbc.anchor = anchor;
+        gbc.fill = fill;
+        gbc.insets = insets;
+
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.gridx = 0;
-        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc1.weightx = 1.0;
         gbc1.gridy = 1;
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbc.insets = new Insets(0, 0, 5, 0);
-        gbc.weightx = 0.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridy = 0;
-        this.setLayout(new GridBagLayout());
-        this.setSize(279, 140);
-        this.setPreferredSize(new Dimension(215, 140));
-        this.add(getAlignPanel(), gbc);
-        this.add(getBgColorPanel(), gbc1);
-        this.add(getExpansionPanel(), gbc2);
+        gbc1.anchor = anchor;
+        gbc1.fill = fill;
+        gbc1.insets = insets;
+
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.gridx = 0;
+        gbc2.gridy = 2;
+        gbc2.fill = GridBagConstraints.BOTH;
+
+        GridBagLayout gbl = new GridBagLayout();
+        gbl.columnWeights = new double[] {1.0};
+        gbl.rowWeights = new double[] {0.0, 0.0, 1.0};
+
+        setLayout(gbl);
+        add(getAlignPanel(), gbc);
+        add(getBgColorPanel(), gbc1);
+        add(getExpansionPanel(), gbc2);
     }
 
     /**
@@ -96,6 +104,7 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
         if (alignPanel == null) {
             alignPanel = new AlignmentAttributesPanel();
         }
+
         return alignPanel;
     }
 
@@ -108,6 +117,7 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
         if (bgColorPanel == null) {
             bgColorPanel = new BGColorPanel();
         }
+
         return bgColorPanel;
     }
 
@@ -120,6 +130,7 @@ public class RowAttributesPanel extends HTMLAttributeEditorPanel {
         if (expansionPanel == null) {
             expansionPanel = new JPanel();
         }
+
         return expansionPanel;
     }
 

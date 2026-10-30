@@ -48,29 +48,37 @@ public class BGColorPanel extends JPanel {
      *
      */
     private void initialize() {
-        final int anchor = GridBagConstraints.BASELINE_LEADING;
-        final Insets insets = new Insets(0, 0, 0, 5);
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = gbc.gridy = 0;
-        gbc.anchor = anchor;
-        gbc.insets = insets;
+        gbc.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 5);
         
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.gridx = 1;
         gbc1.gridy = 0;
-        gbc1.anchor = anchor;
-        gbc1.insets = insets;
+        gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+        gbc1.fill = GridBagConstraints.HORIZONTAL;
 
         GridBagConstraints gbc2 = new GridBagConstraints();
         gbc2.gridx = 2;
         gbc2.gridy = 0;
-        gbc2.anchor = anchor;
+        gbc2.fill = GridBagConstraints.BOTH;
 
-        setLayout(new GridBagLayout());
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        gbc3.gridx = 3;
+        gbc3.gridy = 0;
+        gbc3.fill = GridBagConstraints.BOTH;
+
+        GridBagLayout gbl = new GridBagLayout();
+        gbl.columnWeights = new double[] {0.0, 0.0, 0.0, 1.0};
+        gbl.rowWeights = new double[] {0.0};
+
+        setLayout(gbl);
         add(getBgColorCB(), gbc);
         add(getColorPanel(), gbc1);
         add(getColorButton(), gbc2);
+        add(new JLabel(), gbc3);
 
         colorButton.setEnabled(bgColorCB.isSelected());
     }
@@ -87,6 +95,7 @@ public class BGColorPanel extends JPanel {
 
             bgColorCB.addItemListener(e -> {
                 colorButton.setEnabled(bgColorCB.isSelected());
+
                 if (bgColorCB.isSelected())
                     colorPanel.setBackground(selColor);
                 else
@@ -119,9 +128,8 @@ public class BGColorPanel extends JPanel {
      */
     private JButton getColorButton() {
         if (colorButton == null) {
-            colorButton = new JButton();
-            colorButton.setIcon(UIUtils.getIcon(UIUtils.X16, "color.png"));
-            colorButton.setPreferredSize(new Dimension(20, 20));
+            colorButton = new JButton(UIUtils.getIcon(UIUtils.X16, "color.png"));
+            colorButton.setToolTipText(i18n.str("choose_color"));
             colorButton.addActionListener(e -> {
                 Color c = JColorChooser.showDialog(
                         BGColorPanel.this, i18n.str("color"), selColor);

@@ -27,25 +27,33 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A find and replace dialog for JTextComponents
  *
  */
 public class TextFinderDialog extends JDialog {
-    public static final char[] WORD_SEPARATORS = {' ', '\t', '\n',
-            '\r', '\f', '.', ',', ':', '-', '(', ')', '[', ']', '{',
-            '}', '<', '>', '/', '|', '\\', '\'', '\"'};
     public static final int FIND = 0;
     public static final int REPLACE = 1;
+    protected static final char[] WORD_SEPARATORS = {
+            ' ', '\t', '\n', '\r', '\f', '.', ',', ':', '-', '(', ')',
+            '[', ']', '{', '}', '<', '>', '/', '|', '\\', '\'', '\"'};
     private static final long serialVersionUID = 1L;
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    private static final String TITLE = i18n.str("find_and_replace");
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final String TITLE = I18N.str("find_and_replace");
+
+    private final ImageIcon warnIcon = UIUtils.getIcon(UIUtils.X48, "error.png");
+    private final TextEditPopupManager popupManager = TextEditPopupManager.getInstance();
+
     protected Frame owner;
     protected JTextComponent monitor;
-    protected JTabbedPane tb;
+    protected JTabbedPane tabbedPane;
     protected JTextField txtFind1;
     protected JTextField txtFind2;
     protected Document docFind;
@@ -54,13 +62,8 @@ public class TextFinderDialog extends JDialog {
     protected ButtonModel modelCase;
     protected ButtonModel modelUp;
     protected ButtonModel modelDown;
-    //protected int searchIndex = -1;
     protected boolean searchUp = false;
     protected String searchData;
-    private ImageIcon warnIcon = UIUtils.getIcon(UIUtils.X48, "error.png");
-    //private TextEditPopupManager popupManager = new TextEditPopupManager();
-    private TextEditPopupManager popupManager = TextEditPopupManager.getInstance();
-    //private JTextComponent textComp;
 
     public TextFinderDialog(Frame owner, JTextComponent tc, int index) {
         super(owner, TITLE, false);
@@ -75,7 +78,7 @@ public class TextFinderDialog extends JDialog {
     private void init(JTextComponent tc, int index) {
         setJTextComponent(tc);
 
-        tb = new JTabbedPane(SwingConstants.TOP);
+        tabbedPane = new JTabbedPane(SwingConstants.TOP);
 
         // "Find" panel
         JPanel p1 = new JPanel(new BorderLayout());
@@ -85,7 +88,7 @@ public class TextFinderDialog extends JDialog {
         JPanel pf = new JPanel();
         pf.setLayout(new DialogLayout(20, 5));
         pf.setBorder(new EmptyBorder(8, 5, 8, 0));
-        pf.add(new JLabel(i18n.str("find_what")));
+        pf.add(new JLabel(I18N.str("find_what")));
 
         txtFind1 = new JTextField();
         docFind = txtFind1.getDocument();
@@ -94,26 +97,26 @@ public class TextFinderDialog extends JDialog {
         popupManager.registerJTextComponent(txtFind1);
 
         JPanel po = new JPanel(new GridLayout(2, 2, 8, 2));
-        po.setBorder(new TitledBorder(new EtchedBorder(), i18n.str("options")));
+        po.setBorder(new TitledBorder(new EtchedBorder(), I18N.str("options")));
 
-        JCheckBox chkWord = new JCheckBox(i18n.str("whole_words_only"));
+        JCheckBox chkWord = new JCheckBox(I18N.str("whole_words_only"));
         chkWord.setMnemonic('w');
         modelWord = chkWord.getModel();
         po.add(chkWord);
 
         ButtonGroup bg = new ButtonGroup();
-        JRadioButton rdUp = new JRadioButton(i18n.str("search_up"));
+        JRadioButton rdUp = new JRadioButton(I18N.str("search_up"));
         rdUp.setMnemonic('u');
         modelUp = rdUp.getModel();
         bg.add(rdUp);
         po.add(rdUp);
 
-        JCheckBox chkCase = new JCheckBox(i18n.str("match_case"));
+        JCheckBox chkCase = new JCheckBox(I18N.str("match_case"));
         chkCase.setMnemonic('c');
         modelCase = chkCase.getModel();
         po.add(chkCase);
 
-        JRadioButton rdDown = new JRadioButton(i18n.str("search_down"), true);
+        JRadioButton rdDown = new JRadioButton(I18N.str("search_down"), true);
         rdDown.setMnemonic('d');
         modelDown = rdDown.getModel();
         bg.add(rdDown);
@@ -125,33 +128,23 @@ public class TextFinderDialog extends JDialog {
         JPanel p01 = new JPanel(new FlowLayout());
         JPanel p = new JPanel(new GridLayout(2, 1, 2, 8));
 
-        ActionListener findAction = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                findNext(false, true);
-            }
-        };
+        ActionListener findAction = e -> findNext(false, true);
 
-        JButton btFind = new JButton(i18n.str("find_next"));
+        JButton btFind = new JButton(I18N.str("find_next"));
         btFind.addActionListener(findAction);
         btFind.setMnemonic('f');
         p.add(btFind);
 
-        ActionListener closeAction = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                //txtFind1 = null;
-                //txtFind2 = null;
-            }
-        };
+        ActionListener closeAction = e -> setVisible(false);
 
-        JButton btClose = new JButton(i18n.str("close"));
+        JButton btClose = new JButton(I18N.str("close"));
         btClose.addActionListener(closeAction);
         btClose.setDefaultCapable(true);
         p.add(btClose);
         p01.add(p);
         p1.add(p01, BorderLayout.EAST);
 
-        tb.addTab(i18n.str("find"), p1);
+        tabbedPane.addTab(I18N.str("find"), p1);
 
         // "Replace" panel
         JPanel p2 = new JPanel(new BorderLayout());
@@ -162,13 +155,13 @@ public class TextFinderDialog extends JDialog {
         pc.setLayout(new DialogLayout(20, 5));
         pc.setBorder(new EmptyBorder(8, 5, 8, 0));
 
-        pc.add(new JLabel(i18n.str("find_what")));
+        pc.add(new JLabel(I18N.str("find_what")));
         txtFind2 = new JTextField();
         txtFind2.setDocument(docFind);
         pc.add(txtFind2);
         popupManager.registerJTextComponent(txtFind2);
 
-        pc.add(new JLabel(i18n.str("replace")));
+        pc.add(new JLabel(I18N.str("replace")));
         JTextField txtReplace = new JTextField();
         docReplace = txtReplace.getDocument();
         pc.add(txtReplace);
@@ -176,26 +169,26 @@ public class TextFinderDialog extends JDialog {
         popupManager.registerJTextComponent(txtReplace);
 
         po = new JPanel(new GridLayout(2, 2, 8, 2));
-        po.setBorder(new TitledBorder(new EtchedBorder(), i18n.str("options")));
+        po.setBorder(new TitledBorder(new EtchedBorder(), I18N.str("options")));
 
-        chkWord = new JCheckBox(i18n.str("whole_words_only"));
+        chkWord = new JCheckBox(I18N.str("whole_words_only"));
         chkWord.setMnemonic('w');
         chkWord.setModel(modelWord);
         po.add(chkWord);
 
         bg = new ButtonGroup();
-        rdUp = new JRadioButton(i18n.str("search_up"));
+        rdUp = new JRadioButton(I18N.str("search_up"));
         rdUp.setMnemonic('u');
         rdUp.setModel(modelUp);
         bg.add(rdUp);
         po.add(rdUp);
 
-        chkCase = new JCheckBox(i18n.str("match_case"));
+        chkCase = new JCheckBox(I18N.str("match_case"));
         chkCase.setMnemonic('c');
         chkCase.setModel(modelCase);
         po.add(chkCase);
 
-        rdDown = new JRadioButton(i18n.str("search_down"), true);
+        rdDown = new JRadioButton(I18N.str("search_down"), true);
         rdDown.setMnemonic('d');
         rdDown.setModel(modelDown);
         bg.add(rdDown);
@@ -207,38 +200,34 @@ public class TextFinderDialog extends JDialog {
         JPanel p02 = new JPanel(new FlowLayout());
         p = new JPanel(new GridLayout(3, 1, 2, 8));
 
-        ActionListener replaceAction = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                findNext(true, true);
-            }
-        };
-        JButton btReplace = new JButton(i18n.str("replace"));
+        ActionListener replaceAction = e -> findNext(true, true);
+
+        JButton btReplace = new JButton(I18N.str("replace"));
         btReplace.addActionListener(replaceAction);
         btReplace.setMnemonic('r');
         p.add(btReplace);
 
-        ActionListener replaceAllAction = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int counter = 0;
-                while (true) {
-                    int result = findNext(true, false);
-                    if (result < 0)    // error
-                        return;
-                    else if (result == 0)    // no more
-                        break;
-                    counter++;
-                }
-                JOptionPane.showMessageDialog(owner,
-                        counter + " " + i18n.str("replacements_prompt"), "Info",
-                        JOptionPane.INFORMATION_MESSAGE);
+        ActionListener replaceAllAction = e -> {
+            int counter = 0;
+            while (true) {
+                int result = findNext(true, false);
+                if (result < 0)    // error
+                    return;
+                else if (result == 0)    // no more
+                    break;
+                counter++;
             }
+            JOptionPane.showMessageDialog(owner,
+                    counter + " " + I18N.str("replacements_prompt"), "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
         };
-        JButton btReplaceAll = new JButton(i18n.str("replace_all"));
+
+        JButton btReplaceAll = new JButton(I18N.str("replace_all"));
         btReplaceAll.addActionListener(replaceAllAction);
         btReplaceAll.setMnemonic('a');
         p.add(btReplaceAll);
 
-        btClose = new JButton(i18n.str("close"));
+        btClose = new JButton(I18N.str("close"));
         btClose.addActionListener(closeAction);
         btClose.setDefaultCapable(true);
         p.add(btClose);
@@ -248,16 +237,16 @@ public class TextFinderDialog extends JDialog {
         // Make button columns the same size
         p01.setPreferredSize(p02.getPreferredSize());
 
-        tb.addTab(i18n.str("replace"), p2);
+        tabbedPane.addTab(I18N.str("replace"), p2);
 
-        tb.setSelectedIndex(index);
+        tabbedPane.setSelectedIndex(index);
 
-        getContentPane().add(tb, BorderLayout.CENTER);
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
         WindowListener flst = new WindowAdapter() {
             public void windowActivated(WindowEvent e) {
                 //searchIndex = -1;
-                if (tb.getSelectedIndex() == 0)
+                if (tabbedPane.getSelectedIndex() == 0)
                     if (!txtFind1.hasFocus())
                         txtFind1.requestFocusInWindow();
                     else if (!txtFind2.hasFocus())
@@ -269,6 +258,7 @@ public class TextFinderDialog extends JDialog {
                 searchData = null;
             }
         };
+
         addWindowListener(flst);
 
         pack();
@@ -286,13 +276,11 @@ public class TextFinderDialog extends JDialog {
     }
 
     public int getSelectedIndex() {
-        return tb.getSelectedIndex();
+        return tabbedPane.getSelectedIndex();
     }
 
     public void setSelectedIndex(int index) {
-        tb.setSelectedIndex(index);
-        //setVisible(true);
-        //searchIndex = -1;
+        tabbedPane.setSelectedIndex(index);
     }
 
     public void show(int index) {
@@ -309,19 +297,19 @@ public class TextFinderDialog extends JDialog {
         String key = "";
         try {
             key = docFind.getText(0, docFind.getLength());
-        } catch (BadLocationException ex) {
+        } catch (BadLocationException ignored) {
         }
 
-        if (key.length() == 0) {
-            warning(i18n.str("no_target_prompt"));
+        if (key.isEmpty()) {
+            warning(I18N.str("no_target_prompt"));
             return -1;
         }
 
         if (modelWord.isSelected()) {
-            for (int k = 0; k < WORD_SEPARATORS.length; k++) {
-                if (key.indexOf(WORD_SEPARATORS[k]) >= 0) {
-                    warning(i18n.str("illegal_character_prompt") +
-                            " \'" + WORD_SEPARATORS[k] + "\'");
+            for (char wordSeparator : WORD_SEPARATORS) {
+                if (key.indexOf(wordSeparator) >= 0) {
+                    warning(I18N.str("illegal_character_prompt") +
+                            " '" + wordSeparator + "'");
                     return -1;
                 }
             }
@@ -331,16 +319,16 @@ public class TextFinderDialog extends JDialog {
         if (doReplace) {
             try {
                 replacement = docReplace.getText(0, docReplace.getLength());
-            } catch (BadLocationException ex) {
+            } catch (BadLocationException ignored) {
             }
         }
 
         if (modelUp.isSelected() != searchUp)
             searchUp = modelUp.isSelected();
 
-        String searchData = "";
+        String searchQuery;
         try {
-            searchData = monitor.getDocument().getText(
+            searchQuery = monitor.getDocument().getText(
                     0, monitor.getDocument().getLength());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -348,28 +336,28 @@ public class TextFinderDialog extends JDialog {
         }
 
         if (!modelCase.isSelected()) {
-            searchData = searchData.toLowerCase();
+            searchQuery = searchQuery.toLowerCase();
             key = key.toLowerCase();
         }
 
         int index;
         while (true) {
             if (!searchUp)
-                index = searchData.indexOf(key, pos);
+                index = searchQuery.indexOf(key, pos);
             else
-                index = searchData.lastIndexOf(key, pos - 1);
+                index = searchQuery.lastIndexOf(key, pos - 1);
 
-            if (index < 0 || index >= searchData.length()) {
+            if (index < 0 || index >= searchQuery.length()) {
                 if (showWarnings)
-                    warning(i18n.str("text_not_found"));
+                    warning(I18N.str("text_not_found"));
                 return 0;
             }
 
             if (modelWord.isSelected()) {
                 boolean s1 = index > 0;
-                boolean b1 = s1 && !isSeparator(searchData.charAt(index - 1));
-                boolean s2 = (index + key.length()) < searchData.length();
-                boolean b2 = s2 && !isSeparator(searchData.charAt(index + key.length()));
+                boolean b1 = s1 && !isSeparator(searchQuery.charAt(index - 1));
+                boolean s2 = (index + key.length()) < searchQuery.length();
+                boolean b2 = s2 && !isSeparator(searchQuery.charAt(index + key.length()));
 
                 if (b1 || b2) {
                     if (!searchUp && s2) {
@@ -383,7 +371,7 @@ public class TextFinderDialog extends JDialog {
                     }
 
                     if (showWarnings)
-                        warning(i18n.str("text_not_found"));
+                        warning(I18N.str("text_not_found"));
                     return 0;
                 }
             }
@@ -413,8 +401,8 @@ public class TextFinderDialog extends JDialog {
     }
 
     protected boolean isSeparator(char ch) {
-        for (int k = 0; k < WORD_SEPARATORS.length; k++)
-            if (ch == WORD_SEPARATORS[k])
+        for (char wordSeparator : WORD_SEPARATORS)
+            if (ch == wordSeparator)
                 return true;
         return false;
     }
@@ -424,32 +412,35 @@ public class TextFinderDialog extends JDialog {
                 message, TITLE, JOptionPane.INFORMATION_MESSAGE, warnIcon);
     }
 
-    private class DialogLayout implements LayoutManager {
+    private static class DialogLayout implements LayoutManager {
         protected static final int COMP_TWO_COL = 0;
         protected static final int COMP_BIG = 1;
         protected static final int COMP_BUTTON = 2;
 
-        protected int m_divider = -1;
-        protected int m_hGap = 10;
-        protected int m_vGap = 5;
-        protected Vector m_v = new Vector();
+        protected int mDivider = -1;
+        protected int mHGap = 10;
+        protected int mVGap = 5;
+        protected List<Component> components = new ArrayList<>();
 
         public DialogLayout() {
         }
 
         public DialogLayout(int hGap, int vGap) {
-            m_hGap = hGap;
-            m_vGap = vGap;
+            mHGap = hGap;
+            mVGap = vGap;
         }
 
         public void addLayoutComponent(String name, Component comp) {
+            // Does nothing
         }
 
         public void removeLayoutComponent(Component comp) {
+            // Does nothing
         }
 
         public Dimension preferredLayoutSize(Container parent) {
-            m_v.removeAllElements();
+            components.clear();
+
             int w = 0;
             int h = 0;
             int type = -1;
@@ -457,62 +448,62 @@ public class TextFinderDialog extends JDialog {
             for (int k = 0; k < parent.getComponentCount(); k++) {
                 Component comp = parent.getComponent(k);
                 int newType = getLayoutType(comp);
-                if (k == 0)
-                    type = newType;
+
+                if (k == 0) type = newType;
 
                 if (type != newType) {
-                    Dimension d = preferredLayoutSize(m_v, type);
+                    Dimension d = preferredLayoutSize(components, type);
                     w = Math.max(w, d.width);
-                    h += d.height + m_vGap;
-                    m_v.removeAllElements();
+                    h += d.height + mVGap;
+                    components.clear();
                     type = newType;
                 }
 
-                m_v.addElement(comp);
+                components.add(comp);
             }
 
-            Dimension d = preferredLayoutSize(m_v, type);
+            Dimension d = preferredLayoutSize(components, type);
             w = Math.max(w, d.width);
-            h += d.height + m_vGap;
-
-            h -= m_vGap;
+            h += d.height;
 
             Insets insets = parent.getInsets();
-            return new Dimension(w + insets.left + insets.right,
+            return new Dimension(
+                    w + insets.left + insets.right,
                     h + insets.top + insets.bottom);
         }
 
-        protected Dimension preferredLayoutSize(Vector v, int type) {
+        protected Dimension preferredLayoutSize(List<Component> list, int type) {
             int w = 0;
             int h = 0;
+
             switch (type) {
                 case COMP_TWO_COL:
-                    int divider = getDivider(v);
-                    for (int k = 1; k < v.size(); k += 2) {
-                        Component comp = (Component) v.elementAt(k);
+                    int divider = getDivider(list);
+                    for (int k = 1; k < list.size(); k += 2) {
+                        Component comp = list.get(k);
                         Dimension d = comp.getPreferredSize();
                         w = Math.max(w, d.width);
-                        h += d.height + m_vGap;
+                        h += d.height + mVGap;
                     }
-                    h -= m_vGap;
+
+                    h -= mVGap;
                     return new Dimension(divider + w, h);
-
                 case COMP_BIG:
-                    for (int k = 0; k < v.size(); k++) {
-                        Component comp = (Component) v.elementAt(k);
+                    for (Component comp : list) {
                         Dimension d = comp.getPreferredSize();
                         w = Math.max(w, d.width);
-                        h += d.height + m_vGap;
+                        h += d.height + mVGap;
                     }
-                    h -= m_vGap;
-                    return new Dimension(w, h);
 
+                    h -= mVGap;
+                    return new Dimension(w, h);
                 case COMP_BUTTON:
-                    Dimension d = getMaxDimension(v);
-                    w = d.width + m_hGap;
+                    Dimension d = getMaxDimension(list);
+                    w = d.width + mHGap;
                     h = d.height;
-                    return new Dimension(w * v.size() - m_hGap, h);
+                    return new Dimension(w * list.size() - mHGap, h);
             }
+
             throw new IllegalArgumentException("Illegal type " + type);
         }
 
@@ -521,7 +512,7 @@ public class TextFinderDialog extends JDialog {
         }
 
         public void layoutContainer(Container parent) {
-            m_v.removeAllElements();
+            components.clear();
             int type = -1;
 
             Insets insets = parent.getInsets();
@@ -532,102 +523,100 @@ public class TextFinderDialog extends JDialog {
             for (int k = 0; k < parent.getComponentCount(); k++) {
                 Component comp = parent.getComponent(k);
                 int newType = getLayoutType(comp);
-                if (k == 0)
-                    type = newType;
+
+                if (k == 0) type = newType;
 
                 if (type != newType) {
-                    y = layoutComponents(m_v, type, x, y, w);
-                    m_v.removeAllElements();
+                    y = layoutComponents(components, type, x, y, w);
+                    components.clear();
                     type = newType;
                 }
 
-                m_v.addElement(comp);
+                components.add(comp);
             }
 
-            y = layoutComponents(m_v, type, x, y, w);
-            m_v.removeAllElements();
+            components.clear();
         }
 
-        protected int layoutComponents(Vector v, int type, int x, int y, int w) {
+        protected int layoutComponents(List<Component> list, int type, int x, int y, int w) {
             switch (type) {
                 case COMP_TWO_COL:
-                    int divider = getDivider(v);
-                    for (int k = 1; k < v.size(); k += 2) {
-                        Component comp1 = (Component) v.elementAt(k - 1);
-                        Component comp2 = (Component) v.elementAt(k);
+                    int divider = getDivider(list);
+                    for (int k = 1; k < list.size(); k += 2) {
+                        Component comp1 = list.get(k - 1);
+                        Component comp2 = list.get(k);
                         Dimension d = comp2.getPreferredSize();
 
                         comp1.setBounds(x, y, divider, d.height);
                         comp2.setBounds(x + divider, y, w - divider, d.height);
-                        y += d.height + m_vGap;
+                        y += d.height + mVGap;
                     }
-                    //y -= m_vGap;
-                    return y;
 
+                    return y;
                 case COMP_BIG:
-                    for (int k = 0; k < v.size(); k++) {
-                        Component comp = (Component) v.elementAt(k);
+                    for (Component comp : list) {
                         Dimension d = comp.getPreferredSize();
                         comp.setBounds(x, y, w, d.height);
-                        y += d.height + m_vGap;
+                        y += d.height + mVGap;
                     }
-                    //y -= m_vGap;
-                    return y;
 
+                    return y;
                 case COMP_BUTTON:
-                    Dimension d = getMaxDimension(v);
-                    int ww = d.width * v.size() + m_hGap * (v.size() - 1);
+                    Dimension d = getMaxDimension(list);
+                    int ww = d.width * list.size() + mHGap * (list.size() - 1);
                     int xx = x + Math.max(0, (w - ww) / 2);
-                    for (int k = 0; k < v.size(); k++) {
-                        Component comp = (Component) v.elementAt(k);
+
+                    for (Component comp : list) {
                         comp.setBounds(xx, y, d.width, d.height);
-                        xx += d.width + m_hGap;
+                        xx += d.width + mHGap;
                     }
+
                     return y + d.height;
             }
+
             throw new IllegalArgumentException("Illegal type " + type);
         }
 
         public int getHGap() {
-            return m_hGap;
+            return mHGap;
         }
 
         public int getVGap() {
-            return m_vGap;
+            return mVGap;
         }
 
         public int getDivider() {
-            return m_divider;
+            return mDivider;
         }
 
         public void setDivider(int divider) {
-            if (divider > 0)
-                m_divider = divider;
+            if (divider > 0) mDivider = divider;
         }
 
-        protected int getDivider(Vector v) {
-            if (m_divider > 0)
-                return m_divider;
+        protected int getDivider(List<Component> list) {
+            if (mDivider > 0) return mDivider;
 
             int divider = 0;
-            for (int k = 0; k < v.size(); k += 2) {
-                Component comp = (Component) v.elementAt(k);
+            for (int k = 0; k < list.size(); k += 2) {
+                Component comp = list.get(k);
                 Dimension d = comp.getPreferredSize();
                 divider = Math.max(divider, d.width);
             }
-            divider += m_hGap;
+
+            divider += mHGap;
             return divider;
         }
 
-        protected Dimension getMaxDimension(Vector v) {
+        protected Dimension getMaxDimension(List<Component> list) {
             int w = 0;
             int h = 0;
-            for (int k = 0; k < v.size(); k++) {
-                Component comp = (Component) v.elementAt(k);
+
+            for (Component comp : list) {
                 Dimension d = comp.getPreferredSize();
                 w = Math.max(w, d.width);
                 h = Math.max(h, d.height);
             }
+
             return new Dimension(w, h);
         }
 
@@ -641,6 +630,5 @@ public class TextFinderDialog extends JDialog {
             else
                 return COMP_TWO_COL;
         }
-
     }
 }

@@ -145,19 +145,20 @@ public class CellAttributesPanel extends HTMLAttributeEditorPanel {
         GridBagConstraints gbc3 = new GridBagConstraints();
         gbc3.gridx = gbc3.gridy = 1;
         gbc3.anchor = anchor;
+        gbc3.fill = fill;
         gbc3.insets = rightInsets;
 
         GridBagConstraints gbc4 = new GridBagConstraints();
         gbc4.gridx = 1;
         gbc4.gridy = 2;
-        gbc4.anchor = anchor;
+        gbc4.anchor = GridBagConstraints.FIRST_LINE_START;
+        gbc4.fill = fill;
         gbc4.insets = rightInsets;
 
         GridBagConstraints gbc5 = new GridBagConstraints();
         gbc5.gridx = 0;
         gbc5.gridy = 3;
         gbc5.gridwidth = 2;
-        gbc5.anchor = anchor;
         gbc5.fill = GridBagConstraints.BOTH;
 
         GridBagLayout gbl = new GridBagLayout();

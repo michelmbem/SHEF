@@ -6,83 +6,80 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 public class NewTableDialog extends OptionDialog {
     private static final long serialVersionUID = 1L;
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-    private static final Icon icon = UIUtils.getIcon(UIUtils.X48, "table.png");
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "table.png");
 
     private final LayoutPanel layoutPanel = new LayoutPanel();
     private TableAttributesPanel propsPanel;
 
     public NewTableDialog(Frame parent) {
-        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);
+        super(parent, I18N.str("new_table"), I18N.str("new_table_desc"), ICON);
         init();
     }
 
     public NewTableDialog(Dialog parent) {
-        super(parent, i18n.str("new_table"), i18n.str("new_table_desc"), icon);
+        super(parent, I18N.str("new_table"), I18N.str("new_table_desc"), ICON);
         init();
     }
 
     private void init() {
         //default attribs
-        Hashtable ht = new Hashtable();
-        ht.put("border", "1");
-        ht.put("width", "100%");
-        propsPanel = new TableAttributesPanel();
-        propsPanel.setAttributes(ht);
+        Map<String, String> attribs = new HashMap<>();
+        attribs.put("border", "1");
+        attribs.put("width", "100%");
 
+        propsPanel = new TableAttributesPanel();
+        propsPanel.setAttributes(attribs);
         propsPanel.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(i18n.str("properties")),
+                        BorderFactory.createTitledBorder(I18N.str("properties")),
                         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(layoutPanel, BorderLayout.NORTH);
+        mainPanel.add(layoutPanel, BorderLayout.PAGE_START);
         mainPanel.add(propsPanel, BorderLayout.CENTER);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
         setContentPane(mainPanel);
         setSize(new Dimension(330, 380));
         setResizable(false);
     }
 
     public String getHTML() {
-        String html = "<table";
-        Map attribs = propsPanel.getAttributes();
+        Map<String, String> attribs = propsPanel.getAttributes();
+        StringBuilder html = new StringBuilder("<table");
 
-        for (Iterator e = attribs.keySet().iterator(); e.hasNext(); ) {
-            String key = e.next().toString();
-            String val = attribs.get(key).toString();
-            html += ' ' + key + "=\"" + val + "\"";
+        for (Map.Entry<String, String> entry : attribs.entrySet()) {
+            html.append(' ').append(entry.getKey()).append("=\"")
+                    .append(entry.getValue()).append("\"");
         }
 
-        html += ">\n";
+        html.append(">\n");
 
         int numRows = layoutPanel.getRows();
         int numCols = layoutPanel.getColumns();
-        for (int row = 1; row <= numRows; row++) {
-            html += "<tr>\n";
-            for (int col = 1; col <= numCols; col++) {
-                html += "\t<td>\n</td>\n";
-            }
-            html += "</tr>\n";
+
+        for (int row = 0; row < numRows; ++row) {
+            html.append("\t<tr>\n");
+            html.append("\t\t<td>\n\t\t</td>\n".repeat(Math.max(0, numCols)));
+            html.append("\t</tr>\n");
         }
 
-        return html + "</table>";
+        return html + "</table>\n";
     }
 
-    private class LayoutPanel extends JPanel {
-        /**
-         *
-         */
+    private static class LayoutPanel extends JPanel {
         private static final long serialVersionUID = 1L;
+
         private JLabel rowsLabel = null;
         private JLabel colsLabel = null;
-        private int iRows, iCols;
+        private int iRows;
+        private int iCols;
         private JSpinner rowsField = null;
         private JSpinner colsField = null;
 
@@ -95,8 +92,8 @@ public class NewTableDialog extends OptionDialog {
 
         public LayoutPanel(int r, int c) {
             super();
-            iRows = (r > 0) ? r : 1;
-            iCols = (c > 0) ? c : 1;
+            iRows = Math.max(r, 1);
+            iCols = Math.max(c, 1);
             initialize();
         }
 
@@ -112,43 +109,54 @@ public class NewTableDialog extends OptionDialog {
          * This method initializes this
          */
         private void initialize() {
-            GridBagConstraints gbc7 = new GridBagConstraints();
-            gbc7.fill = GridBagConstraints.NONE;
-            gbc7.gridy = 0;
-            gbc7.weightx = 1.0;
-            gbc7.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc7.gridx = 3;
-            GridBagConstraints gbc6 = new GridBagConstraints();
-            gbc6.fill = GridBagConstraints.NONE;
-            gbc6.gridy = 0;
-            gbc6.weightx = 0.0;
-            gbc6.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc6.insets = new Insets(0, 0, 0, 15);
-            gbc6.gridx = 1;
-            GridBagConstraints gbc1 = new GridBagConstraints();
-            gbc1.gridx = 2;
-            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc1.insets = new Insets(0, 0, 0, 5);
-            gbc1.gridy = 0;
-            colsLabel = new JLabel();
-            colsLabel.setText(i18n.str("columns"));
+            final int anchor = GridBagConstraints.BASELINE_LEADING;
+            final int fill = GridBagConstraints.HORIZONTAL;
+            final Insets leftInsets = new Insets(0, 0, 5, 5);
+            final Insets middleInsets = new Insets(0, 10, 5, 5);
+            final Insets rightInsets = new Insets(0, 0, 5, 0);
+
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc.insets = new Insets(0, 0, 0, 5);
-            gbc.weighty = 0.0;
-            gbc.gridy = 0;
-            rowsLabel = new JLabel();
-            rowsLabel.setText(i18n.str("rows"));
-            this.setLayout(new GridBagLayout());
-            this.setSize(330, 60);
-            this.setPreferredSize(new Dimension(330, 60));
-            //this.setMaximumSize(this.getPreferredSize());
-            this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(null, i18n.str("layout"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-            this.add(rowsLabel, gbc);
-            this.add(colsLabel, gbc1);
-            this.add(getRowsField(), gbc6);
-            this.add(getColsField(), gbc7);
+            gbc.gridx = gbc.gridy = 0;
+            gbc.anchor = anchor;
+            gbc.fill = fill;
+            gbc.insets = leftInsets;
+
+            GridBagConstraints gbc1 = new GridBagConstraints();
+            gbc1.gridx = 1;
+            gbc1.gridy = 0;
+            gbc1.anchor = anchor;
+            gbc1.fill = fill;
+            gbc1.insets = leftInsets;
+
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.gridx = 2;
+            gbc2.gridy = 0;
+            gbc2.anchor = anchor;
+            gbc2.fill = fill;
+            gbc2.insets = middleInsets;
+
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.gridx = 3;
+            gbc3.gridy = 0;
+            gbc3.anchor = anchor;
+            gbc3.fill = fill;
+            gbc3.insets = rightInsets;
+
+            rowsLabel = new JLabel(I18N.str("rows"));
+            colsLabel = new JLabel(I18N.str("columns"));
+
+            GridBagLayout gbl = new GridBagLayout();
+            gbl.columnWeights = new double[] {0.0, 1.0, 0.0, 1.0};
+            gbl.rowWeights = new double[] {0.0};
+
+            setLayout(gbl);
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createTitledBorder(null, I18N.str("layout")),
+                    BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+            add(rowsLabel, gbc);
+            add(getRowsField(), gbc1);
+            add(colsLabel, gbc2);
+            add(getColsField(), gbc3);
         }
 
         /**
@@ -160,6 +168,7 @@ public class NewTableDialog extends OptionDialog {
             if (rowsField == null) {
                 rowsField = new JSpinner(new SpinnerNumberModel(iRows, 1, 999, 1));
             }
+
             return rowsField;
         }
 
@@ -172,6 +181,7 @@ public class NewTableDialog extends OptionDialog {
             if (colsField == null) {
                 colsField = new JSpinner(new SpinnerNumberModel(iCols, 1, 999, 1));
             }
+
             return colsField;
         }
     }

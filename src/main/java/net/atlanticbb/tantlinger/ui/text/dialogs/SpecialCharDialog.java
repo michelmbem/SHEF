@@ -12,75 +12,65 @@ import java.awt.event.*;
 
 public class SpecialCharDialog extends JDialog {
     private static final long serialVersionUID = 1L;
+    private static final I18n I18N = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
+    private static final Icon ICON = UIUtils.getIcon(UIUtils.X48, "copyright.png");
+    private static final String TITLE = I18N.str("special_character");
+    private static final String DESC = I18N.str("special_character_desc");
 
-    private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui.text.dialogs");
-
-    private static Icon icon = UIUtils.getIcon(UIUtils.X48, "copyright.png");
-    private static String title = i18n.str("special_character");
-    private static String desc = i18n.str("special_character_desc");
-
-    private Font plainFont = new Font("Dialog", Font.PLAIN, 12);
-    private Font rollFont = new Font("Dialog", Font.BOLD, 14);
-
-    private MouseListener mouseHandler = new MouseHandler();
-    private ActionListener buttonHandler = new ButtonHandler();
+    private final Font plainFont = new Font("Dialog", Font.PLAIN, 12);
+    private final Font rollFont = new Font("Dialog", Font.BOLD, 14);
+    private final MouseListener mouseHandler = new MouseHandler();
+    private final ActionListener buttonHandler = new ButtonHandler();
 
     private boolean insertEntity;
-
     private JTextComponent editor;
 
     public SpecialCharDialog(Frame parent, JTextComponent ed) {
-        super(parent, title);
+        super(parent, TITLE);
         editor = ed;
         init();
     }
 
     public SpecialCharDialog(Dialog parent, JTextComponent ed) {
-        super(parent, title);
+        super(parent, TITLE);
         editor = ed;
         init();
     }
 
     private void init() {
-        JPanel headerPanel = new HeaderPanel(title, desc, icon);
+        JPanel headerPanel = new HeaderPanel(TITLE, DESC, ICON);
 
         JPanel charPanel = new JPanel(new GridLayout(8, 12, 2, 2));
         charPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         for (int i = 160; i <= 255; i++) {
             String ent = "&#" + i + ";";
-            JButton chLabel = new JButton(Entities.HTML32.unescape(ent));
-            chLabel.setFont(plainFont);
-            chLabel.setOpaque(true);
-            chLabel.setToolTipText(ent);
-            chLabel.setBackground(Color.white);
-            chLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            chLabel.setVerticalAlignment(SwingConstants.CENTER);
-            chLabel.addActionListener(buttonHandler);
-            chLabel.addMouseListener(mouseHandler);
-            chLabel.setMargin(new Insets(0, 0, 0, 0));
-            charPanel.add(chLabel);
+            JButton chButton = new JButton(Entities.HTML32.unescape(ent));
+            chButton.setFont(plainFont);
+            chButton.setOpaque(true);
+            chButton.setToolTipText(ent);
+            chButton.setBackground(Color.WHITE);
+            chButton.setHorizontalAlignment(SwingConstants.CENTER);
+            chButton.setVerticalAlignment(SwingConstants.CENTER);
+            chButton.addActionListener(buttonHandler);
+            chButton.addMouseListener(mouseHandler);
+            chButton.setMargin(new Insets(0, 0, 0, 0));
+            chButton.setPreferredSize(new Dimension(24, 24));
+            charPanel.add(chButton);
         }
 
-        JButton close = new JButton(i18n.str("close"));
-        close.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(close);
-        this.getRootPane().setDefaultButton(close);
+        JButton closeButton = new JButton(I18N.str("close"));
+        closeButton.addActionListener(e -> setVisible(false));
+        getRootPane().setDefaultButton(closeButton);
 
-        //selectedLabel.setBorder(pressedBorder);
-        //setContentPane(charPanel);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(closeButton);
 
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(headerPanel, BorderLayout.NORTH);
+        getContentPane().add(headerPanel, BorderLayout.PAGE_START);
         getContentPane().add(charPanel, BorderLayout.CENTER);
         getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
 
-        //setSize(414, 340);
         pack();
         setResizable(false);
     }
@@ -108,38 +98,33 @@ public class SpecialCharDialog extends JDialog {
     }
 
     private class MouseHandler extends MouseAdapter {
+        @Override
         public void mouseEntered(MouseEvent e) {
-            JButton l = (JButton) e.getComponent();
-            l.setFont(rollFont);
-            //l.setForeground(Color.BLUE);
+            JButton button = (JButton) e.getComponent();
+            button.setFont(rollFont);
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
-            JButton l = (JButton) e.getComponent();
-            l.setFont(plainFont);
-            //l.setForeground(Color.BLACK);
-
+            JButton button = (JButton) e.getComponent();
+            button.setFont(plainFont);
         }
     }
 
     private class ButtonHandler implements ActionListener {
-
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
         public void actionPerformed(ActionEvent e) {
-            JButton l = (JButton) e.getSource();
+            JButton button = (JButton) e.getSource();
+
             if (editor != null) {
                 if (!editor.hasFocus())
                     editor.requestFocusInWindow();
                 if (insertEntity)
-                    editor.replaceSelection(l.getToolTipText());
+                    editor.replaceSelection(button.getToolTipText());
                 else {
-                    editor.replaceSelection(l.getText());
+                    editor.replaceSelection(button.getText());
                 }
             }
         }
-
     }
 
 }

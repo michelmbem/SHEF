@@ -186,7 +186,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
                 String html = getElementHTML(tdElem, dlg.getCellAttributes());
                 doc.setOuterHTML(tdElem, html);
 
-                html = getElementHTML(trElem, dlg.getRowAttribures());
+                html = getElementHTML(trElem, dlg.getRowAttributes());
                 doc.setOuterHTML(trElem, html);
 
                 html = getElementHTML(tableElem, dlg.getTableAttributes());

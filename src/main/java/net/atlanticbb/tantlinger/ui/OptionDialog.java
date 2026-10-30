@@ -24,7 +24,7 @@ public class OptionDialog extends StandardDialog {
         hp.setTitle(title);
         hp.setDescription(desc);
         hp.setIcon(icon);
-        internalContentPane.add(hp, BorderLayout.NORTH);
+        internalContentPane.add(hp, BorderLayout.PAGE_START);
 
         super.setContentPane(internalContentPane);
     }
