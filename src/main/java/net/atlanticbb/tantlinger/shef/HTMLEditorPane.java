@@ -18,6 +18,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.undo.UndoManager;
@@ -49,7 +50,7 @@ public class HTMLEditorPane extends JPanel {
     private JTabbedPane tabbedPane;
     private JEditorPane wysiwygEditor;
     private SourceCodeEditor sourceEditor;
-    private JEditorPane activeEditor;
+    private JTextComponent activeEditor;
     private ActionList actionList;
     private JMenu editMenu;
     private JMenu formatMenu;
@@ -129,7 +130,7 @@ public class HTMLEditorPane extends JPanel {
         wysiwygEditor = createWysiwygEditor();
         sourceEditor = createSourceEditor();
 
-        RTextScrollPane sourceScrollPane = new RTextScrollPane(sourceEditor.getTextArea());
+        RTextScrollPane sourceScrollPane = new RTextScrollPane(sourceEditor);
         sourceScrollPane.setLineNumbersEnabled(true);
 
         tabbedPane.addTab("Edit", new JScrollPane(wysiwygEditor));
@@ -465,16 +466,16 @@ public class HTMLEditorPane extends JPanel {
 
     private void updateEditView() {
         if (tabbedPane.getSelectedIndex() == 0) {
-            String topText = removeInvalidTags(sourceEditor.getText());
+            String html = removeInvalidTags(sourceEditor.getText());
             wysiwygEditor.setText("");
-            insertHTML(wysiwygEditor, topText, 0);
+            insertHTML(wysiwygEditor, html, 0);
             CompoundUndoManager.discardAllEdits(wysiwygEditor.getDocument());
         } else {
-            String topText = removeInvalidTags(wysiwygEditor.getText());
+            String html = removeInvalidTags(wysiwygEditor.getText());
             if (wysiwygTextChanged || sourceEditor.getText().isEmpty()) {
-                String t = deIndent(removeInvalidTags(topText));
-                t = Entities.HTML40.unescapeUnknownEntities(t);
-                sourceEditor.setText(t);
+                String outdented = deIndent(html);
+                outdented = Entities.HTML40.unescapeUnknownEntities(outdented);
+                sourceEditor.setText(outdented);
             }
             CompoundUndoManager.discardAllEdits(sourceEditor.getDocument());
         }
@@ -568,6 +569,42 @@ public class HTMLEditorPane extends JPanel {
         actionList.updateEnabledForAll();
     }
 
+    private static class ParagraphComboRenderer extends DefaultListCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
+            if (value instanceof Action) {
+                value = ((Action) value).getValue(Action.NAME);
+            }
+
+            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        }
+    }
+
+    private class ChangeTabAction extends DefaultAction {
+        private static final long serialVersionUID = 1L;
+        final int tab;
+
+        public ChangeTabAction(int tab) {
+            super(I18N.str(tab == 0 ? "rich_text" : "source"));
+            this.tab = tab;
+            putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_RADIO);
+        }
+
+        @Override
+        protected void execute(ActionEvent e) {
+            tabbedPane.setSelectedIndex(tab);
+            setSelected(true);
+        }
+
+        @Override
+        protected void contextChanged() {
+            setSelected(tabbedPane.getSelectedIndex() == tab);
+        }
+    }
+
     private class CaretHandler implements CaretListener {
         /* (non-Javadoc)
          * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
@@ -594,7 +631,7 @@ public class HTMLEditorPane extends JPanel {
 
                 if (e.getSource() == wysiwygEditor)
                     p = wysiwygPopupMenu;
-                else if (e.getSource() == sourceEditor || e.getSource() == sourceEditor.getTextArea())
+                else if (e.getSource() == sourceEditor)
                     p = sourcePopupMenu;
                 else
                     return;
@@ -607,14 +644,13 @@ public class HTMLEditorPane extends JPanel {
     private class FocusHandler implements FocusListener {
         @Override
         public void focusGained(FocusEvent e) {
-            if (e.getComponent() == sourceEditor.getTextArea()) {
+            if (e.getComponent() == wysiwygEditor) {
+                CompoundUndoManager.updateUndo(wysiwygEditor.getDocument());
+                activeEditor = wysiwygEditor;
+                updateState();
+            } else if (e.getComponent() == sourceEditor) {
                 CompoundUndoManager.updateUndo(sourceEditor.getDocument());
                 activeEditor = sourceEditor;
-                updateState();
-            } else if (e.getComponent() instanceof JEditorPane) {
-                JEditorPane editor = (JEditorPane) e.getComponent();
-                CompoundUndoManager.updateUndo(editor.getDocument());
-                activeEditor = editor;
                 updateState();
             }
         }
@@ -647,28 +683,6 @@ public class HTMLEditorPane extends JPanel {
         }
     }
 
-    private class ChangeTabAction extends DefaultAction {
-        private static final long serialVersionUID = 1L;
-        int tab;
-
-        public ChangeTabAction(int tab) {
-            super(I18N.str(tab == 0 ? "rich_text" : "source"));
-            this.tab = tab;
-            putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_RADIO);
-        }
-
-        @Override
-        protected void execute(ActionEvent e) {
-            tabbedPane.setSelectedIndex(tab);
-            setSelected(true);
-        }
-
-        @Override
-        protected void contextChanged() {
-            setSelected(tabbedPane.getSelectedIndex() == tab);
-        }
-    }
-
     private class ParagraphComboHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -676,20 +690,6 @@ public class HTMLEditorPane extends JPanel {
                 Action a = (Action) (paragraphCombo.getSelectedItem());
                 a.actionPerformed(e);
             }
-        }
-    }
-
-    private class ParagraphComboRenderer extends DefaultListCellRenderer {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index,
-                                                      boolean isSelected, boolean cellHasFocus) {
-            if (value instanceof Action) {
-                value = ((Action) value).getValue(Action.NAME);
-            }
-
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         }
     }
 
@@ -701,11 +701,12 @@ public class HTMLEditorPane extends JPanel {
                 CompoundUndoManager.beginCompoundEdit(document);
 
                 if (fontFamilyCombo.getSelectedIndex() != 0) {
-                    HTMLUtils.setFontFamily(wysiwygEditor, ((Font) fontFamilyCombo.getSelectedItem()).getFamily());
-
+                    HTMLUtils.setFontFamily(wysiwygEditor,
+                            ((Font) fontFamilyCombo.getSelectedItem()).getFamily());
                 } else {
                     HTMLUtils.setFontFamily(wysiwygEditor, null);
                 }
+
                 CompoundUndoManager.endCompoundEdit(document);
             }
         }
