@@ -35,38 +35,38 @@ public class ActionLookAndFeel {
     static {
         Class<?> thisClass = ActionLookAndFeel.class;
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_NEW, ACTION_NEW, ACTION_NEW, ACTION_NEW,
+        addLookAndFeelActionEntry(ACTION_NEW, ACTION_NEW, ACTION_NEW, ACTION_NEW,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/New16.gif")),
                 KeyStroke.getKeyStroke(78, 2), 78);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_SAVE, ACTION_SAVE, ACTION_SAVE, ACTION_SAVE,
+        addLookAndFeelActionEntry(ACTION_SAVE, ACTION_SAVE, ACTION_SAVE, ACTION_SAVE,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Save16.gif")),
                 KeyStroke.getKeyStroke(83, 2), 83);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_SAVE_AS, "Save As", "Save As", "Save As",
+        addLookAndFeelActionEntry(ACTION_SAVE_AS, "Save As", "Save As", "Save As",
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/SaveAs16.gif")), null, 65);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, null, null, 88);
+        addLookAndFeelActionEntry(ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, null, null, 88);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES,
+        addLookAndFeelActionEntry(ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Preferences16.gif")),
                 KeyStroke.getKeyStroke(82, 2), 82);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_PRINT, ACTION_PRINT, ACTION_PRINT, ACTION_PRINT,
+        addLookAndFeelActionEntry(ACTION_PRINT, ACTION_PRINT, ACTION_PRINT, ACTION_PRINT,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Print16.gif")),
                 KeyStroke.getKeyStroke(80, 2), 80);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_COPY, ACTION_COPY, ACTION_COPY, ACTION_COPY,
+        addLookAndFeelActionEntry(ACTION_COPY, ACTION_COPY, ACTION_COPY, ACTION_COPY,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Copy16.gif")),
                 KeyStroke.getKeyStroke(67, 2), 67);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_DELETE, ACTION_DELETE, ACTION_DELETE, ACTION_DELETE,
+        addLookAndFeelActionEntry(ACTION_DELETE, ACTION_DELETE, ACTION_DELETE, ACTION_DELETE,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Delete16.gif")),
                 KeyStroke.getKeyStroke(68, 2), 68);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, null, null, 65);
+        addLookAndFeelActionEntry(ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, null, null, 65);
 
-        ActionLookAndFeel.addLookAndFeelActionEntry(ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH,
+        addLookAndFeelActionEntry(ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH,
                 new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Refresh16.gif")),
                 KeyStroke.getKeyStroke('t'), 82);
     }
@@ -94,7 +94,7 @@ public class ActionLookAndFeel {
     }
 
     public static boolean setValuesToLookAndFeel(String actionConstant, Action action) {
-        return ActionLookAndFeel.setValuesToLookAndFeel(sLookAndFeel, actionConstant, action);
+        return setValuesToLookAndFeel(sLookAndFeel, actionConstant, action);
     }
 
     public static boolean setValuesToLookAndFeel(Map<String, Map<String, Object>> lookAndFeel,
@@ -114,7 +114,7 @@ public class ActionLookAndFeel {
     }
 
     public boolean setValuesToInstanceLookAndFeel(String actionConstant, Action action) {
-        return ActionLookAndFeel.setValuesToLookAndFeel(mLookAndFeel, actionConstant, action);
+        return setValuesToLookAndFeel(mLookAndFeel, actionConstant, action);
     }
 }
 
