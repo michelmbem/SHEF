@@ -12,29 +12,18 @@
 
 package org.bushe.swing;
 
+import javax.swing.*;
 import java.net.URL;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
-public class SwingUtils {
-    static /* synthetic */ Class class$0;
+public final class SwingUtils {
+    private SwingUtils() {}
 
     public static Icon getIcon(String imagePath) {
-        if (imagePath != null && !imagePath.equals("")) {
-            URL url;
-            Class<?> clazz = class$0;
-            if (clazz == null) {
-                try {
-                    clazz = class$0 = Class.forName("org.bushe.swing.SwingUtils");
-                }
-                catch (ClassNotFoundException classNotFoundException) {
-                    throw new NoClassDefFoundError(classNotFoundException.getMessage());
-                }
-            }
-            if ((url = clazz.getResource(imagePath)) != null) {
-                return new ImageIcon(url);
-            }
+        if (imagePath != null && !imagePath.isEmpty()) {
+            URL url = SwingUtils.class.getResource(imagePath);
+            if (url != null) return new ImageIcon(url);
         }
+
         return null;
     }
 }

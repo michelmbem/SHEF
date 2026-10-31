@@ -12,9 +12,9 @@
 
 package org.bushe.swing.action;
 
-import javax.swing.Icon;
+import javax.swing.*;
 
 public interface IconResolver {
-    public Icon resolveIcon(String var1);
+    Icon resolveIcon(String var1);
 }
 

@@ -12,10 +12,12 @@
 
 package org.bushe.swing.action;
 
+import java.util.Objects;
+
 public class Separator {
-    private String id;
+    private final String id;
     private Number weight;
-    private boolean lineVisible;
+    private final boolean lineVisible;
 
     public Separator() {
         this(null, null, true);
@@ -49,11 +51,11 @@ public class Separator {
 
     public boolean equals(Object obj) {
         if (obj instanceof Separator) {
-            Separator s = (Separator)obj;
-            if (this.id == null ? s.id != null : !this.id.equals(s.id)) {
+            Separator s = (Separator) obj;
+            if (!Objects.equals(this.id, s.id)) {
                 return false;
             }
-            if (this.weight == null ? s.weight != null : !this.weight.equals(s.weight)) {
+            if (!Objects.equals(this.weight, s.weight)) {
                 return false;
             }
             return this.lineVisible == s.lineVisible;

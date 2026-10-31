@@ -12,17 +12,16 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
 
 class ActionSelectionSynchronizer
-implements PropertyChangeListener,
-ItemListener {
+        implements PropertyChangeListener,
+        ItemListener {
     private WeakReference buttonRef;
     private WeakReference actionRef;
 
@@ -41,13 +40,13 @@ ItemListener {
         if (!this.checkValidity()) {
             return;
         }
-        AbstractButton button = (AbstractButton)this.buttonRef.get();
-        Action action = (Action)this.actionRef.get();
+        AbstractButton button = (AbstractButton) this.buttonRef.get();
+        Action action = (Action) this.actionRef.get();
         boolean buttonSelected = button.isSelected();
         Object value = action.getValue("SELECTED");
         boolean changeNeeded = true;
         if (value instanceof Boolean) {
-            boolean isActionSelected = (Boolean)value;
+            boolean isActionSelected = (Boolean) value;
             if (e.getStateChange() == 1 && isActionSelected) {
                 changeNeeded = false;
             } else if (e.getStateChange() == 2 && !isActionSelected) {
@@ -55,7 +54,7 @@ ItemListener {
             }
         }
         if (changeNeeded) {
-            action.putValue("SELECTED", new Boolean(buttonSelected));
+            action.putValue("SELECTED", Boolean.valueOf(buttonSelected));
         }
     }
 
@@ -69,11 +68,11 @@ ItemListener {
             if (!this.checkValidity()) {
                 return;
             }
-            AbstractButton button = (AbstractButton)this.buttonRef.get();
-            Action action = (Action)this.actionRef.get();
+            AbstractButton button = (AbstractButton) this.buttonRef.get();
+            Action action = (Action) this.actionRef.get();
             boolean buttonSelected = button.isSelected();
             Object value = action.getValue("SELECTED");
-            if (value instanceof Boolean && (actionSelected = ((Boolean)value).booleanValue()) != buttonSelected) {
+            if (value instanceof Boolean && (actionSelected = ((Boolean) value).booleanValue()) != buttonSelected) {
                 button.setSelected(actionSelected);
             }
         }
@@ -88,12 +87,12 @@ ItemListener {
     }
 
     private void removeListeners() {
-        Action action = (Action)this.actionRef.get();
+        Action action = (Action) this.actionRef.get();
         if (action != null) {
             action.removePropertyChangeListener(this);
         }
         this.actionRef = null;
-        AbstractButton button = (AbstractButton)this.buttonRef.get();
+        AbstractButton button = (AbstractButton) this.buttonRef.get();
         if (button != null) {
             button.removeItemListener(this);
         }

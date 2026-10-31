@@ -12,42 +12,20 @@
 
 package org.bushe.swing.action;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import org.bushe.swing.action.ActionList;
-import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ActionSelectionSynchronizer;
-import org.bushe.swing.action.BasicAction;
-import org.bushe.swing.action.Separator;
 
 public class ActionUIFactory {
     private static ActionUIFactory INSTANCE;
     private static Map NAMED_INSTANCES;
-    private static Object INSTANCE_LOCK;
-    private static boolean sToolbarRequestFocusEnabled14;
-    private static boolean sSetButtonSizeFor13;
-    private Dimension toolbarButtonPreferredSize = null;
-    private static boolean DEBUG;
-    private ActionManager actionManager;
+    private static final Object INSTANCE_LOCK;
+    private static final boolean sToolbarRequestFocusEnabled14;
+    private static final boolean sSetButtonSizeFor13;
+    private static final boolean DEBUG;
 
     static {
         INSTANCE_LOCK = new Object();
@@ -55,6 +33,9 @@ public class ActionUIFactory {
         sSetButtonSizeFor13 = System.getProperty("java.vm.version").indexOf("1.3") > -1;
         DEBUG = false;
     }
+
+    private Dimension toolbarButtonPreferredSize = null;
+    private ActionManager actionManager;
 
     protected ActionUIFactory(ActionManager manager) {
         if (manager == null) {
@@ -112,14 +93,15 @@ public class ActionUIFactory {
     public static ActionUIFactory getInstance(String name) {
         Object object = INSTANCE_LOCK;
         synchronized (object) {
-            block5: {
+            block5:
+            {
                 if (NAMED_INSTANCES != null) break block5;
                 if (name == null) {
                     return ActionUIFactory.getInstance();
                 }
                 return null;
             }
-            return (ActionUIFactory)NAMED_INSTANCES.get(name);
+            return (ActionUIFactory) NAMED_INSTANCES.get(name);
         }
     }
 
@@ -237,9 +219,9 @@ public class ActionUIFactory {
         Action action = button.getAction();
         if (action != null) {
             if (action.getValue("ShortDescription") == null) {
-                button.setToolTipText((String)action.getValue("Name"));
+                button.setToolTipText((String) action.getValue("Name"));
             }
-            if (action instanceof BasicAction && !((BasicAction)action).getToolbarShowsText()) {
+            if (action instanceof BasicAction && !((BasicAction) action).getToolbarShowsText()) {
                 button.setText("");
             }
         }
@@ -263,12 +245,11 @@ public class ActionUIFactory {
             return;
         }
         try {
-            Boolean shows = (Boolean)action.getValue("MENU_SHOWS_ICON");
+            Boolean shows = (Boolean) action.getValue("MENU_SHOWS_ICON");
             if (shows != null && !shows.booleanValue()) {
                 menuItem.setIcon(null);
             }
-        }
-        catch (ClassCastException classCastException) {
+        } catch (ClassCastException classCastException) {
             // empty catch block
         }
     }
@@ -279,11 +260,11 @@ public class ActionUIFactory {
         if (action == null) {
             return;
         }
-        buttonOrMenuItem.setActionCommand((String)action.getValue("ActionCommandKey"));
+        buttonOrMenuItem.setActionCommand((String) action.getValue("ActionCommandKey"));
         if (this.isShouldSyncSelectedProperty(buttonOrMenuItem, action)) {
             ActionSelectionSynchronizer actionSelectionSynchronizer = new ActionSelectionSynchronizer(buttonOrMenuItem, action);
         }
-        if ((selected = (Boolean)action.getValue("SELECTED")) != null) {
+        if ((selected = (Boolean) action.getValue("SELECTED")) != null) {
             buttonOrMenuItem.setSelected(selected);
         }
     }
@@ -346,7 +327,7 @@ public class ActionUIFactory {
     }
 
     protected JSeparator instantiateInvisibleSeparator() {
-        return new JToolBar.Separator(null){
+        return new JToolBar.Separator(null) {
 
             public Color getForeground() {
                 return this.getBackground();
@@ -363,18 +344,18 @@ public class ActionUIFactory {
         while (iter.hasNext()) {
             Object elem = iter.next();
             if (elem == null || elem instanceof Separator) {
-                if (elem instanceof Separator && !((Separator)elem).isLineVisible()) {
+                if (elem instanceof Separator && !((Separator) elem).isLineVisible()) {
                     toolBar.add(this.instantiateSeparator());
                     continue;
                 }
                 toolBar.add(this.instantiateInvisibleSeparator());
                 continue;
             }
-            Action action = (Action)elem;
+            Action action = (Action) elem;
             AbstractButton button = this.createButton(action);
             toolBar.add(button);
             if (action.getValue("GROUP") == null) continue;
-            ButtonGroup buttonGroup = (ButtonGroup)buttonGroupsByGroupID.get(action.getValue("GROUP"));
+            ButtonGroup buttonGroup = buttonGroupsByGroupID.get(action.getValue("GROUP"));
             if (buttonGroup == null) {
                 buttonGroup = new ButtonGroup();
                 buttonGroupsByGroupID.put(action.getValue("GROUP"), buttonGroup);
@@ -397,14 +378,14 @@ public class ActionUIFactory {
                 continue;
             }
             if (element instanceof ActionList) {
-                menu = this.createMenu((ActionList)element);
+                menu = this.createMenu((ActionList) element);
                 if (menu == null) continue;
                 menubar.add(menu);
                 continue;
             }
             if (menu == null) continue;
             if (element instanceof Action) {
-                menu.add(this.createMenuItem((Action)element));
+                menu.add(this.createMenuItem((Action) element));
                 continue;
             }
             menu.add(this.createMenuItem(element));
@@ -420,13 +401,13 @@ public class ActionUIFactory {
                 continue;
             }
             if (element instanceof ActionList) {
-                JMenu newMenu = this.createMenu((ActionList)element);
+                JMenu newMenu = this.createMenu((ActionList) element);
                 if (newMenu == null) continue;
                 menu.add(newMenu);
                 continue;
             }
             if (element instanceof Action) {
-                menu.add(this.createMenuItem((Action)element));
+                menu.add(this.createMenuItem((Action) element));
                 continue;
             }
             menu.add(this.createMenuItem(element));
@@ -444,13 +425,13 @@ public class ActionUIFactory {
                 continue;
             }
             if (element instanceof ActionList) {
-                JMenu newMenu = this.createMenu((ActionList)element);
+                JMenu newMenu = this.createMenu((ActionList) element);
                 if (newMenu == null) continue;
                 popup.add(newMenu);
                 continue;
             }
             if (element instanceof Action) {
-                mi = this.createMenuItem((Action)element);
+                mi = this.createMenuItem((Action) element);
                 this.handleButtonGroups(mi, buttonGroups);
                 popup.add(mi);
                 continue;
@@ -467,7 +448,7 @@ public class ActionUIFactory {
             return;
         }
         if (buttonOrMenu.getAction() != null && (group = buttonOrMenu.getAction().getValue("GROUP")) != null) {
-            ButtonGroup bg = (ButtonGroup)buttonGroups.get(group);
+            ButtonGroup bg = (ButtonGroup) buttonGroups.get(group);
             if (bg == null) {
                 bg = new ButtonGroup();
                 buttonGroups.put(group, bg);

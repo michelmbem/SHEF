@@ -12,11 +12,11 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
 import java.util.EventListener;
-import javax.swing.Action;
 
 public interface ShouldBeEnabledDelegate
-extends EventListener {
-    public boolean shouldBeEnabled(Action var1);
+        extends EventListener {
+    boolean shouldBeEnabled(Action var1);
 }
 

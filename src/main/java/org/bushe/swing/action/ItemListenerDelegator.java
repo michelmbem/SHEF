@@ -15,6 +15,6 @@ package org.bushe.swing.action;
 import java.awt.event.ItemListener;
 
 public interface ItemListenerDelegator {
-    public void setItemListenerDelegate(ItemListener var1);
+    void setItemListenerDelegate(ItemListener var1);
 }
 

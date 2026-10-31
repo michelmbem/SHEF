@@ -15,8 +15,7 @@ package org.bushe.swing.action;
 import java.awt.event.ActionListener;
 
 public interface Actionable {
-    public void addActionListener(ActionListener var1);
-
-    public void removeActionListener(ActionListener var1);
+    void addActionListener(ActionListener listener);
+    void removeActionListener(ActionListener listener);
 }
 

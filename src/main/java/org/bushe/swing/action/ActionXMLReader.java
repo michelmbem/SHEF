@@ -12,36 +12,23 @@
 
 package org.bushe.swing.action;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import javax.swing.KeyStroke;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.bushe.swing.action.ActionAttributes;
-import org.bushe.swing.action.ActionList;
-import org.bushe.swing.action.ActionManager;
-import org.bushe.swing.action.ActionUIFactory;
-import org.bushe.swing.action.Separator;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.swing.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.List;
 
 public class ActionXMLReader {
     public static final String ELEMENT_ACTION_SET = "action-set";
@@ -80,10 +67,20 @@ public class ActionXMLReader {
     private String defaultActionClass;
     private boolean debug = false;
     private boolean printValidationErrors;
-    private ActionManager actionManager;
+    private final ActionManager actionManager;
 
     public ActionXMLReader(ActionManager manager) {
         this.actionManager = manager;
+    }
+
+    static void printActionAttributes(PrintStream stream, ActionAttributes actionAttributes) {
+        stream.println("Attributes for " + actionAttributes.getValue("ActionCommandKey") + actionAttributes);
+    }
+
+    public static Document parseXMLDocument(File file) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        return factory.newDocumentBuilder().parse(file);
     }
 
     public void setDebug(boolean debug) {
@@ -115,8 +112,7 @@ public class ActionXMLReader {
         InputStream stream = url.openStream();
         try {
             this.loadActions(new InputSource(stream), this.getParser());
-        }
-        finally {
+        } finally {
             stream.close();
         }
     }
@@ -131,13 +127,11 @@ public class ActionXMLReader {
             if (this.handler == null) {
                 this.handler = new ActionHandler();
             }
-            parser.parse(is, (DefaultHandler)this.handler);
-        }
-        catch (SAXException ex) {
+            parser.parse(is, (DefaultHandler) this.handler);
+        } catch (SAXException ex) {
             this.printException("SAXException: " + ex.getMessage(), ex);
             throw new IOException("Error parsing: " + ex.getMessage());
-        }
-        catch (IOException ex2) {
+        } catch (IOException ex2) {
             this.printException("IOException: " + ex2.getMessage(), ex2);
             throw ex2;
         }
@@ -150,8 +144,7 @@ public class ActionXMLReader {
         }
         try {
             return parserfactory.newSAXParser();
-        }
-        catch (ParserConfigurationException ex3) {
+        } catch (ParserConfigurationException ex3) {
             this.printException("ParserConfigurationException: " + ex3.getMessage(), ex3);
             throw new SAXException("Error parsing: " + ex3.getMessage());
         }
@@ -198,7 +191,7 @@ public class ActionXMLReader {
         }
         String mnemonic = attrs.getValue(ATTRIBUTE_MNEMONIC);
         if (mnemonic != null && !mnemonic.equals("")) {
-            actionAttrs.putValue("MnemonicKey", new Integer(mnemonic.charAt(0)));
+            actionAttrs.putValue("MnemonicKey", Integer.valueOf(mnemonic.charAt(0)));
         }
         if ((accel = attrs.getValue(ATTRIBUTE_ACCEL)) != null && !accel.equals("")) {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(accel.trim());
@@ -211,10 +204,10 @@ public class ActionXMLReader {
             actionAttrs.putValue("LARGE_ICON", this.actionManager.resolveIcon(value));
         }
         if ((value = attrs.getValue(ATTRIBUTE_TOOLBAR_SHOWS_TEXT)) != null) {
-            actionAttrs.putValue("TOOLBAR_SHOWS_TEXT", new Boolean(value.toString()));
+            actionAttrs.putValue("TOOLBAR_SHOWS_TEXT", Boolean.valueOf(value));
         }
         if ((value = attrs.getValue(ATTRIBUTE_MENU_SHOWS_ICON)) != null) {
-            actionAttrs.putValue("MENU_SHOWS_ICON", new Boolean(value.toString()));
+            actionAttrs.putValue("MENU_SHOWS_ICON", Boolean.valueOf(value));
         }
         if ((value = attrs.getValue("group")) != null) {
             actionAttrs.putValue("GROUP", value);
@@ -273,7 +266,7 @@ public class ActionXMLReader {
         if (this.actionSetMap == null) {
             this.actionSetMap = new HashMap();
         }
-        return (List)this.actionSetMap.get(id);
+        return (List) this.actionSetMap.get(id);
     }
 
     private void addActionSet(String key, List set) {
@@ -290,18 +283,8 @@ public class ActionXMLReader {
         }
     }
 
-    static void printActionAttributes(PrintStream stream, ActionAttributes actionAttributes) {
-        stream.println("Attributes for " + actionAttributes.getValue("ActionCommandKey") + actionAttributes);
-    }
-
-    public static Document parseXMLDocument(File file) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
-        return factory.newDocumentBuilder().parse(file);
-    }
-
     class ActionHandler
-    extends DefaultHandler {
+            extends DefaultHandler {
         private String element;
         private Stack actionListStack;
         private Stack actionSetStack;
@@ -430,12 +413,10 @@ public class ActionXMLReader {
                     if (weightStr != null) {
                         weight = Integer.valueOf(weightStr);
                     }
-                }
-                catch (NumberFormatException ex) {
+                } catch (NumberFormatException ex) {
                     try {
                         weight = Double.valueOf(weightStr);
-                    }
-                    catch (NumberFormatException newOrReferredToList) {
+                    } catch (NumberFormatException newOrReferredToList) {
                         // empty catch block
                     }
                 }
@@ -483,7 +464,7 @@ public class ActionXMLReader {
             String result = "";
             int i = 0;
             while (i < attributes.getLength()) {
-                result = String.valueOf(result) + attributes.getLocalName(i) + "=" + attributes.getValue(i) + " ";
+                result = result + attributes.getLocalName(i) + "=" + attributes.getValue(i) + " ";
                 ++i;
             }
             return result;
@@ -495,9 +476,8 @@ public class ActionXMLReader {
             }
             if (ActionXMLReader.ELEMENT_ACTION_SET.equals(name)) {
                 try {
-                    this.actionset = (String)this.actionSetStack.pop();
-                }
-                catch (EmptyStackException ex) {
+                    this.actionset = (String) this.actionSetStack.pop();
+                } catch (EmptyStackException ex) {
                     this.actionset = null;
                 }
             } else if (ActionXMLReader.ELEMENT_ACTION_LIST.equals(name)) {
@@ -506,9 +486,8 @@ public class ActionXMLReader {
                         this.actionlist.setRoles(this.roles);
                     }
                     this.roles = null;
-                    this.actionlist = (ActionList)this.actionListStack.pop();
-                }
-                catch (EmptyStackException ex) {
+                    this.actionlist = (ActionList) this.actionListStack.pop();
+                } catch (EmptyStackException ex) {
                     this.actionlist = null;
                 }
             } else if (ActionXMLReader.ELEMENT_ACTION.equals(name)) {
@@ -554,7 +533,7 @@ public class ActionXMLReader {
 
         private void reportException(SAXParseException ex) {
             if (ActionXMLReader.this.printValidationErrors) {
-                System.out.println(String.valueOf(ex.getLineNumber()) + ":" + ex.getColumnNumber() + " " + ex.getMessage());
+                System.out.println(ex.getLineNumber() + ":" + ex.getColumnNumber() + " " + ex.getMessage());
                 System.out.println("Public ID: " + ex.getPublicId() + "\t" + "System ID: " + ex.getSystemId());
             }
             if (ActionXMLReader.this.debug) {

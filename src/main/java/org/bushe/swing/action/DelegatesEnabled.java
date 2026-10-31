@@ -12,11 +12,9 @@
 
 package org.bushe.swing.action;
 
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
-
 public interface DelegatesEnabled {
-    public void addShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
+    void addShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
 
-    public void removeShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
+    void removeShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
 }
 

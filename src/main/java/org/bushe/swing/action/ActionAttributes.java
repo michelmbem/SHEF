@@ -12,99 +12,85 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.Action;
-import org.bushe.swing.action.BasicAction;
 
 public class ActionAttributes {
-    private Map attMap = new HashMap(10);
-    private static Class defaultActionClass;
-
-    public static Class getDefaultActionClass() {
-        return defaultActionClass;
-    }
-
-    public static void setDefaultActionClass(Class defaultActionClass) {
-        ActionAttributes.defaultActionClass = defaultActionClass;
-    }
+    private static Class<? extends Action> defaultActionClass;
+    private final Map<String, Object> attMap = new HashMap<>(10);
 
     public ActionAttributes() {
     }
 
     public ActionAttributes(ActionAttributes attrs) {
-        Set keys = attrs.getKeys();
-        Iterator iter = keys.iterator();
-        while (iter.hasNext()) {
-            Object key = iter.next();
-            this.putValue(key, attrs.getValue((String)key));
-        }
+        attrs.getKeys().forEach(key -> putValue(key, attrs.getValue(key)));
+    }
+
+    public static Class<? extends Action> getDefaultActionClass() {
+        return defaultActionClass;
+    }
+
+    public static void setDefaultActionClass(Class<? extends Action> defaultActionClass) {
+        ActionAttributes.defaultActionClass = defaultActionClass;
+    }
+
+    public Set<String> getKeys() {
+        return attMap.keySet();
     }
 
     public Object getValue(String key) {
-        return this.attMap.get(key);
+        return attMap.get(key);
     }
 
-    public Set getKeys() {
-        return this.attMap.keySet();
-    }
-
-    public void putValue(Object key, Object value) {
-        this.attMap.put(key, value);
+    public void putValue(String key, Object value) {
+        attMap.put(key, value);
     }
 
     public Action createAction() {
-        String specificClass = (String)this.attMap.get("ACTION_CLASS");
+        String specificClass = attMap.get("ACTION_CLASS").toString();
         Action action = null;
+
         if (specificClass != null) {
             try {
                 Class<?> actionClass = Class.forName(specificClass);
-                action = (Action)actionClass.newInstance();
-            }
-            catch (IllegalAccessException ex1) {
-                return null;
-            }
-            catch (InstantiationException ex1) {
-                return null;
-            }
-            catch (ClassNotFoundException ex) {
+                action = (Action) actionClass.getConstructor().newInstance();
+            } catch (Exception ex) {
                 return null;
             }
         }
+
         if (action == null) {
-            action = this.instantiateDefaultAction();
+            action = instantiateDefaultAction();
         }
-        this.configureAction(action);
+
+        configureAction(action);
         return action;
     }
 
     protected Action instantiateDefaultAction() {
         if (defaultActionClass != null) {
             try {
-                return (Action)defaultActionClass.newInstance();
-            }
-            catch (InstantiationException e) {
-                throw new RuntimeException("Could not create action.", e);
-            }
-            catch (IllegalAccessException e) {
+                return defaultActionClass.getConstructor().newInstance();
+            } catch (Exception e) {
                 throw new RuntimeException("Could not create action.", e);
             }
         }
+
         return new BasicAction();
     }
 
     public void configureAction(Action action) {
-        Set keys = this.attMap.keySet();
-        Iterator iter = keys.iterator();
-        while (iter.hasNext()) {
-            String key = (String)iter.next();
-            Object value = this.attMap.get(key);
+        for (Map.Entry<String, Object> entry : attMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
             if ("enabled".equals(value)) {
-                action.setEnabled(Boolean.valueOf("" + value));
+                action.setEnabled(true);
                 continue;
             }
+
             action.putValue(key, value);
         }
     }

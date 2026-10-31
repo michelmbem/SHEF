@@ -12,12 +12,10 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
+import java.awt.event.InputEvent;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.KeyStroke;
 
 public class ActionConfigurator {
     public static final String ACTION_NEW = "New";
@@ -31,97 +29,62 @@ public class ActionConfigurator {
     public static final String ACTION_ABOUT = "About";
     public static final String ACTION_USER_GUIDE = "User's Guide";
     public static final String ACTION_REFRESH = "Refresh";
-    protected static Map sLookAndFeel = new HashMap();
-    static Map mLookAndFeel;
-    static /* synthetic */ Class class$0;
+
+    protected static Map<String, Map<String, Object>> sLookAndFeel = new HashMap<>();
+    static Map<String, Map<String, Object>> mLookAndFeel;
 
     static {
-        Class<?> clazz = class$0;
-        if (clazz == null) {
-            try {
-                clazz = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_NEW, ACTION_NEW, ACTION_NEW, ACTION_NEW, new ImageIcon(clazz.getResource("/toolbarButtonGraphics/general/New16.gif")), KeyStroke.getKeyStroke(78, 2), new Integer(78));
-        Class<?> clazz2 = class$0;
-        if (clazz2 == null) {
-            try {
-                clazz2 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_SAVE, ACTION_SAVE, ACTION_SAVE, ACTION_SAVE, new ImageIcon(clazz2.getResource("/toolbarButtonGraphics/general/Save16.gif")), KeyStroke.getKeyStroke(83, 2), new Integer(83));
-        Class<?> clazz3 = class$0;
-        if (clazz3 == null) {
-            try {
-                clazz3 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_SAVE_AS, "Save As", "Save As", "Save As", new ImageIcon(clazz3.getResource("/toolbarButtonGraphics/general/SaveAs16.gif")), null, new Integer(65));
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, null, null, new Integer(88));
-        Class<?> clazz4 = class$0;
-        if (clazz4 == null) {
-            try {
-                clazz4 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES, new ImageIcon(clazz4.getResource("/toolbarButtonGraphics/general/Preferences16.gif")), KeyStroke.getKeyStroke(82, 2), new Integer(82));
-        Class<?> clazz5 = class$0;
-        if (clazz5 == null) {
-            try {
-                clazz5 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_PRINT, ACTION_PRINT, ACTION_PRINT, ACTION_PRINT, new ImageIcon(clazz5.getResource("/toolbarButtonGraphics/general/Print16.gif")), KeyStroke.getKeyStroke(80, 2), new Integer(80));
-        Class<?> clazz6 = class$0;
-        if (clazz6 == null) {
-            try {
-                clazz6 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_COPY, ACTION_COPY, ACTION_COPY, ACTION_COPY, new ImageIcon(clazz6.getResource("/toolbarButtonGraphics/general/Copy16.gif")), KeyStroke.getKeyStroke(67, 2), new Integer(67));
-        Class<?> clazz7 = class$0;
-        if (clazz7 == null) {
-            try {
-                clazz7 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_DELETE, ACTION_DELETE, ACTION_DELETE, ACTION_DELETE, new ImageIcon(clazz7.getResource("/toolbarButtonGraphics/general/Delete16.gif")), KeyStroke.getKeyStroke(68, 2), new Integer(68));
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, null, null, new Integer(65));
-        Class<?> clazz8 = class$0;
-        if (clazz8 == null) {
-            try {
-                clazz8 = class$0 = Class.forName("org.bushe.swing.action.ActionConfigurator");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
-                throw new NoClassDefFoundError(classNotFoundException.getMessage());
-            }
-        }
-        ActionConfigurator.addLookAndFeelActionEntry(ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH, new ImageIcon(clazz8.getResource("/toolbarButtonGraphics/general/Refresh16.gif")), KeyStroke.getKeyStroke('t'), new Integer(82));
+        Class<?> thisClass = ActionConfigurator.class;
+
+        addLookAndFeelActionEntry(ACTION_NEW, ACTION_NEW, ACTION_NEW, ACTION_NEW,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/New16.gif")),
+                KeyStroke.getKeyStroke(78, InputEvent.CTRL_MASK), 78);
+
+        addLookAndFeelActionEntry(ACTION_SAVE, ACTION_SAVE, ACTION_SAVE, ACTION_SAVE,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Save16.gif")),
+                KeyStroke.getKeyStroke(83, InputEvent.CTRL_MASK), 83);
+
+        addLookAndFeelActionEntry(ACTION_SAVE_AS, "Save As", "Save As", "Save As",
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/SaveAs16.gif")),
+                null, 65);
+
+        addLookAndFeelActionEntry(ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, ACTION_EXIT, null, null, 88);
+
+        addLookAndFeelActionEntry(ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES, ACTION_PREFERENCES,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Preferences16.gif")),
+                KeyStroke.getKeyStroke(82, InputEvent.CTRL_MASK), 82);
+
+        addLookAndFeelActionEntry(ACTION_PRINT, ACTION_PRINT, ACTION_PRINT, ACTION_PRINT,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Print16.gif")),
+                KeyStroke.getKeyStroke(80, InputEvent.CTRL_MASK), 80);
+
+        addLookAndFeelActionEntry(ACTION_COPY, ACTION_COPY, ACTION_COPY, ACTION_COPY,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Copy16.gif")),
+                KeyStroke.getKeyStroke(67, InputEvent.CTRL_MASK), 67);
+
+        addLookAndFeelActionEntry(ACTION_DELETE, ACTION_DELETE, ACTION_DELETE, ACTION_DELETE,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Delete16.gif")),
+                KeyStroke.getKeyStroke(68, InputEvent.CTRL_MASK), 68);
+
+        addLookAndFeelActionEntry(ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, ACTION_ABOUT, null, null, 65);
+
+        addLookAndFeelActionEntry(ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH, ACTION_REFRESH,
+                new ImageIcon(thisClass.getResource("/toolbarButtonGraphics/general/Refresh16.gif")),
+                KeyStroke.getKeyStroke('t'), 82);
     }
 
-    public static void addLookAndFeelActionEntry(String name, String cmd, String desc, String longDesc, ImageIcon icon, KeyStroke acc, Integer mnemonic) {
-        HashMap<String, Object> valuesMap = new HashMap<String, Object>();
+    public ActionConfigurator() {
+        mLookAndFeel = sLookAndFeel;
+    }
+
+    public ActionConfigurator(Map<String, Map<String, Object>> lookAndFeel) {
+        mLookAndFeel = lookAndFeel;
+    }
+
+    public static void addLookAndFeelActionEntry(String name, String cmd, String desc, String longDesc,
+                                                 ImageIcon icon, KeyStroke acc, Integer mnemonic) {
+
+        Map<String, Object> valuesMap = new HashMap<>();
         valuesMap.put("Name", name);
         valuesMap.put("ActionCommandKey", cmd);
         valuesMap.put("ShortDescription", desc);
@@ -132,37 +95,27 @@ public class ActionConfigurator {
         sLookAndFeel.put(name, valuesMap);
     }
 
-    public ActionConfigurator() {
-        mLookAndFeel = sLookAndFeel;
-    }
-
-    public ActionConfigurator(Map lookAndFeel) {
-        mLookAndFeel = lookAndFeel;
-    }
-
-    public boolean configureActionRespectLookAndFeel(String actionConstant, Action action) {
-        return ActionConfigurator.configureAction(mLookAndFeel, actionConstant, action);
-    }
-
     public static boolean configureAction(String actionConstant, Action action) {
-        return ActionConfigurator.configureAction(sLookAndFeel, actionConstant, action);
+        return configureAction(sLookAndFeel, actionConstant, action);
     }
 
-    public static boolean configureAction(Map lookAndFeel, String actionConstant, Action action) {
-        Map values;
+    public static boolean configureAction(Map<String, Map<String, Object>> lookAndFeel,
+                                          String actionConstant, Action action) {
+        Map<String, Object> values;
         if (lookAndFeel == null) {
             lookAndFeel = sLookAndFeel;
         }
-        if ((values = (Map)lookAndFeel.get(actionConstant)) == null) {
+
+        if ((values = lookAndFeel.get(actionConstant)) == null) {
             return false;
         }
-        Iterator iter = values.keySet().iterator();
-        while (iter.hasNext()) {
-            String key = (String)iter.next();
-            Object value = values.get(key);
-            action.putValue(key, value);
-        }
+
+        values.forEach(action::putValue);
         return true;
+    }
+
+    public boolean configureActionRespectLookAndFeel(String actionConstant, Action action) {
+        return configureAction(mLookAndFeel, actionConstant, action);
     }
 }
 

@@ -12,26 +12,21 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import javax.swing.Action;
-import org.bushe.swing.action.BasicAction;
-import org.bushe.swing.action.ContextAware;
-import org.bushe.swing.action.EnabledUpdater;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
-public class ActionList
-implements List {
-    private Object id;
+public class ActionList implements List<Object> {
+    private final Object id;
     private Object triggerActionId;
     private Number weight;
-    private List list = new ArrayList();
-    private List roles;
+    private final List<Object> list = new ArrayList<>();
+    private List<Object> roles;
 
     public ActionList(Object id) {
         this.id = id;
@@ -43,200 +38,246 @@ implements List {
     }
 
     public Object getId() {
-        return this.id;
+        return id;
     }
 
     public Object getTriggerActionId() {
-        return this.triggerActionId;
+        return triggerActionId;
     }
 
-    public List getRoles() {
-        if (this.roles == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(this.roles);
+    public List<Object> getRoles() {
+        return roles == null ? null : Collections.unmodifiableList(roles);
+    }
+
+    public void setRoles(List<Object> roles) {
+        this.roles = roles;
     }
 
     public Number getWeight() {
-        return this.weight;
+        return weight;
     }
 
     public void setWeight(Number weight) {
         this.weight = weight;
     }
 
-    public void setRoles(List roles) {
-        this.roles = roles;
-    }
-
     public Action getActionById(Object id) {
-        return this.findActionInList(id, this.list);
+        return findActionInList(id, list);
     }
 
     public void addActionListenerToAll(ActionListener delegate) {
-        BasicAction action = null;
-        Iterator iter = this.iterator();
-        while (iter.hasNext()) {
-            Object item = iter.next();
-            if (item == null || !(item instanceof BasicAction)) continue;
-            action = (BasicAction)item;
-            action.addActionListener(delegate);
-        }
-        iter = this.iterator();
-        while (iter.hasNext()) {
-            Object subList = iter.next();
-            if (subList == null || !(subList instanceof ActionList)) continue;
-            ((ActionList)subList).addActionListenerToAll(delegate);
-        }
+        list.forEach(item -> {
+            if (item instanceof BasicAction) {
+                ((BasicAction) item).addActionListener(delegate);
+            } else if (item instanceof ActionList) {
+                ((ActionList) item).addActionListenerToAll(delegate);
+            }
+        });
     }
 
-    private Action findActionInList(Object id, List actionList) {
-        Iterator iter = actionList.iterator();
-        while (iter.hasNext()) {
-            Action action;
-            Object item = iter.next();
-            if (item == null || !(item instanceof Action) || !id.equals((action = (Action)item).getValue("ID"))) continue;
-            return action;
+    private static Action findActionInList(Object id, List<?> actionList) {
+        Action action;
+
+        for (Object item : actionList) {
+            if (item instanceof Action) {
+                action = (Action) item;
+                if (Objects.equals(id, action.getValue("ID")))
+                    return action;
+            }
+
+            if (item instanceof ActionList) {
+                action = findActionInList(id, (ActionList) item);
+                if (action != null) return action;
+            }
         }
-        iter = actionList.iterator();
-        while (iter.hasNext()) {
-            Action result;
-            Object subList = iter.next();
-            if (subList == null || !(subList instanceof ActionList) || (result = this.findActionInList(id, (ActionList)subList)) == null) continue;
-            return result;
-        }
+
         return null;
     }
 
     public void setContextForAll(Map context) {
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            Object action = iterator.next();
-            if (!(action instanceof ContextAware)) continue;
-            ContextAware contextAwareAction = (ContextAware)action;
+        for (Object item : list) {
+            if (!(item instanceof ContextAware)) continue;
+            ContextAware contextAwareAction = (ContextAware) item;
             contextAwareAction.setContext(context);
         }
     }
 
     public void putContextValueForAll(Object key, Object contextValue) {
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            Object action = iterator.next();
-            if (!(action instanceof ContextAware)) continue;
-            ContextAware contextAwareAction = (ContextAware)action;
+        for (Object item : list) {
+            if (!(item instanceof ContextAware)) continue;
+            ContextAware contextAwareAction = (ContextAware) item;
             contextAwareAction.putContextValue(key, contextValue);
         }
     }
 
     public void updateEnabledForAll() {
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            Object action = iterator.next();
-            if (!(action instanceof EnabledUpdater)) continue;
-            EnabledUpdater updateEnabledAction = (EnabledUpdater)action;
+        for (Object item : list) {
+            if (!(item instanceof EnabledUpdater)) continue;
+            EnabledUpdater updateEnabledAction = (EnabledUpdater) item;
             updateEnabledAction.updateEnabled();
         }
     }
 
     public void setEnabledForAll(boolean enabled) {
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            Object action = iterator.next();
-            if (!(action instanceof Action)) continue;
-            ((Action)action).setEnabled(enabled);
+        for (Object item : list) {
+            if (!(item instanceof Action)) continue;
+            ((Action) item).setEnabled(enabled);
         }
     }
 
+    @Override
     public int size() {
-        return this.list.size();
+        return list.size();
     }
 
+    @Override
     public boolean isEmpty() {
-        return this.list.isEmpty();
+        return list.isEmpty();
     }
 
+    @Override
     public boolean contains(Object o) {
-        return this.list.contains(o);
+        return list.contains(o);
     }
 
-    public Iterator iterator() {
-        return this.list.iterator();
+    @Override
+    public Iterator<Object> iterator() {
+        return list.iterator();
     }
 
+    @Override
+    public void forEach(Consumer<? super Object> o) {
+        list.forEach(o);
+    }
+
+    @Override
     public Object[] toArray() {
-        return this.list.toArray();
+        return list.toArray();
     }
 
-    public Object[] toArray(Object[] a) {
-        return this.list.toArray(a);
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return list.toArray(a);
     }
 
+    @Override
+    public <T> T[] toArray(IntFunction<T[]> generator) {
+        return list.toArray(generator);
+    }
+
+    @Override
     public boolean add(Object o) {
-        return this.list.add(o);
+        return list.add(o);
     }
 
+    @Override
     public boolean remove(Object o) {
-        return this.list.remove(o);
+        return list.remove(o);
     }
 
+    @Override
+    public boolean removeIf(Predicate<? super Object> filter) {
+        return list.removeIf(filter);
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<Object> operator) {
+        list.replaceAll(operator);
+    }
+
+    @Override
+    public void sort(Comparator<? super Object> c) {
+        list.sort(c);
+    }
+
+    @Override
     public boolean containsAll(Collection c) {
-        return this.list.containsAll(c);
+        return list.containsAll(c);
     }
 
+    @Override
     public boolean addAll(Collection c) {
-        return this.list.addAll(c);
+        return list.addAll(c);
     }
 
+    @Override
     public boolean addAll(int index, Collection c) {
-        return this.list.addAll(index, c);
+        return list.addAll(index, c);
     }
 
+    @Override
     public boolean removeAll(Collection c) {
-        return this.list.removeAll(c);
+        return list.removeAll(c);
     }
 
+    @Override
     public boolean retainAll(Collection c) {
-        return this.list.retainAll(c);
+        return list.retainAll(c);
     }
 
+    @Override
     public void clear() {
-        this.list.clear();
+        list.clear();
     }
 
+    @Override
     public Object get(int index) {
-        return this.list.get(index);
+        return list.get(index);
     }
 
-    public Object set(int index, Object element) {
-        return this.list.set(index, element);
+    @Override
+    public Object set(int index, Object o) {
+        return list.set(index, o);
     }
 
-    public void add(int index, Object element) {
-        this.list.add(index, element);
+    @Override
+    public void add(int index, Object o) {
+        list.add(index, o);
     }
 
+    @Override
     public Object remove(int index) {
-        return this.list.remove(index);
+        return list.remove(index);
     }
 
+    @Override
     public int indexOf(Object o) {
-        return this.list.indexOf(o);
+        return list.indexOf(o);
     }
 
+    @Override
     public int lastIndexOf(Object o) {
-        return this.list.lastIndexOf(o);
+        return list.lastIndexOf(o);
     }
 
-    public ListIterator listIterator() {
-        return this.list.listIterator();
+    @Override
+    public ListIterator<Object> listIterator() {
+        return list.listIterator();
     }
 
-    public ListIterator listIterator(int index) {
-        return this.list.listIterator(index);
+    @Override
+    public ListIterator<Object> listIterator(int index) {
+        return list.listIterator(index);
     }
 
-    public List subList(int fromIndex, int toIndex) {
-        return this.list.subList(fromIndex, toIndex);
+    @Override
+    public List<Object> subList(int fromIndex, int toIndex) {
+        return list.subList(fromIndex, toIndex);
+    }
+
+    @Override
+    public Spliterator<Object> spliterator() {
+        return list.spliterator();
+    }
+
+    @Override
+    public Stream<Object> stream() {
+        return list.stream();
+    }
+
+    @Override
+    public Stream<Object> parallelStream() {
+        return list.parallelStream();
     }
 }
 

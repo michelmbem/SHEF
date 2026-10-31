@@ -12,40 +12,28 @@
 
 package org.bushe.swing.action;
 
+import javax.swing.*;
+import javax.swing.event.EventListenerList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.swing.AbstractAction;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.KeyStroke;
-import javax.swing.event.EventListenerList;
-import org.bushe.swing.action.Actionable;
-import org.bushe.swing.action.ContextAware;
-import org.bushe.swing.action.DelegatesEnabled;
-import org.bushe.swing.action.ItemAction;
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
+import java.util.*;
 
 public class BasicAction
-extends AbstractAction
-implements Actionable,
-ItemAction,
-DelegatesEnabled,
-ContextAware {
+        extends AbstractAction
+        implements Actionable,
+        ItemAction,
+        DelegatesEnabled,
+        ContextAware {
     protected static boolean DEFAULT_ENABLED_STATE = true;
+    static /* synthetic */ Class class$0;
+    static /* synthetic */ Class class$1;
     EventListenerList listenerList = new EventListenerList();
     private List enabledDelegates;
     private Map context;
     private String idForDebugging = null;
-    static /* synthetic */ Class class$0;
-    static /* synthetic */ Class class$1;
 
     public BasicAction() {
     }
@@ -83,12 +71,12 @@ ContextAware {
         this.setMenuShowsIcon(menuShowsIcon);
     }
 
-    public void addActionListener(ActionListener l) {
-        this.listenerList.add(ActionListener.class, l);
+    public void addActionListener(ActionListener listener) {
+        this.listenerList.add(ActionListener.class, listener);
     }
 
-    public void removeActionListener(ActionListener l) {
-        this.listenerList.remove(ActionListener.class, l);
+    public void removeActionListener(ActionListener listener) {
+        this.listenerList.remove(ActionListener.class, listener);
     }
 
     public final void actionPerformed(ActionEvent evt) {
@@ -101,12 +89,10 @@ ContextAware {
                 this.actionPerformedTry();
                 this.execute(evt);
                 this.propogateActionEvent(evt);
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 this.actionPerformedCatch(t);
             }
-        }
-        finally {
+        } finally {
             this.actionPerformedFinally();
         }
     }
@@ -120,13 +106,12 @@ ContextAware {
             if (clazz == null) {
                 try {
                     clazz = Class.forName("java.awt.event.ActionListener");
-                }
-                catch (ClassNotFoundException classNotFoundException) {
+                } catch (ClassNotFoundException classNotFoundException) {
                     throw new NoClassDefFoundError(classNotFoundException.getMessage());
                 }
             }
             if (object == clazz) {
-                ((ActionListener)listeners[i + 1]).actionPerformed(evt);
+                ((ActionListener) listeners[i + 1]).actionPerformed(evt);
             }
             i -= 2;
         }
@@ -173,7 +158,7 @@ ContextAware {
         ArrayList copy = new ArrayList(this.enabledDelegates);
         Iterator iter = copy.iterator();
         while (iter.hasNext()) {
-            ShouldBeEnabledDelegate enabledUpdater = (ShouldBeEnabledDelegate)iter.next();
+            ShouldBeEnabledDelegate enabledUpdater = (ShouldBeEnabledDelegate) iter.next();
             if (enabledUpdater == null || enabledUpdater.shouldBeEnabled(this) == DEFAULT_ENABLED_STATE) continue;
             return !DEFAULT_ENABLED_STATE;
         }
@@ -197,13 +182,12 @@ ContextAware {
             if (clazz == null) {
                 try {
                     clazz = Class.forName("java.awt.event.ItemListener");
-                }
-                catch (ClassNotFoundException classNotFoundException) {
+                } catch (ClassNotFoundException classNotFoundException) {
                     throw new NoClassDefFoundError(classNotFoundException.getMessage());
                 }
             }
             if (object == clazz) {
-                ((ItemListener)listeners[i + 1]).itemStateChanged(evt);
+                ((ItemListener) listeners[i + 1]).itemStateChanged(evt);
             }
             i -= 2;
         }
@@ -227,13 +211,13 @@ ContextAware {
         return this.getValue("GROUP");
     }
 
+    public Map getContext() {
+        return this.context;
+    }
+
     public void setContext(Map context) {
         this.context = context;
         this.contextChanged();
-    }
-
-    public Map getContext() {
-        return this.context;
     }
 
     public void clearContext() {
@@ -263,7 +247,7 @@ ContextAware {
     }
 
     public String getId() {
-        return (String)this.getValue("ID");
+        return (String) this.getValue("ID");
     }
 
     public void setId(String id) {
@@ -271,7 +255,7 @@ ContextAware {
     }
 
     public String getActionName() {
-        return (String)this.getValue("Name");
+        return (String) this.getValue("Name");
     }
 
     public void setActionName(String actionName) {
@@ -279,7 +263,7 @@ ContextAware {
     }
 
     public String getActionCommandName() {
-        return (String)this.getValue("ActionCommandKey");
+        return (String) this.getValue("ActionCommandKey");
     }
 
     public void setActionCommandName(String actionCommandName) {
@@ -287,7 +271,7 @@ ContextAware {
     }
 
     public String getShortDescription() {
-        return (String)this.getValue("ShortDescription");
+        return (String) this.getValue("ShortDescription");
     }
 
     public void setShortDescription(String shortDesc) {
@@ -295,7 +279,7 @@ ContextAware {
     }
 
     public String getLongDescription() {
-        return (String)this.getValue("LongDescription");
+        return (String) this.getValue("LongDescription");
     }
 
     public void setLongDescription(String longDesc) {
@@ -303,7 +287,7 @@ ContextAware {
     }
 
     public Integer getMnemonic() {
-        return (Integer)this.getValue("MnemonicKey");
+        return (Integer) this.getValue("MnemonicKey");
     }
 
     protected void setMnemonic(Integer mnemonic) {
@@ -311,7 +295,7 @@ ContextAware {
     }
 
     public KeyStroke getAccelerator() {
-        return (KeyStroke)this.getValue("AcceleratorKey");
+        return (KeyStroke) this.getValue("AcceleratorKey");
     }
 
     public void setAccelerator(KeyStroke accelerator) {
@@ -319,11 +303,19 @@ ContextAware {
     }
 
     public ImageIcon getSmallIcon() {
-        return (ImageIcon)this.getValue("SmallIcon");
+        return (ImageIcon) this.getValue("SmallIcon");
     }
 
     public void setSmallIcon(Icon smallIcon) {
         this.putValue("SmallIcon", smallIcon);
+    }
+
+    public boolean getToolbarShowsText() {
+        Object value = this.getValue("TOOLBAR_SHOWS_TEXT");
+        if (value == null) {
+            return false;
+        }
+        return (Boolean) value;
     }
 
     public void setToolbarShowsText(boolean toolbarShowsText) {
@@ -334,12 +326,12 @@ ContextAware {
         }
     }
 
-    public boolean getToolbarShowsText() {
-        Object value = this.getValue("TOOLBAR_SHOWS_TEXT");
+    public boolean getMenuShowsIcon() {
+        Object value = this.getValue("MENU_SHOWS_ICON");
         if (value == null) {
             return false;
         }
-        return (Boolean)value;
+        return (Boolean) value;
     }
 
     public void setMenuShowsIcon(boolean menuShowsIcon) {
@@ -350,16 +342,8 @@ ContextAware {
         }
     }
 
-    public boolean getMenuShowsIcon() {
-        Object value = this.getValue("MENU_SHOWS_ICON");
-        if (value == null) {
-            return false;
-        }
-        return (Boolean)value;
-    }
-
     public List getRoles() {
-        return (List)this.getValue("ROLES");
+        return (List) this.getValue("ROLES");
     }
 
     public void setRoles(List roles) {
@@ -383,7 +367,7 @@ ContextAware {
                 this.idForDebugging = value.toString();
             }
             if (value instanceof String) {
-                value = ((String)value).intern();
+                value = ((String) value).intern();
             }
         }
         super.putValue(key, value);
@@ -391,7 +375,7 @@ ContextAware {
 
     public String toString() {
         StringBuffer buf = new StringBuffer(100);
-        buf.append(String.valueOf(super.toString()) + " [id=");
+        buf.append(super.toString() + " [id=");
         buf.append(this.getId());
         buf.append(", enabled=");
         buf.append(this.isEnabled());

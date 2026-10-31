@@ -12,10 +12,8 @@
 
 package org.bushe.swing.action;
 
-import org.bushe.swing.action.ShouldBeEnabledDelegate;
-
 public interface EnabledUpdater
-extends ShouldBeEnabledDelegate {
-    public boolean updateEnabled();
+        extends ShouldBeEnabledDelegate {
+    boolean updateEnabled();
 }
 

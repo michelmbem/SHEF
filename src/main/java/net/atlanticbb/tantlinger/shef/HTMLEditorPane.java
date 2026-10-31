@@ -428,7 +428,7 @@ public class HTMLEditorPane extends JPanel {
      * @return An array of Actions
      */
     private Action[] toArray(ActionList actionList) {
-        return new ArrayList<Action>(actionList).toArray(Action[]::new);
+        return actionList.toArray(Action[]::new);
     }
 
     private void configToolbarButton(AbstractButton button) {

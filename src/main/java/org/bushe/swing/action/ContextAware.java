@@ -15,14 +15,14 @@ package org.bushe.swing.action;
 import java.util.Map;
 
 public interface ContextAware {
-    public void setContext(Map var1);
+    Map getContext();
 
-    public Map getContext();
+    void setContext(Map var1);
 
-    public void clearContext();
+    void clearContext();
 
-    public void putContextValue(Object var1, Object var2);
+    void putContextValue(Object var1, Object var2);
 
-    public Object getContextValue(Object var1);
+    Object getContextValue(Object var1);
 }
 

@@ -12,38 +12,19 @@
 
 package org.bushe.swing.action;
 
+import org.bushe.lang.reflect.MethodCallbackInvocationHandler;
+import org.bushe.swing.SwingUtils;
+import org.xml.sax.SAXException;
+
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import org.bushe.lang.reflect.MethodCallbackInvocationHandler;
-import org.bushe.swing.SwingUtils;
-import org.bushe.swing.action.ActionAttributes;
-import org.bushe.swing.action.ActionList;
-import org.bushe.swing.action.ActionXMLReader;
-import org.bushe.swing.action.Actionable;
-import org.bushe.swing.action.ContextAware;
-import org.bushe.swing.action.EnabledUpdater;
-import org.bushe.swing.action.IconResolver;
-import org.bushe.swing.action.Separator;
-import org.xml.sax.SAXException;
+import java.util.*;
 
-public class ActionManager
-implements IconResolver {
+public class ActionManager implements IconResolver {
     public static final String ID = "ID";
     public static final String TOOLBAR_SHOWS_TEXT = "TOOLBAR_SHOWS_TEXT";
     public static final String MENU_SHOWS_ICON = "MENU_SHOWS_ICON";
@@ -57,23 +38,18 @@ implements IconResolver {
     public static final String ACTION_ROLES = "ROLES";
     public static final String ACTION_CLASS = "ACTION_CLASS";
     public static final String WEIGHT = "weight";
-    private static Class[] ARRAY_OF_ACTION_LISTENER_CLASS;
-    private static Class[] ARRAY_OF_ACTION_EVENT_CLASS;
-    private static Class[] ARRAY_OF_ITEM_LISTENER_CLASS;
-    private static Class[] ARRAY_OF_ITEM_EVENT_CLASS;
-    private Map s_prototypes = Collections.synchronizedMap(new HashMap());
-    private Map s_actionIdLists = Collections.synchronizedMap(new HashMap());
-    private Map s_globalActions = Collections.synchronizedMap(new HashMap());
-    private Map s_globalActionLists = Collections.synchronizedMap(new HashMap());
-    private List roles;
-    private IconResolver iconResolver;
-    private static ActionManager INSTANCE;
-    private static Map NAMED_INSTANCES;
-    private static Object INSTANCE_LOCK;
+
     static /* synthetic */ Class class$0;
     static /* synthetic */ Class class$1;
     static /* synthetic */ Class class$2;
     static /* synthetic */ Class class$3;
+    private static final Class[] ARRAY_OF_ACTION_LISTENER_CLASS;
+    private static final Class[] ARRAY_OF_ACTION_EVENT_CLASS;
+    private static final Class[] ARRAY_OF_ITEM_LISTENER_CLASS;
+    private static final Class[] ARRAY_OF_ITEM_EVENT_CLASS;
+    private static ActionManager INSTANCE;
+    private static Map NAMED_INSTANCES;
+    private static final Object INSTANCE_LOCK;
 
     static {
         Class[] classArray = new Class[1];
@@ -81,8 +57,7 @@ implements IconResolver {
         if (clazz == null) {
             try {
                 clazz = class$0 = Class.forName("java.awt.event.ActionListener");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
+            } catch (ClassNotFoundException classNotFoundException) {
                 throw new NoClassDefFoundError(classNotFoundException.getMessage());
             }
         }
@@ -93,8 +68,7 @@ implements IconResolver {
         if (clazz2 == null) {
             try {
                 clazz2 = class$1 = Class.forName("java.awt.event.ActionEvent");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
+            } catch (ClassNotFoundException classNotFoundException) {
                 throw new NoClassDefFoundError(classNotFoundException.getMessage());
             }
         }
@@ -105,8 +79,7 @@ implements IconResolver {
         if (clazz3 == null) {
             try {
                 clazz3 = class$2 = Class.forName("java.awt.event.ItemListener");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
+            } catch (ClassNotFoundException classNotFoundException) {
                 throw new NoClassDefFoundError(classNotFoundException.getMessage());
             }
         }
@@ -117,8 +90,7 @@ implements IconResolver {
         if (clazz4 == null) {
             try {
                 clazz4 = class$3 = Class.forName("java.awt.event.ItemEvent");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
+            } catch (ClassNotFoundException classNotFoundException) {
                 throw new NoClassDefFoundError(classNotFoundException.getMessage());
             }
         }
@@ -126,6 +98,13 @@ implements IconResolver {
         ARRAY_OF_ITEM_EVENT_CLASS = classArray4;
         INSTANCE_LOCK = new Object();
     }
+
+    private Map s_prototypes = Collections.synchronizedMap(new HashMap());
+    private Map s_actionIdLists = Collections.synchronizedMap(new HashMap());
+    private Map s_globalActions = Collections.synchronizedMap(new HashMap());
+    private Map s_globalActionLists = Collections.synchronizedMap(new HashMap());
+    private List roles;
+    private IconResolver iconResolver;
 
     protected ActionManager() {
     }
@@ -172,15 +151,29 @@ implements IconResolver {
     public static ActionManager getInstance(String name) {
         Object object = INSTANCE_LOCK;
         synchronized (object) {
-            block5: {
+            block5:
+            {
                 if (NAMED_INSTANCES != null) break block5;
                 if (name == null) {
                     return ActionManager.getInstance();
                 }
                 return null;
             }
-            return (ActionManager)NAMED_INSTANCES.get(name);
+            return (ActionManager) NAMED_INSTANCES.get(name);
         }
+    }
+
+    public static void mapKeystrokeForAction(JComponent comp, Action action, int condition) {
+        KeyStroke keystroke = (KeyStroke) action.getValue("AcceleratorKey");
+        if (keystroke == null) {
+            return;
+        }
+        comp.getActionMap().put(action.getValue("ActionCommandKey"), action);
+        comp.getInputMap(condition).put(keystroke, action.getValue("ActionCommandKey"));
+    }
+
+    public static void mapKeystrokeForAction(JComponent comp, Action action) {
+        ActionManager.mapKeystrokeForAction(comp, action, 1);
     }
 
     public void reset() {
@@ -190,15 +183,15 @@ implements IconResolver {
         this.s_globalActionLists = Collections.synchronizedMap(new HashMap());
     }
 
-    public void setRoles(List roles) {
-        this.roles = roles;
-    }
-
     public List getRoles() {
         if (this.roles == null) {
             return null;
         }
         return Collections.unmodifiableList(this.roles);
+    }
+
+    public void setRoles(List roles) {
+        this.roles = roles;
     }
 
     public synchronized void register(File f) throws IOException, SAXException {
@@ -273,16 +266,16 @@ implements IconResolver {
     }
 
     public ActionAttributes getPrototype(Object id) {
-        return (ActionAttributes)this.s_prototypes.get(id);
+        return (ActionAttributes) this.s_prototypes.get(id);
     }
 
     public Action getAction(Object actionId) {
         List list;
-        Action action = (Action)this.s_globalActions.get(actionId);
+        Action action = (Action) this.s_globalActions.get(actionId);
         if (action == null && (action = this.createAction(actionId)) != null) {
             this.s_globalActions.put(actionId, action);
         }
-        if (action != null && (list = (List)action.getValue(ACTION_ROLES)) != null && !this.containsAny(this.roles, list)) {
+        if (action != null && (list = (List) action.getValue(ACTION_ROLES)) != null && !this.containsAny(this.roles, list)) {
             return null;
         }
         return action;
@@ -293,7 +286,7 @@ implements IconResolver {
     }
 
     public Action createAction(Object prototypeId, Map context) {
-        ActionAttributes attrs = (ActionAttributes)this.s_prototypes.get(prototypeId);
+        ActionAttributes attrs = (ActionAttributes) this.s_prototypes.get(prototypeId);
         if (attrs == null) {
             return null;
         }
@@ -302,7 +295,7 @@ implements IconResolver {
             return null;
         }
         if (action instanceof ContextAware) {
-            ContextAware caa = (ContextAware)((Object)action);
+            ContextAware caa = (ContextAware) action;
             caa.setContext(context);
         }
         return action;
@@ -312,7 +305,7 @@ implements IconResolver {
         if (action == null) {
             return false;
         }
-        return this.passesRoleTest((List)action.getValue(ACTION_ROLES));
+        return this.passesRoleTest((List) action.getValue(ACTION_ROLES));
     }
 
     protected final boolean passesRoleTest(ActionList actionList) {
@@ -357,7 +350,7 @@ implements IconResolver {
     }
 
     public synchronized ActionList getActionIdList(Object listId) {
-        ActionList idList = (ActionList)this.s_actionIdLists.get(listId);
+        ActionList idList = (ActionList) this.s_actionIdLists.get(listId);
         if (idList == null || !this.passesRoleTest(idList)) {
             return null;
         }
@@ -371,7 +364,7 @@ implements IconResolver {
     }
 
     public synchronized ActionList getActionList(Object listId) {
-        ActionList result = (ActionList)this.s_globalActionLists.get(listId);
+        ActionList result = (ActionList) this.s_globalActionLists.get(listId);
         if (result == null) {
             result = this.createActionList(listId, true, null);
             if (result == null) {
@@ -412,16 +405,22 @@ implements IconResolver {
     private synchronized void fillListWithActions(List toFill, List actionIds, boolean useGlobalActions, Map context) {
         int i = 0;
         while (i < actionIds.size()) {
-            block4: {
+            block4:
+            {
                 Number weight;
-                block6: {
+                block6:
+                {
                     List subList;
                     List subIds;
-                    block8: {
-                        block7: {
+                    block8:
+                    {
+                        block7:
+                        {
                             Object elem;
-                            block5: {
-                                block3: {
+                            block5:
+                            {
+                                block3:
+                                {
                                     elem = actionIds.get(i);
                                     weight = null;
                                     if (elem != null) break block3;
@@ -429,19 +428,19 @@ implements IconResolver {
                                     break block4;
                                 }
                                 if (!(elem instanceof Separator)) break block5;
-                                weight = ((Separator)elem).getWeight();
+                                weight = ((Separator) elem).getWeight();
                                 this.insertWithRespectToWeights(weight, toFill, elem);
                                 break block4;
                             }
                             if (!(elem instanceof List)) break block6;
-                            subIds = (List)elem;
+                            subIds = (List) elem;
                             subList = null;
                             if (!(subIds instanceof ActionList)) break block7;
-                            ActionList subAL = (ActionList)subIds;
+                            ActionList subAL = (ActionList) subIds;
                             if (!this.passesRoleTest(subAL)) break block4;
                             subList = new ActionList(subAL.getId(), subAL.getTriggerActionId());
                             weight = subAL.getWeight();
-                            ((ActionList)subList).setWeight(weight);
+                            ((ActionList) subList).setWeight(weight);
                             break block8;
                         }
                         subList = new ArrayList(subIds.size());
@@ -471,13 +470,13 @@ implements IconResolver {
             Number childWeight = null;
             Object child = toFill.get(i);
             if (child instanceof ActionList) {
-                childWeight = ((ActionList)child).getWeight();
+                childWeight = ((ActionList) child).getWeight();
             } else if (child instanceof Action) {
-                val = ((Action)child).getValue(WEIGHT);
+                val = ((Action) child).getValue(WEIGHT);
                 if (val != null) {
                     childWeight = Double.valueOf("" + val);
                 }
-            } else if (child instanceof Separator && (val = ((Separator)child).getWeight()) != null) {
+            } else if (child instanceof Separator && (val = ((Separator) child).getWeight()) != null) {
                 childWeight = Double.valueOf("" + val);
             }
             if (childWeight == null) {
@@ -507,7 +506,7 @@ implements IconResolver {
         if (!(action instanceof Actionable)) {
             throw new NoSuchMethodException("Action does not implement Actionable, no addActionListener(0 to use: action " + action + ", registering method " + method + ", callback " + callback);
         }
-        this.registerActionCallback((Actionable)((Object)action), callback, method);
+        this.registerActionCallback((Actionable) action, callback, method);
     }
 
     public void registerActionCallback(Actionable action, Object callback, String method) throws NoSuchMethodException {
@@ -515,17 +514,16 @@ implements IconResolver {
         if (clazz == null) {
             try {
                 clazz = class$0 = Class.forName("java.awt.event.ActionListener");
-            }
-            catch (ClassNotFoundException classNotFoundException) {
+            } catch (ClassNotFoundException classNotFoundException) {
                 throw new NoClassDefFoundError(classNotFoundException.getMessage());
             }
         }
-        ActionListener listenerProxy = (ActionListener)this.registerCallback(action, callback, method, ARRAY_OF_ACTION_EVENT_CLASS, clazz, ARRAY_OF_ACTION_LISTENER_CLASS);
+        ActionListener listenerProxy = (ActionListener) this.registerCallback(action, callback, method, ARRAY_OF_ACTION_EVENT_CLASS, clazz, ARRAY_OF_ACTION_LISTENER_CLASS);
         action.addActionListener(listenerProxy);
     }
 
     public void registerStaticActionCallback(Object actionId, Class callbackClass, String staticMethod) throws NoSuchMethodException {
-        this.registerActionCallback(actionId, (Object)callbackClass, staticMethod);
+        this.registerActionCallback(actionId, (Object) callbackClass, staticMethod);
     }
 
     private Object registerCallback(Actionable action, Object callback, String method, Class[] args, Class implementingInterface, Class[] arrayOfInterfaces) throws IllegalArgumentException, SecurityException, NoSuchMethodException {
@@ -534,11 +532,10 @@ implements IconResolver {
         }
         try {
             return MethodCallbackInvocationHandler.createMethodCallbackProxy(callback, method, args, implementingInterface, arrayOfInterfaces);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             String err = "Callback Method named " + method;
-            err = callback instanceof Class ? String.valueOf(err) + " either not found or is not static " : String.valueOf(err) + " is not found ";
-            err = String.valueOf(err) + " not found in callback " + callback + ", registering for action =" + action;
+            err = callback instanceof Class ? err + " either not found or is not static " : err + " is not found ";
+            err = err + " not found in callback " + callback + ", registering for action =" + action;
             throw new NoSuchMethodException(err);
         }
     }
@@ -557,7 +554,7 @@ implements IconResolver {
         if (this.s_globalActions == null || this.s_globalActions.isEmpty()) {
             return;
         }
-        Action action = (Action)this.s_globalActions.get(id);
+        Action action = (Action) this.s_globalActions.get(id);
         if (action == null) {
             return;
         }
@@ -582,7 +579,7 @@ implements IconResolver {
         while (iter.hasNext()) {
             Object action = this.s_globalActions.get(iter.next());
             if (!(action instanceof ContextAware)) continue;
-            ContextAware contextAwareAction = (ContextAware)action;
+            ContextAware contextAwareAction = (ContextAware) action;
             contextAwareAction.putContextValue(key, contextValue);
         }
     }
@@ -591,23 +588,10 @@ implements IconResolver {
         if (this.s_globalActions == null || this.s_globalActions.isEmpty()) {
             return;
         }
-        Action action = (Action)this.s_globalActions.get(id);
+        Action action = (Action) this.s_globalActions.get(id);
         if (action instanceof EnabledUpdater) {
-            ((EnabledUpdater)((Object)action)).updateEnabled();
+            ((EnabledUpdater) action).updateEnabled();
         }
-    }
-
-    public static void mapKeystrokeForAction(JComponent comp, Action action, int condition) {
-        KeyStroke keystroke = (KeyStroke)action.getValue("AcceleratorKey");
-        if (keystroke == null) {
-            return;
-        }
-        comp.getActionMap().put(action.getValue("ActionCommandKey"), action);
-        comp.getInputMap(condition).put(keystroke, action.getValue("ActionCommandKey"));
-    }
-
-    public static void mapKeystrokeForAction(JComponent comp, Action action) {
-        ActionManager.mapKeystrokeForAction(comp, action, 1);
     }
 
     public IconResolver getIconResolver() {
