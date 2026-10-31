@@ -1,184 +1,270 @@
 package net.atlanticbb.tantlinger.ui.text;
 
-import novaworx.syntax.SyntaxFactory;
-import novaworx.syntax.Token;
-import novaworx.textpane.SyntaxDocument;
-import novaworx.textpane.SyntaxStyle;
-import novaworx.textpane.SyntaxTextPane;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Style;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
 
+import javax.swing.*;
+import javax.swing.event.CaretListener;
+import javax.swing.text.Document;
 import java.awt.*;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseListener;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 /**
- * @author Bob Tantlinger
- *
+ * HTML source editor backed by RSyntaxTextArea.
  */
-public class SourceCodeEditor extends SyntaxTextPane {
+public class SourceCodeEditor extends JEditorPane {
     private static final long serialVersionUID = 1L;
+    private final RSyntaxTextArea textArea;
 
     public SourceCodeEditor() {
         super();
-        SyntaxFactory.setSyntaxCatalog(getClass().getResource("/resources/syntax.catalog.xml"));
-        SyntaxFactory.loadSyntaxes();
+        setLayout(new BorderLayout());
 
-        setLineHighlight(true);
-        setBracketHighlight(true);
-        setAntiAlias(true);
-        setOpaque(true);
-        setCaretOnDelay(500);
-        setCaretOffDelay(500);
+        textArea = new RSyntaxTextArea();
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+        textArea.setCodeFoldingEnabled(true);
+        textArea.setAntiAliasingEnabled(true);
+        textArea.setBracketMatchingEnabled(true);
+        textArea.setAnimateBracketMatching(true);
+        textArea.setHighlightCurrentLine(true);
+        textArea.setHighlightCurrentLine(true);
+        textArea.setOpaque(true);
+        textArea.setFont(new Font("Default", Font.PLAIN, 12));
+        textArea.setTabSize(4);
+        add(textArea, BorderLayout.CENTER);
+        setFocusable(false);
 
-        setFont(new Font("Default", Font.PLAIN, 12));
+        Properties theme = new Properties();
 
-        /* Load default theme */
-        Properties themes = new Properties();
-        try (InputStream in = getClass()
-                .getResourceAsStream("/net/atlanticbb/tantlinger/ui/text/syntax.properties")) {
-            themes.load(in);
-            setTheme(themes, "default");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setTheme(Properties props) {
-        String prefix = "default";
-
-        try {
-            SyntaxDocument d = (SyntaxDocument) getDocument();
-            prefix = d.getSyntax().getName();
-        } catch (ClassCastException ignored) {
-        }
-
-        setTheme(props, prefix);
-    }
-
-    /**
-     * Set a color theme from a properties file
-     *
-     * @param props  The Properties object
-     * @param prefix The prefix to use when getting the keys
-     */
-    public void setTheme(Properties props, String prefix) //throws Exception 
-    {
-        SyntaxStyle[] aStyles = getSyntaxStyles();
-
-        aStyles[Token.COMMENT1].setForeground(parseColor(props.getProperty(prefix + ".comment1.fg")));
-        aStyles[Token.COMMENT1].setBackground(parseColor(props.getProperty(prefix + ".comment1.bg")));
-        aStyles[Token.COMMENT1].setFontStyle(parseFont(props.getProperty(prefix + ".comment1.font")));
-        aStyles[Token.COMMENT2].setForeground(parseColor(props.getProperty(prefix + ".comment2.fg")));
-        aStyles[Token.COMMENT2].setBackground(parseColor(props.getProperty(prefix + ".comment2.bg")));
-        aStyles[Token.COMMENT2].setFontStyle(parseFont(props.getProperty(prefix + ".comment2.font")));
-        aStyles[Token.COMMENT3].setForeground(parseColor(props.getProperty(prefix + ".comment3.fg")));
-        aStyles[Token.COMMENT3].setBackground(parseColor(props.getProperty(prefix + ".comment3.bg")));
-        aStyles[Token.COMMENT3].setFontStyle(parseFont(props.getProperty(prefix + ".comment3.font")));
-        aStyles[Token.DIGIT].setForeground(parseColor(props.getProperty(prefix + ".digit.fg")));
-        aStyles[Token.DIGIT].setBackground(parseColor(props.getProperty(prefix + ".digit.bg")));
-        aStyles[Token.DIGIT].setFontStyle(parseFont(props.getProperty(prefix + ".digit.font")));
-        aStyles[Token.LITERAL1].setForeground(parseColor(props.getProperty(prefix + ".literal1.fg")));
-        aStyles[Token.LITERAL1].setBackground(parseColor(props.getProperty(prefix + ".literal1.bg")));
-        aStyles[Token.LITERAL1].setFontStyle(parseFont(props.getProperty(prefix + ".literal1.font")));
-        aStyles[Token.LITERAL2].setForeground(parseColor(props.getProperty(prefix + ".literal2.fg")));
-        aStyles[Token.LITERAL2].setBackground(parseColor(props.getProperty(prefix + ".literal2.bg")));
-        aStyles[Token.LITERAL2].setFontStyle(parseFont(props.getProperty(prefix + ".literal2.font")));
-        aStyles[Token.KEYWORD1].setForeground(parseColor(props.getProperty(prefix + ".keyword1.fg")));
-        aStyles[Token.KEYWORD1].setBackground(parseColor(props.getProperty(prefix + ".keyword1.bg")));
-        aStyles[Token.KEYWORD1].setFontStyle(parseFont(props.getProperty(prefix + ".keyword1.font")));
-        aStyles[Token.KEYWORD2].setForeground(parseColor(props.getProperty(prefix + ".keyword2.fg")));
-        aStyles[Token.KEYWORD2].setBackground(parseColor(props.getProperty(prefix + ".keyword2.bg")));
-        aStyles[Token.KEYWORD2].setFontStyle(parseFont(props.getProperty(prefix + ".keyword2.font")));
-        aStyles[Token.KEYWORD3].setForeground(parseColor(props.getProperty(prefix + ".keyword3.fg")));
-        aStyles[Token.KEYWORD3].setBackground(parseColor(props.getProperty(prefix + ".keyword3.bg")));
-        aStyles[Token.KEYWORD3].setFontStyle(parseFont(props.getProperty(prefix + ".keyword3.font")));
-        aStyles[Token.KEYWORD4].setForeground(parseColor(props.getProperty(prefix + ".keyword4.fg")));
-        aStyles[Token.KEYWORD4].setBackground(parseColor(props.getProperty(prefix + ".keyword4.bg")));
-        aStyles[Token.KEYWORD4].setFontStyle(parseFont(props.getProperty(prefix + ".keyword4.font")));
-        aStyles[Token.KEYWORD5].setForeground(parseColor(props.getProperty(prefix + ".keyword5.fg")));
-        aStyles[Token.KEYWORD5].setBackground(parseColor(props.getProperty(prefix + ".keyword5.bg")));
-        aStyles[Token.KEYWORD5].setFontStyle(parseFont(props.getProperty(prefix + ".keyword5.font")));
-        aStyles[Token.FUNCTION].setForeground(parseColor(props.getProperty(prefix + ".function.fg")));
-        aStyles[Token.FUNCTION].setBackground(parseColor(props.getProperty(prefix + ".function.bg")));
-        aStyles[Token.FUNCTION].setFontStyle(parseFont(props.getProperty(prefix + ".function.font")));
-        aStyles[Token.OPERATOR].setForeground(parseColor(props.getProperty(prefix + ".operator.fg")));
-        aStyles[Token.OPERATOR].setBackground(parseColor(props.getProperty(prefix + ".operator.bg")));
-        aStyles[Token.OPERATOR].setFontStyle(parseFont(props.getProperty(prefix + ".operator.font")));
-        aStyles[Token.MARKUP].setForeground(parseColor(props.getProperty(prefix + ".markup.fg")));
-        aStyles[Token.MARKUP].setBackground(parseColor(props.getProperty(prefix + ".markup.bg")));
-        aStyles[Token.MARKUP].setFontStyle(parseFont(props.getProperty(prefix + ".markup.font")));
-        aStyles[Token.LABEL].setForeground(parseColor(props.getProperty(prefix + ".label.fg")));
-        aStyles[Token.LABEL].setBackground(parseColor(props.getProperty(prefix + ".label.bg")));
-        aStyles[Token.LABEL].setFontStyle(parseFont(props.getProperty(prefix + ".label.font")));
-        aStyles[Token.INVALID].setForeground(parseColor(props.getProperty(prefix + ".invalid.fg")));
-        aStyles[Token.INVALID].setBackground(parseColor(props.getProperty(prefix + ".invalid.bg")));
-        aStyles[Token.INVALID].setFontStyle(parseFont(props.getProperty(prefix + ".invalid.font")));
-        aStyles[Token.NULL].setFontStyle(parseFont(props.getProperty(prefix + ".null.font")));
-        setForeground(parseColor(props.getProperty(prefix + ".text.fg")));
-        setBackground(parseColor(props.getProperty(prefix + ".text.bg")));
-        setCaretColor(parseColor(props.getProperty(prefix + ".caret.fg")));
-        setBracketHighlightColor(parseColor(props.getProperty(prefix + ".brackethighlight.fg")));
-        setLineHighlightColor(parseColor(props.getProperty(prefix + ".linehighlight.fg")));
-    }
-
-    /**
-     * Parse a color from the syntax.properties file. It can have the format
-     * RRGGBB in hex or AARRGGBB (with alpha blending)
-     *
-     * @param color The color string
-     * @return A color object
-     */
-    private Color parseColor(String color) //throws Exception
-    {
-        if (color == null)
-            return new Color(0, 0, 0, 0);
-        try {
-            if (color.length() == 6) {
-                int r = Integer.parseInt(color.substring(0, 2), 16);
-                int g = Integer.parseInt(color.substring(2, 4), 16);
-                int b = Integer.parseInt(color.substring(4, 6), 16);
-                return new Color(r, g, b);
-            } else if (color.length() == 8) {
-                int a = Integer.parseInt(color.substring(0, 2), 16);
-                int r = Integer.parseInt(color.substring(2, 4), 16);
-                int g = Integer.parseInt(color.substring(4, 6), 16);
-                int b = Integer.parseInt(color.substring(6, 8), 16);
-                return new Color(r, g, b, a);
+        try (InputStream in = getClass().getResourceAsStream("syntax.properties")) {
+            if (in != null) {
+                theme.load(in);
+                setTheme(theme);
             }
+        } catch (java.io.IOException ignored) {
+            // Keep RSyntaxTextArea's defaults if the optional theme is unavailable.
+        }
+    }
+
+    public RSyntaxTextArea getTextArea() {
+        return textArea;
+    }
+
+    @Override
+    public Document getDocument() {
+        return textArea == null ? super.getDocument() : textArea.getDocument();
+    }
+
+    @Override
+    public void setDocument(Document doc) {
+        if (textArea == null) super.setDocument(doc);
+        else textArea.setDocument(doc);
+    }
+
+    @Override
+    public String getText() {
+        return textArea == null ? super.getText() : textArea.getText();
+    }
+
+    @Override
+    public void setText(String text) {
+        if (textArea == null) super.setText(text);
+        else textArea.setText(text);
+    }
+
+    @Override
+    public int getCaretPosition() {
+        return textArea == null ? super.getCaretPosition() : textArea.getCaretPosition();
+    }
+
+    @Override
+    public void setCaretPosition(int position) {
+        if (textArea == null) super.setCaretPosition(position);
+        else textArea.setCaretPosition(position);
+    }
+
+    @Override
+    public int getSelectionStart() {
+        return textArea == null ? super.getSelectionStart() : textArea.getSelectionStart();
+    }
+
+    @Override
+    public int getSelectionEnd() {
+        return textArea == null ? super.getSelectionEnd() : textArea.getSelectionEnd();
+    }
+
+    @Override
+    public String getSelectedText() {
+        return textArea == null ? super.getSelectedText() : textArea.getSelectedText();
+    }
+
+    @Override
+    public void select(int start, int end) {
+        if (textArea == null) super.select(start, end);
+        else textArea.select(start, end);
+    }
+
+    @Override
+    public void selectAll() {
+        if (textArea == null) super.selectAll();
+        else textArea.selectAll();
+    }
+
+    @Override
+    public void replaceSelection(String content) {
+        if (textArea == null) super.replaceSelection(content);
+        else textArea.replaceSelection(content);
+    }
+
+    @Override
+    public void copy() {
+        if (textArea == null) super.copy();
+        else textArea.copy();
+    }
+
+    @Override
+    public void cut() {
+        if (textArea == null) super.cut();
+        else textArea.cut();
+    }
+
+    @Override
+    public void paste() {
+        if (textArea == null) super.paste();
+        else textArea.paste();
+    }
+
+    @Override
+    public boolean requestFocusInWindow() {
+        return textArea == null ? super.requestFocusInWindow() : textArea.requestFocusInWindow();
+    }
+
+    @Override
+    public void requestFocus() {
+        if (textArea == null) super.requestFocus();
+        else textArea.requestFocus();
+    }
+
+    @Override
+    public void addCaretListener(CaretListener listener) {
+        if (textArea == null) super.addCaretListener(listener);
+        else textArea.addCaretListener(listener);
+    }
+
+    @Override
+    public void removeCaretListener(CaretListener listener) {
+        if (textArea == null) super.removeCaretListener(listener);
+        else textArea.removeCaretListener(listener);
+    }
+
+    @Override
+    public void addFocusListener(FocusListener listener) {
+        if (textArea == null) super.addFocusListener(listener);
+        else textArea.addFocusListener(listener);
+    }
+
+    @Override
+    public void removeFocusListener(FocusListener listener) {
+        if (textArea == null) super.removeFocusListener(listener);
+        else textArea.removeFocusListener(listener);
+    }
+
+    @Override
+    public void addMouseListener(MouseListener listener) {
+        if (textArea == null) super.addMouseListener(listener);
+        else textArea.addMouseListener(listener);
+    }
+
+    @Override
+    public void removeMouseListener(MouseListener listener) {
+        if (textArea == null) super.removeMouseListener(listener);
+        else textArea.removeMouseListener(listener);
+    }
+
+    @Override
+    public void setFont(Font font) {
+        super.setFont(font);
+        if (textArea != null) textArea.setFont(font);
+    }
+
+    @Override
+    public void setForeground(Color color) {
+        super.setForeground(color);
+        if (textArea != null) textArea.setForeground(color);
+    }
+
+    @Override
+    public void setBackground(Color color) {
+        super.setBackground(color);
+        if (textArea != null) textArea.setBackground(color);
+    }
+
+    @Override
+    public void setCaretColor(Color color) {
+        super.setCaretColor(color);
+        if (textArea != null) textArea.setCaretColor(color);
+    }
+
+    /**
+     * Applies the legacy editor text and caret colors from a properties theme.
+     */
+    public void setTheme(Properties props) {
+        setTheme(props, "default");
+    }
+
+    public void setTheme(Properties props, String prefix) {
+        Color foreground = parseColor(props.getProperty(prefix + ".text.fg"));
+        Color background = parseColor(props.getProperty(prefix + ".text.bg"));
+        Color caret = parseColor(props.getProperty(prefix + ".caret.fg"));
+        Color line = parseColor(props.getProperty(prefix + ".linehighlight.fg"));
+        Color bracket = parseColor(props.getProperty(prefix + ".brackethighlight.fg"));
+        if (foreground != null) textArea.setForeground(foreground);
+        if (background != null) textArea.setBackground(background);
+        if (caret != null) textArea.setCaretColor(caret);
+        if (line != null) textArea.setCurrentLineHighlightColor(line);
+        if (bracket != null) textArea.setMatchedBracketBGColor(bracket);
+        Color selection = parseColor(props.getProperty(prefix + ".selectioncolor.bg"));
+        if (selection != null) textArea.setSelectionColor(selection);
+        setStyle(props, prefix, TokenTypes.COMMENT_EOL, "comment1");
+        setStyle(props, prefix, TokenTypes.COMMENT_MULTILINE, "comment2");
+        setStyle(props, prefix, TokenTypes.COMMENT_DOCUMENTATION, "comment3");
+        setStyle(props, prefix, TokenTypes.LITERAL_STRING_DOUBLE_QUOTE, "literal1");
+        setStyle(props, prefix, TokenTypes.LITERAL_CHAR, "literal2");
+        setStyle(props, prefix, TokenTypes.LITERAL_NUMBER_DECIMAL_INT, "digit");
+        setStyle(props, prefix, TokenTypes.RESERVED_WORD, "keyword1");
+        setStyle(props, prefix, TokenTypes.RESERVED_WORD_2, "keyword2");
+        setStyle(props, prefix, TokenTypes.FUNCTION, "function");
+        setStyle(props, prefix, TokenTypes.OPERATOR, "operator");
+        setStyle(props, prefix, TokenTypes.MARKUP_TAG_NAME, "markup");
+        setStyle(props, prefix, TokenTypes.MARKUP_TAG_ATTRIBUTE, "label");
+        setStyle(props, prefix, TokenTypes.ERROR_IDENTIFIER, "invalid");
+    }
+
+    private void setStyle(Properties props, String prefix, int tokenType, String key) {
+        Style style = textArea.getSyntaxScheme().getStyle(tokenType);
+        Color foreground = parseColor(props.getProperty(prefix + "." + key + ".fg"));
+        Color background = parseColor(props.getProperty(prefix + "." + key + ".bg"));
+        if (foreground != null) style.foreground = foreground;
+        if (background != null) style.background = background;
+        String font = props.getProperty(prefix + "." + key + ".font", "");
+        int flags = Font.PLAIN;
+        if (font.contains("bold")) flags |= Font.BOLD;
+        if (font.contains("italic")) flags |= Font.ITALIC;
+        style.font = textArea.getFont().deriveFont(flags);
+    }
+
+    private Color parseColor(String value) {
+        if (value == null) return null;
+        try {
+            if (value.length() == 6) return new Color(Integer.parseInt(value, 16));
+            if (value.length() == 8) return new Color((int) Long.parseLong(value, 16), true);
         } catch (NumberFormatException ignored) {
         }
-
-        return Color.black;
+        return null;
     }
-
-    /**
-     * Parse a font from the syntax.properties file. Takes a comma-separated
-     * list of the plain,bold and italic parameters
-     *
-     * @param font The font string
-     * @return A font style constant
-     */
-    private int parseFont(String font) //throws Exception
-    {
-        int flags = Font.PLAIN;
-
-        if (font != null) {
-            StringTokenizer tokenizer = new StringTokenizer(font, ",");
-
-            while (tokenizer.hasMoreTokens()) {
-                String token = tokenizer.nextToken().toLowerCase();
-
-                if (token.equals("bold")) {
-                    flags |= Font.BOLD;
-                } else if (token.equals("italic")) {
-                    flags |= Font.ITALIC;
-                } else if (token.equals("plain")) {
-                    /* Ignore */
-                }
-            }
-        }
-
-        return flags;
-    }
-
 }

@@ -6,7 +6,7 @@
 
     <groupId>net.atlanticbb.tantlinger</groupId>
     <artifactId>shef</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.0</version>
     <description>An HTML Editor widget for JFC/Swing</description>
 
     <licenses>
@@ -57,87 +57,30 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.jtidy</groupId>
             <artifactId>jtidy</artifactId>
             <version>1.0.5</version>
-        </dependency>
-        <!-- À installer manuellement dans le depôt maven local -->
-        <dependency>
-            <groupId>novaworx</groupId>
-            <artifactId>novaworx-syntax</artifactId>
-            <version>0.0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>sam</groupId>
-            <artifactId>sam</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Se chargera de déployer automatiquement le contenu du répertoire lib dans le depôt maven local -->
-            <!-- N.B.: Invoquer le goal initialize avant le premier build -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>install-novaworx-syntax-to-local-maven-repo</id>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <file>${project.basedir}/lib/novaworx-syntax-0.0.7.jar</file>
-                            <groupId>novaworx</groupId>
-                            <artifactId>novaworx-syntax</artifactId>
-                            <version>0.0.7</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>install-sam-to-local-maven-repo</id>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <file>${project.basedir}/lib/sam.jar</file>
-                            <groupId>sam</groupId>
-                            <artifactId>sam</artifactId>
-                            <version>1.0</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
                     <archive>
                         <manifest>
                             <mainClass>net.atlanticbb.tantlinger.shef.Demo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

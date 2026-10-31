@@ -26,46 +26,6 @@ jobs:
           server-username: CLOUDSMITH_USER
           server-password: CLOUDSMITH_API_KEY
 
-      # Installer les dépendances du répertoire lib
-      # dans le dépôt Maven local.
-      - name: Install local libraries
-        run: mvn --batch-mode initialize
-
-      # Publier novaworx-syntax sur Cloudsmith.
-      - name: Deploy novaworx-syntax
-        run: >
-          mvn --batch-mode
-          org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file
-          -Dfile=lib/novaworx-syntax-0.0.7.jar
-          -DgroupId=novaworx
-          -DartifactId=novaworx-syntax
-          -Dversion=0.0.7
-          -Dpackaging=jar
-          -DgeneratePom=true
-          -DrepositoryId=cloudsmith
-          -Durl=https://maven.cloudsmith.io/michelmbem/addy-libraries/
-        env:
-          CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-
-      # Publier sam sur Cloudsmith.
-      - name: Deploy sam
-        run: >
-          mvn --batch-mode
-          org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file
-          -Dfile=lib/sam.jar
-          -DgroupId=sam
-          -DartifactId=sam
-          -Dversion=1.0
-          -Dpackaging=jar
-          -DgeneratePom=true
-          -DrepositoryId=cloudsmith
-          -Durl=https://maven.cloudsmith.io/michelmbem/addy-libraries/
-        env:
-          CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-
-      # Déployer ensuite le projet principal.
       - name: Publish SHEF
         run: mvn --batch-mode clean deploy -Dmaven.test.skip=true
         env:

@@ -5,14 +5,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author Bob Tantlinger
  *
  */
 public final class I18n {
-    private static final Map<String, I18n> MAP = new HashMap<>();
-    private static final Properties PROPERTIES = new Properties();
+    private static final Map<String, I18n> PACKAGE_INSTANCE_MAP = new HashMap<>();
+    private static final Properties BUNDLE_NAMES = new Properties();
     private static final File LANG_PACK_DIR = new File(System.getProperty("user.dir"), "languages");
     private static final String DEFAULT_BUNDLE_NAME = "messages";
     private static final String MNEM_SUFFIX = ".mnemonic";
@@ -28,7 +29,7 @@ public final class I18n {
     }
 
     public static I18n getInstance(String packageName) {
-        return MAP.computeIfAbsent(packageName, I18n::new);
+        return PACKAGE_INSTANCE_MAP.computeIfAbsent(packageName, I18n::new);
     }
 
     public static Locale getLocale() {
@@ -37,49 +38,28 @@ public final class I18n {
 
     public static void setLocale(Locale locale) {
         I18n.locale = Objects.requireNonNull(locale);
+
         // reset so bundles with new locale get created...
-        MAP.values().forEach(i18n -> i18n.bundle = null);
+        PACKAGE_INSTANCE_MAP.values().forEach(i18n -> i18n.bundle = null);
     }
 
     public static void setLocale(String localeString) throws IllegalArgumentException {
         setLocale(localeFromString(localeString));
     }
 
-    /**
-     * Converts slashes to dots in a pathname
-     *
-     * @param path The string to convert
-     * @return a dotted string
-     */
-    private static String slashesToDots(String path) {
-        String dottedString = path.replaceAll("/+", ".");
-        return dottedString.startsWith(".")
-                ? dottedString.substring(1)
-                : dottedString;
+    public static String getBundleName(String packageName) {
+        return BUNDLE_NAMES.getProperty(packageName,
+                createBundleName(packageName, DEFAULT_BUNDLE_NAME));
     }
 
-    private static String createBundleName(String bundlePackage, String bundleName) {
-        StringBuilder sb = new StringBuilder(slashesToDots(bundlePackage));
-        if (!sb.toString().endsWith(".")) sb.append('.');
-        return sb.append(bundleName).toString();
-    }
-
-    public static String getBundleForPackage(String packageName) {
-        String bundleName = PROPERTIES.getProperty(packageName);
-        if (bundleName == null) // use default
-            bundleName = createBundleName(packageName, DEFAULT_BUNDLE_NAME);
-
-        return bundleName;
-    }
-
-    public static void setBundleForPackage(String packageName, String bundleName) {
+    public static void setBundleName(String packageName, String bundleName) {
         if (bundleName == null)
-            PROPERTIES.remove(packageName);
+            BUNDLE_NAMES.remove(packageName);
         else
-            PROPERTIES.setProperty(packageName, bundleName);
+            BUNDLE_NAMES.setProperty(packageName, bundleName);
 
-        I18n i18n = MAP.get(packageName);
         // reset to null so the bundle is recreated for the new name
+        I18n i18n = PACKAGE_INSTANCE_MAP.get(packageName);
         if (i18n != null) i18n.bundle = null;
     }
 
@@ -145,6 +125,10 @@ public final class I18n {
     }
 
     public String str(String key, Locale locale) {
+        if (Objects.equals(I18n.locale, locale)) {
+            return str(key);
+        }
+
         try {
             return createBundle(locale).getString(key);
         } catch (Exception ex) {
@@ -158,28 +142,49 @@ public final class I18n {
     }
 
     public int mnem(String key, Locale locale) {
+        if (Objects.equals(I18n.locale, locale)) {
+            return mnem(key);
+        }
+
         String s = str(key + MNEM_SUFFIX, locale);
         return s.isEmpty() ? '!' : s.charAt(0);
     }
 
-    private ResourceBundle createBundle(Locale locale) {
-        String bundleName = getBundleForPackage(packageName);
-        File[] languagePacks = getAvailableLanguagePacks();
+    /**
+     * Converts slashes to dots in a pathname
+     *
+     * @param path The string to convert
+     * @return a dotted string
+     */
+    private static String slashesToDots(String path) {
+        String dottedString = path.replaceAll("/+", ".");
+        return dottedString.startsWith(".")
+                ? dottedString.substring(1)
+                : dottedString;
+    }
 
-        if (languagePacks.length > 0) {
-            URL[] urls = new URL[languagePacks.length];
+    private static String createBundleName(String packageName, String bundleName) {
+        StringBuilder sb = new StringBuilder(slashesToDots(packageName));
+        if (!sb.toString().endsWith(".")) sb.append('.');
+        return sb.append(bundleName).toString();
+    }
 
-            try {
-                for (int i = 0; i < urls.length; i++) {
-                    urls[i] = languagePacks[i].toURL();
-                }
-
-                return ResourceBundle.getBundle(
-                        bundleName, locale, URLClassLoader.newInstance(urls));
-            } catch (MalformedURLException | MissingResourceException ignored) {
-            }
+    private static URL file2URL(File file) {
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
         }
+    }
 
-        return ResourceBundle.getBundle(bundleName, locale); // just return default
+    private ResourceBundle createBundle(Locale locale) {
+        String bundleName = getBundleName(packageName);
+        URL[] urls = Stream.of(getAvailableLanguagePacks())
+                .map(I18n::file2URL)
+                .toArray(URL[]::new);
+
+        return urls.length > 0
+                ? ResourceBundle.getBundle(bundleName, locale, URLClassLoader.newInstance(urls))
+                : ResourceBundle.getBundle(bundleName, locale);
     }
 }

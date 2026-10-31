@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * A demo application for {@link HTMLEditorPane}
  *
  * @author Bob Tantlinger
  */

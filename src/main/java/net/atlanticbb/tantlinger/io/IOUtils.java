@@ -2,62 +2,66 @@ package net.atlanticbb.tantlinger.io;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- *
  * Various IO utility methods
  *
  * @author Bob Tantlinger
- *
  */
 public final class IOUtils {
-    private static final int BUFFER_SIZE = 1024 * 4;
-    private static final NullCopyMonitor nullMon = new NullCopyMonitor();
+    private static final int BUFFER_SIZE = 1024 * 8;
+    private static final FileCopyMonitor NO_OP_MONITOR = new NullCopyMonitor();
 
     private IOUtils() {
         /* This utility class should not be instantiated */
     }
 
-    private static void getDirectoryContents(List<File> onlyFiles, File rootdir) {
-        for (File file : rootdir.listFiles()) {
+    public static File[] getDirectoryContents(File rootdir) {
+        List<File> files = new ArrayList<>();
+        getDirectoryContents(rootdir, files);
+        return files.toArray(File[]::new);
+    }
+
+    private static void getDirectoryContents(File directory, List<File> files) {
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isDirectory()) {
-                getDirectoryContents(onlyFiles, file);
+                getDirectoryContents(file, files);
             } else if (file.isFile()) {
-                onlyFiles.add(file);
+                files.add(file);
             }
         }
     }
 
-    public static File[] getDirectoryContents(File rootdir) {
-        List<File> files = new ArrayList<>();
-        getDirectoryContents(files, rootdir);
-        return files.toArray(File[]::new);
-    }
+    public static String sanitize(String value) {
+        /*
+            Characters that are OK in a file are described
+            by regular expressions as:
 
-    public static String sanitize(String x) {
-        /* Characters that are OK in a file are described
-        by regular expressions as:
+            \w - alphanumeric (A-Za-z0-9)
+            \. - dot
+            \- - dash
+            \: - colon
+            \; - semicolon
+            \# - number sign
+            \_ - underscore
 
-         \w - alphanumeric (A-Za-z0-9)
-         \. - dot
-         \- - dash
-         \: - colon
-         \; - semicolon
-         \# - number sign
-         \_ - underscore
+           Each \ above must be escaped to allow javac to parse
+           it correctly. That's why it looks so bad below.
 
-       Each \ above must be escaped to allow javac to parse
-       it correctly. That's why it looks so bad below.
+           Since we want to replace things that are not the above,
+           set negation ([^ and ]) is used.
+        */
 
-       Since we want to replace things that are not the above,
-       set negation ([^ and ]) is used.
-     */
-        return x.replaceAll("[^\\w\\.\\-\\:\\;\\#\\_]", "_");
+        return value.replaceAll("[^\\w.-:;#]", "_");
     }
 
     /**
-     * Gets the extension of a file e.g anything after the '.'
+     * Gets the extension of a file e.g. anything after the '.'
      *
      * @param f The file from which to get the extension
      * @return The extension, or an empty string if the file has no extension
@@ -65,7 +69,7 @@ public final class IOUtils {
     public static String getExtension(File f) {
         String name = f.getName();
         int i = name.lastIndexOf(".");
-        return i < 0 || i >= name.length() - 1 ? "" : name.substring(i + 1);
+        return i < 0 || i == name.length() - 1 ? "" : name.substring(i + 1);
     }
 
     /**
@@ -83,11 +87,11 @@ public final class IOUtils {
 
     /**
      * If the specified file already exists, a new, uniquely named file is
-     * returned. It's name is incremented. For example if a file named "file.txt"
+     * returned. Its name is incremented. For example if a file named "file.txt"
      * already exists, a file named "file-1.txt" is returned.
      *
-     * @param f
-     * @return
+     * @param f The file fo which to create a name
+     * @return A file with a unique name
      */
     public static File createUniqueFile(File f) {
         while (f.exists()) {
@@ -95,26 +99,24 @@ public final class IOUtils {
             String name = getName(f);
             int dashPos = name.lastIndexOf('-');
 
-            if (dashPos == -1) {
-                name = name + "-1";
+            if (dashPos < 0) {
+                name += "-1";
             } else {
                 String num = name.substring(dashPos + 1);
                 String temp = name.substring(0, dashPos);
+
                 try {
                     int cur = Integer.parseInt(num) + 1;
                     name = temp + "-" + cur;
                 } catch (NumberFormatException nfe) {
-                    name = name + "-1";
+                    name += "-1";
                 }
             }
 
             String uniqueName = name;
-            if (!ext.isEmpty())
-                uniqueName = uniqueName + "." + ext;
+            if (!ext.isEmpty()) uniqueName += "." + ext;
 
-            String parent = "";
-            if (f.getParent() != null)
-                parent = f.getParent();
+            String parent = Objects.requireNonNullElse(f.getParent(), "");
             f = new File(parent, uniqueName);
         }
 
@@ -124,117 +126,100 @@ public final class IOUtils {
     /**
      * Copies a Reader to a Writer.
      *
-     * @param src
-     * @param dst
-     * @throws IOException
+     * @param src The src {@link Reader}
+     * @param dest The target {@link Writer}
+     * @throws IOException Something went wrong
      */
-    public static void copy(Reader src, Writer dst) throws IOException {
+    public static void copy(Reader src, Writer dest) throws IOException {
         char[] buffer = new char[BUFFER_SIZE];
-        int n = 0;
-        while ((n = src.read(buffer)) != -1) {
-            dst.write(buffer, 0, n);
+        int n;
+
+        while ((n = src.read(buffer)) > 0) {
+            dest.write(buffer, 0, n);
         }
     }
 
     /**
      * Copies an InputStream to an OutputStream
      *
-     * @param src
-     * @param dst
-     * @throws IOException
+     * @param src The source {@link InputStream}
+     * @param dest The target {@link OutputStream}
+     * @throws IOException Something went wrong
      */
-    public static void copy(InputStream src, OutputStream dst) throws IOException {
-        copy(src, dst, nullMon);
+    public static void copy(InputStream src, OutputStream dest) throws IOException {
+        copy(src, dest, NO_OP_MONITOR);
     }
 
     /**
      * Copies an InputStream to an OutputStream
      *
-     * @param src
-     * @param dst
-     * @param mon monitors the bytes copied and if the copy was aborted
-     * @throws IOException
+     * @param src The source {@link InputStream}
+     * @param dest The target {@link OutputStream}
+     * @param monitor Monitors the bytes copied and if the copy was aborted
+     * @throws IOException Something went wrong
      */
-    public static void copy(InputStream src, OutputStream dst, CopyMonitor mon) throws IOException {
+    public static void copy(InputStream src, OutputStream dest, CopyMonitor monitor) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
-        int n = 0;
-        while ((n = src.read(buffer)) != -1 && !mon.isCopyAborted()) {
-            dst.write(buffer, 0, n);
-            mon.bytesCopied(n);
+        int n;
+
+        while ((n = src.read(buffer)) > 0 && !monitor.isCopyAborted()) {
+            dest.write(buffer, 0, n);
+            monitor.bytesCopied(n);
         }
-        //mon.copyComplete();
     }
 
     /**
      * Copies a file. Overwrites the destination file if it already exists
      *
-     * @param src
-     * @param dst
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param src The source {@link File}
+     * @param dest The target {@link File}
+     * @throws IOException Something went wrong
      */
-    public static void copy(File src, File dst) throws FileNotFoundException, IOException {
-        copy(src, dst, nullMon);
+    public static void copy(File src, File dest) throws IOException {
+        copy(src, dest, NO_OP_MONITOR);
     }
 
     /**
      * Copies a file.
      *
-     * @param src
-     * @param dst
-     * @param overwrite If true overwrites the dest file if it exists
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param src The source {@link File}
+     * @param dest The target {@link File}
+     * @throws IOException Something went wrong
      */
-    public static void copy(File src, File dst, boolean overwrite)
-            throws FileNotFoundException, IOException {
-        copy(src, dst, nullMon, overwrite);
+    public static void copy(File src, File dest, boolean overwrite) throws IOException {
+        copy(src, dest, NO_OP_MONITOR, overwrite);
     }
 
     /**
      * Copies a file. Overwrites the destination file if it already exists
      *
-     * @param src
-     * @param dst
-     * @param mon monitors the copy
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param src The source {@link File}
+     * @param dest The target {@link File}
+     * @param monitor monitors the copy
+     * @throws IOException Something went wrong
      */
-    public static void copy(File src, File dst, FileCopyMonitor mon) throws FileNotFoundException, IOException {
-        copy(src, dst, mon, true);
+    public static void copy(File src, File dest, FileCopyMonitor monitor) throws IOException {
+        copy(src, dest, monitor, true);
     }
 
     /**
      * Copies a file
      *
-     * @param src       The source file
-     * @param dst       The destination file
-     * @param mon       Monitors the copy
+     * @param src The source {@link File}
+     * @param dest The target {@link File}
+     * @param monitor Monitors the copy
      * @param overwrite if true, overwrites a destination file with the same name
      *                  otherwise, it creates a new destination file with a unique name before the copy
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException Something went wrong
      */
-    public static void copy(File src, File dst, FileCopyMonitor mon, boolean overwrite)
-            throws FileNotFoundException, IOException {
-        if (!overwrite)
-            dst = createUniqueFile(dst);
-
-        //System.err.println("copy " + dst);
-        mon.copyingFile(src);
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new FileInputStream(src);
-            out = new FileOutputStream(dst);
-            copy(in, out, mon);
-        } catch (FileNotFoundException nfe) {
-            throw nfe;
-        } catch (IOException ioe) {
-            throw ioe;
-        } finally {
-            close(in);
-            close(out);
+    public static void copy(File src, File dest, FileCopyMonitor monitor, boolean overwrite)
+            throws IOException {
+        monitor.copyingFile(src);
+        try (InputStream in = new FileInputStream(src)) {
+            try (OutputStream out = new FileOutputStream(
+                    overwrite ? dest : createUniqueFile(dest))) {
+                copy(in, out, monitor);
+            }
         }
     }
 
@@ -242,83 +227,84 @@ public final class IOUtils {
      * Copies the file at the specified source path to the destination path.
      * Overwrites the destination file if it already exists.
      *
-     * @param srcPath
-     * @param dstPath
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param srcPath The source path
+     * @param destPath The target path
+     * @throws IOException Something went wrong
      */
-    public static void copy(String srcPath, String dstPath) throws FileNotFoundException, IOException {
-        copy(new File(srcPath), new File(dstPath));
+    public static void copy(String srcPath, String destPath) throws IOException {
+        copy(new File(srcPath), new File(destPath));
     }
 
     /**
      * Copies the file at the specified source path to the destination path.
      * Overwrites the destination file if it already exists.
      *
-     * @param srcPath
-     * @param mon     Monitors the copy
-     * @param dstPath
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param srcPath The source path
+     * @param destPath The target path
+     * @param monitor Monitors the copy
+     * @throws IOException Something went wrong
      */
-    public static void copy(String srcPath, String dstPath, FileCopyMonitor mon)
-            throws FileNotFoundException, IOException {
-        copy(new File(srcPath), new File(dstPath), mon);
+    public static void copy(String srcPath, String destPath, FileCopyMonitor monitor)
+            throws IOException {
+        copy(new File(srcPath), new File(destPath), monitor);
     }
 
     /**
      * Copies the file at the specified source path to the destination path.
      *
-     * @param srcPath
-     * @param dstPath
+     * @param srcPath The source path
+     * @param destPath The target path
      * @param overwrite If true overwrites the file at the dest path if it exists
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException Something went wrong
      */
-    public static void copy(String srcPath, String dstPath, boolean overwrite)
-            throws FileNotFoundException, IOException {
-        copy(new File(srcPath), new File(dstPath), overwrite);
+    public static void copy(String srcPath, String destPath, boolean overwrite)
+            throws IOException {
+        copy(new File(srcPath), new File(destPath), overwrite);
     }
 
     /**
      * Copies the file at the specified source path to the destination path.
      *
-     * @param srcPath
-     * @param dstPath
-     * @param mon       Monitors the copy
+     * @param srcPath The source path
+     * @param destPath The target path
+     * @param monitor Monitors the copy
      * @param overwrite If true overwrites the file at the dest path if it exists
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException Something went wrong
      */
-    public static void copy(String srcPath, String dstPath, FileCopyMonitor mon, boolean overwrite)
-            throws FileNotFoundException, IOException {
-        copy(new File(srcPath), new File(dstPath), mon, overwrite);
-    }
-
-    public static void copyFiles(File src, File dest)
-            throws IOException, FileNotFoundException {
-        copyFiles(src, dest, nullMon);
+    public static void copy(String srcPath, String destPath, FileCopyMonitor monitor, boolean overwrite)
+            throws IOException {
+        copy(new File(srcPath), new File(destPath), monitor, overwrite);
     }
 
     /**
      * Recursively copy all files from one directory to another.
      *
-     * @param src  File or directory to copy from.
-     * @param dest File or directory to copy to.
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param src  Directory to copy from.
+     * @param dest Directory to copy to.
+     * @throws IOException Something went wrong
      */
-    public static void copyFiles(File src, File dest, FileCopyMonitor mon)
-            throws FileNotFoundException, IOException {
-        copyFilesRecursively(src, dest, mon);
-        //mon.copyComplete();
+    public static void copyFiles(File src, File dest) throws IOException {
+        copyFiles(src, dest, NO_OP_MONITOR);
     }
 
-    private static void copyFilesRecursively(File src, File dest, FileCopyMonitor mon)
-            throws FileNotFoundException, IOException {
-        if (mon.isCopyAborted())
+    /**
+     * Recursively copy all files from one directory to another.
+     *
+     * @param src  Directory to copy from.
+     * @param dest Directory to copy to.
+     * @param monitor Monitors the copy.
+     * @throws IOException Something went wrong
+     */
+    public static void copyFiles(File src, File dest, FileCopyMonitor monitor) throws IOException {
+        copyFilesRecursively(src, dest, monitor);
+    }
+
+    private static void copyFilesRecursively(File src, File dest, FileCopyMonitor monitor)
+            throws IOException {
+
+        if (monitor.isCopyAborted())
             return;
+
         if (!src.exists())
             throw new FileNotFoundException("File not found:" + src);
 
@@ -327,32 +313,33 @@ public final class IOUtils {
             if (!dest.exists()) {
                 dest.mkdirs();
             }
-            // Go through the contents of the directory
-            String list[] = src.list();
 
-            java.util.Arrays.sort(list);
-            for (int i = 0; i < list.length; i++) {
-                copyFilesRecursively(new File(src, list[i]), new File(dest, list[i]), mon);
+            // Go through the contents of the directory
+            String[] list = Objects.requireNonNull(src.list());
+            Arrays.sort(list);
+
+            for (String entry : list) {
+                copyFilesRecursively(new File(src, entry), new File(dest, entry), monitor);
             }
         } else {
-            copy(src, dest, mon, true);
+            copy(src, dest, monitor, true);
         }
     }
 
     /**
      * Gets the total bytes in the file or directory
      *
-     * @param file A File or directoy.
+     * @param file A file or directory.
      * @return The total bytes of the File. If the File is a directory
      * the total bytes of all files in all subfolders is returned
      */
     public static long getTotalBytes(File file) {
-        long bytes = 0;
+        long bytes;
 
         if (file.isDirectory()) {
-            File f[] = file.listFiles();
-            for (int i = 0; i < f.length; i++)
-                bytes += getTotalBytes(f[i]);
+            bytes = Stream.of(Objects.requireNonNull(file.listFiles()))
+                    .map(IOUtils::getTotalBytes)
+                    .reduce(0L, Long::sum);
         } else {
             bytes = file.length();
         }
@@ -360,6 +347,13 @@ public final class IOUtils {
         return bytes;
     }
 
+    /**
+     * Reads an input stream and returns the contents as a String
+     *
+     * @param input The {@link InputStream} to read
+     * @return The contents of the stream
+     * @throws IOException Something went wrong
+     */
     public static String read(InputStream input) throws IOException {
         return read(new InputStreamReader(input));
     }
@@ -369,64 +363,50 @@ public final class IOUtils {
      *
      * @param file The File to read
      * @return The contents of the file
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException Something went wrong
      */
-    public static String read(File file) throws FileNotFoundException, IOException {
+    public static String read(File file) throws IOException {
         return read(new FileReader(file));
     }
 
     /**
      * Reads a String from a Reader
      *
-     * @param input
-     * @return
-     * @throws IOException
+     * @param input The {@link Reader} to read from
+     * @return The contents of the reader
+     * @throws IOException Something went wrong
      */
     public static String read(Reader input) throws IOException {
-        BufferedReader reader = new BufferedReader(input);
-        StringBuffer sb = new StringBuffer();
-        int ch;
-
-        while ((ch = reader.read()) != -1)
-            sb.append((char) ch);
-
-        close(reader);
-
-        return sb.toString();
+        try (BufferedReader reader = new BufferedReader(input)) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 
     /**
      * Writes a String to a File using a PrintWriter
      *
-     * @param file
-     * @param str
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param str The string to write
+     * @param file The target file
+     * @throws IOException Something went wrong
      */
-    public static void write(File file, String str) throws FileNotFoundException, IOException {
-        PrintWriter out = new PrintWriter(new FileOutputStream(file));
-        out.print(str);
-        close(out);
+    public static void write(String str, File file) throws IOException {
+        try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+            out.write(str);
+            close(out);
+        }
     }
 
     /**
      * Writes the raw data from an InputStream to a File
      *
-     * @param file
-     * @param input
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param input The input stream to read from
+     * @param file The target file
+     * @throws IOException Something went wrong
      */
-    public static void write(File file, InputStream input) throws FileNotFoundException, IOException {
-        InputStream in = new BufferedInputStream(input);
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-        int ch;
-        while ((ch = in.read()) != -1)
-            out.write(ch);
-
-        close(in);
-        close(out);
+    public static void write(InputStream input, File file) throws IOException {
+        try (FileOutputStream output = new FileOutputStream(file)) {
+            copy(input, output);
+        }
     }
 
     /**
@@ -437,10 +417,8 @@ public final class IOUtils {
      */
     public static boolean deleteRecursively(File file) {
         if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteRecursively(children[i]);
-                if (!success)
+            for (File child : Objects.requireNonNull(file.listFiles())) {
+                if (!deleteRecursively(child))
                     return false;
             }
         }
@@ -449,53 +427,27 @@ public final class IOUtils {
     }
 
     /**
-     * Closes a Closeable, swallowing any exceptions
+     * Quietly closes a {@link Closeable}, swallowing any exceptions
      *
-     * @param out
+     * @param closeable The Closeable to close
      */
-    public static void close(InputStream c) {
-        if (c != null) {
+    public static void close(Closeable closeable) {
+        if (closeable != null) {
             try {
-                c.close();
-            } catch (IOException ignored) {
-            }
-        }
-    }
-
-    public static void close(OutputStream c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (IOException ignored) {
-            }
-        }
-    }
-
-    public static void close(Reader c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (IOException ignored) {
-            }
-        }
-    }
-
-    public static void close(Writer c) {
-        if (c != null) {
-            try {
-                c.close();
-            } catch (IOException ignored) {
+                closeable.close();
+            } catch (Exception ignored) {
             }
         }
     }
 
     private static class NullCopyMonitor implements FileCopyMonitor {
         public void bytesCopied(int numBytes) {
+            // Does nothing
         }
 
         public void copyingFile(File f) {
+            // Does nothing
         }
-        //public void copyComplete(){}
 
         public boolean isCopyAborted() {
             return false;
