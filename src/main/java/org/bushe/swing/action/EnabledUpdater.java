@@ -12,8 +12,7 @@
 
 package org.bushe.swing.action;
 
-public interface EnabledUpdater
-        extends ShouldBeEnabledDelegate {
+public interface EnabledUpdater extends ShouldBeEnabledDelegate {
     boolean updateEnabled();
 }
 

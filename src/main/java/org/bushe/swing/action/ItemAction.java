@@ -15,14 +15,10 @@ package org.bushe.swing.action;
 import javax.swing.*;
 import java.awt.event.ItemListener;
 
-public interface ItemAction
-        extends Action {
+public interface ItemAction extends Action {
     boolean isSelected();
-
-    void setSelected(boolean var1);
-
-    void addItemListener(ItemListener var1);
-
-    void removeItemListener(ItemListener var1);
+    void setSelected(boolean selected);
+    void addItemListener(ItemListener l);
+    void removeItemListener(ItemListener l);
 }
 

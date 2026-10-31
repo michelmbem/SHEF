@@ -19,84 +19,87 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
 
-class ActionSelectionSynchronizer
-        implements PropertyChangeListener,
-        ItemListener {
-    private WeakReference buttonRef;
-    private WeakReference actionRef;
+class ActionSelectionSynchronizer implements PropertyChangeListener, ItemListener {
+    private WeakReference<AbstractButton> buttonRef;
+    private WeakReference<Action> actionRef;
 
     public ActionSelectionSynchronizer(AbstractButton button, Action action) {
         if (button != null) {
-            this.buttonRef = new WeakReference<AbstractButton>(button);
+            buttonRef = new WeakReference<>(button);
             button.addItemListener(this);
         }
+        
         if (action != null) {
-            this.actionRef = new WeakReference<Action>(action);
+            actionRef = new WeakReference<>(action);
             action.addPropertyChangeListener(this);
         }
     }
 
     public void itemStateChanged(ItemEvent e) {
-        if (!this.checkValidity()) {
-            return;
-        }
-        AbstractButton button = (AbstractButton) this.buttonRef.get();
-        Action action = (Action) this.actionRef.get();
+        if (!checkValidity()) return;
+
+        AbstractButton button = buttonRef.get();
+        Action action = actionRef.get();
+
         boolean buttonSelected = button.isSelected();
         Object value = action.getValue("SELECTED");
         boolean changeNeeded = true;
+
         if (value instanceof Boolean) {
             boolean isActionSelected = (Boolean) value;
-            if (e.getStateChange() == 1 && isActionSelected) {
-                changeNeeded = false;
-            } else if (e.getStateChange() == 2 && !isActionSelected) {
+            if (e.getStateChange() == ItemEvent.SELECTED && isActionSelected ||
+                    e.getStateChange() == ItemEvent.DESELECTED && !isActionSelected) {
                 changeNeeded = false;
             }
         }
+
         if (changeNeeded) {
-            action.putValue("SELECTED", Boolean.valueOf(buttonSelected));
+            action.putValue("SELECTED", buttonSelected);
         }
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!this.checkValidity()) {
-            return;
-        }
+        if (!checkValidity()) return;
+
         String propertyName = evt.getPropertyName();
         if (propertyName.equals("SELECTED")) {
             boolean actionSelected;
-            if (!this.checkValidity()) {
-                return;
-            }
-            AbstractButton button = (AbstractButton) this.buttonRef.get();
-            Action action = (Action) this.actionRef.get();
+            if (!checkValidity()) return;
+
+            AbstractButton button = buttonRef.get();
+            Action action = actionRef.get();
+
             boolean buttonSelected = button.isSelected();
             Object value = action.getValue("SELECTED");
-            if (value instanceof Boolean && (actionSelected = ((Boolean) value).booleanValue()) != buttonSelected) {
+
+            if (value instanceof Boolean && (actionSelected = (Boolean) value) != buttonSelected) {
                 button.setSelected(actionSelected);
             }
         }
     }
 
     private boolean checkValidity() {
-        if (this.buttonRef == null || this.actionRef == null || this.buttonRef.get() == null || this.actionRef.get() == null) {
-            this.removeListeners();
+        if (buttonRef == null || actionRef == null ||
+                buttonRef.get() == null || actionRef.get() == null) {
+            removeListeners();
             return false;
         }
+
         return true;
     }
 
     private void removeListeners() {
-        Action action = (Action) this.actionRef.get();
+        Action action = actionRef.get();
         if (action != null) {
             action.removePropertyChangeListener(this);
         }
-        this.actionRef = null;
-        AbstractButton button = (AbstractButton) this.buttonRef.get();
+        actionRef = null;
+
+        AbstractButton button = buttonRef.get();
         if (button != null) {
             button.removeItemListener(this);
         }
-        this.buttonRef = null;
+        buttonRef = null;
     }
 }
 

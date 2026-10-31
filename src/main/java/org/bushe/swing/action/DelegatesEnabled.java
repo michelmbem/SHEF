@@ -13,8 +13,7 @@
 package org.bushe.swing.action;
 
 public interface DelegatesEnabled {
-    void addShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
-
-    void removeShouldBeEnabledDelegate(ShouldBeEnabledDelegate var1);
+    void addShouldBeEnabledDelegate(ShouldBeEnabledDelegate delegate);
+    void removeShouldBeEnabledDelegate(ShouldBeEnabledDelegate delegate);
 }
 

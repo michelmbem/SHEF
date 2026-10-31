@@ -61,16 +61,19 @@ public class ActionXMLReader {
     public static final String ATTRIBUTE_ACTION_CLASS = "actionClass";
     public static final String ATTRIBUTE_ACTION_LIST_TRIGGER_ACTION_REF_ID = "triggerActionRefId";
     public static final String ATTRIBUTE_LINE_VISIBLE = "lineVisible";
+    
     private static SAXParserFactory parserfactory;
+    
+    private final ActionManager actionManager;
+    
     private ActionHandler handler;
-    private Map actionSetMap;
+    private Map<Object, Object> actionSetMap;
     private String defaultActionClass;
     private boolean debug = false;
     private boolean printValidationErrors;
-    private final ActionManager actionManager;
 
     public ActionXMLReader(ActionManager manager) {
-        this.actionManager = manager;
+        actionManager = manager;
     }
 
     static void printActionAttributes(PrintStream stream, ActionAttributes actionAttributes) {
@@ -92,73 +95,75 @@ public class ActionXMLReader {
     }
 
     public void loadActions(File f) throws IOException, SAXException {
-        if (this.debug) {
+        if (debug) {
             System.out.println("loadActions(" + f.getAbsolutePath() + ")");
         }
-        SAXParser parser = this.getParser();
+
+        SAXParser parser = getParser();
         FileInputStream fis = new FileInputStream(f);
         InputSource is = new InputSource(fis);
-        is.setSystemId(new File(f.getParent()).toURL().toExternalForm());
-        this.loadActions(is, parser);
+        is.setSystemId(new File(f.getParent()).toURI().toURL().toExternalForm());
+        loadActions(is, parser);
     }
 
     public void loadActions(URL url) throws IOException, SAXException {
-        if (this.debug) {
+        if (debug) {
             System.out.println("loadActions(" + url + ")");
         }
+
         if (url == null) {
             throw new IllegalArgumentException("URL is null.");
         }
-        InputStream stream = url.openStream();
-        try {
-            this.loadActions(new InputSource(stream), this.getParser());
-        } finally {
-            stream.close();
+
+        try (InputStream stream = url.openStream()) {
+            loadActions(new InputSource(stream), getParser());
         }
     }
 
     public void loadActions(InputStream stream) throws IOException, SAXException {
-        SAXParser parser = this.getParser();
-        this.loadActions(new InputSource(stream), parser);
+        SAXParser parser = getParser();
+        loadActions(new InputSource(stream), parser);
     }
 
     public void loadActions(InputSource is, SAXParser parser) throws IOException {
         try {
-            if (this.handler == null) {
-                this.handler = new ActionHandler();
+            if (handler == null) {
+                handler = new ActionHandler();
             }
-            parser.parse(is, (DefaultHandler) this.handler);
+
+            parser.parse(is, handler);
         } catch (SAXException ex) {
-            this.printException("SAXException: " + ex.getMessage(), ex);
+            printException("SAXException: " + ex.getMessage(), ex);
             throw new IOException("Error parsing: " + ex.getMessage());
         } catch (IOException ex2) {
-            this.printException("IOException: " + ex2.getMessage(), ex2);
+            printException("IOException: " + ex2.getMessage(), ex2);
             throw ex2;
         }
     }
 
-    public SAXParser getParser() throws SAXException, IOException {
+    public SAXParser getParser() throws SAXException {
         if (parserfactory == null) {
             parserfactory = SAXParserFactory.newInstance();
             parserfactory.setValidating(true);
         }
+
         try {
             return parserfactory.newSAXParser();
         } catch (ParserConfigurationException ex3) {
-            this.printException("ParserConfigurationException: " + ex3.getMessage(), ex3);
+            printException("ParserConfigurationException: " + ex3.getMessage(), ex3);
             throw new SAXException("Error parsing: " + ex3.getMessage());
         }
     }
 
-    private void addAttributes(Attributes attrs, String actionset) {
+    private void addAttributes(Attributes attrs, String actionSet) {
         String id = attrs.getValue(ATTRIBUTE_ID);
-        this.actionManager.registerActionPrototype(id, this.xmlAttrsToActionAttrs(attrs));
-        this.addActionIdToActionSet(attrs.getValue(ATTRIBUTE_ID), actionset);
+        actionManager.registerActionPrototype(id, xmlAttrsToActionAttrs(attrs));
+        addActionIdToActionSet(attrs.getValue(ATTRIBUTE_ID), actionSet);
     }
 
     public ActionAttributes xmlAttrsToActionAttrs(Attributes attrs) {
         ActionAttributes actionAttrs = new ActionAttributes();
-        this.updateAttributes(actionAttrs, attrs);
+        updateAttributes(actionAttrs, attrs);
         return actionAttrs;
     }
 
@@ -166,21 +171,26 @@ public class ActionXMLReader {
         String accel;
         String longDesc;
         String commandKey;
+
         String value = attrs.getValue(ATTRIBUTE_NAME);
         if (value != null) {
             actionAttrs.putValue("Name", value);
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_ID)) != null) {
             actionAttrs.putValue("ID", value);
             actionAttrs.putValue("ActionCommandKey", value);
         }
+
         if ((commandKey = attrs.getValue(ATTRIBUTE_COMMAND)) != null) {
             actionAttrs.putValue("ActionCommandKey", commandKey);
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_DESC)) != null) {
             actionAttrs.putValue("ShortDescription", value);
             actionAttrs.putValue("LongDescription", value);
         }
+
         if ((longDesc = attrs.getValue(ATTRIBUTE_LONG_DESC)) != null) {
             actionAttrs.putValue("LongDescription", longDesc);
         } else {
@@ -189,143 +199,154 @@ public class ActionXMLReader {
                 actionAttrs.putValue("LongDescription", value);
             }
         }
+
         String mnemonic = attrs.getValue(ATTRIBUTE_MNEMONIC);
-        if (mnemonic != null && !mnemonic.equals("")) {
-            actionAttrs.putValue("MnemonicKey", Integer.valueOf(mnemonic.charAt(0)));
+        if (mnemonic != null && !mnemonic.isEmpty()) {
+            actionAttrs.putValue("MnemonicKey", (int) mnemonic.charAt(0));
         }
-        if ((accel = attrs.getValue(ATTRIBUTE_ACCEL)) != null && !accel.equals("")) {
+
+        if ((accel = attrs.getValue(ATTRIBUTE_ACCEL)) != null && !accel.isEmpty()) {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(accel.trim());
             actionAttrs.putValue("AcceleratorKey", keyStroke);
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_SMICON)) != null) {
-            actionAttrs.putValue("SmallIcon", this.actionManager.resolveIcon(value));
+            actionAttrs.putValue("SmallIcon", actionManager.resolveIcon(value));
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_LGICON)) != null) {
-            actionAttrs.putValue("LARGE_ICON", this.actionManager.resolveIcon(value));
+            actionAttrs.putValue("LARGE_ICON", actionManager.resolveIcon(value));
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_TOOLBAR_SHOWS_TEXT)) != null) {
             actionAttrs.putValue("TOOLBAR_SHOWS_TEXT", Boolean.valueOf(value));
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_MENU_SHOWS_ICON)) != null) {
             actionAttrs.putValue("MENU_SHOWS_ICON", Boolean.valueOf(value));
         }
+
         if ((value = attrs.getValue("group")) != null) {
             actionAttrs.putValue("GROUP", value);
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_BUTTON_TYPE)) != null) {
             actionAttrs.putValue("BUTTON_TYPE", value);
         }
+
         if ((value = attrs.getValue(ATTRIBUTE_WEIGHT)) != null) {
             actionAttrs.putValue(ATTRIBUTE_WEIGHT, value);
         }
-        if ((value = attrs.getValue(ATTRIBUTE_ACTION_CLASS)) == null && this.defaultActionClass != null) {
-            value = this.defaultActionClass;
+
+        if ((value = attrs.getValue(ATTRIBUTE_ACTION_CLASS)) == null && defaultActionClass != null) {
+            value = defaultActionClass;
         }
+
         if (value != null) {
             actionAttrs.putValue("ACTION_CLASS", value);
         }
     }
 
     public void addRoles(String action, List roles) {
-        ActionAttributes actionAttrs = this.actionManager.getPrototype(action);
-        if (actionAttrs == null) {
-            return;
-        }
+        ActionAttributes actionAttrs = actionManager.getPrototype(action);
+        if (actionAttrs == null) return;
         actionAttrs.putValue("ROLES", roles);
     }
 
-    private void addAttributes(String actionId, ActionAttributes inheritedAttrs, Attributes overridenAttrs, String actionset) {
+    private void addAttributes(String actionId, ActionAttributes inheritedAttrs,
+                               Attributes overridenAttrs, String actionset) {
+
         String id = overridenAttrs.getValue(ATTRIBUTE_ID);
         ActionAttributes attrs = new ActionAttributes(inheritedAttrs);
         attrs.putValue("ID", id);
         attrs.putValue("ActionCommandKey", id);
-        this.updateAttributes(attrs, overridenAttrs);
-        this.actionManager.registerActionPrototype(id, attrs);
-        this.addActionIdToActionSet(id, actionset);
+        updateAttributes(attrs, overridenAttrs);
+        actionManager.registerActionPrototype(id, attrs);
+        addActionIdToActionSet(id, actionset);
     }
 
-    private void addActionIdToActionSet(String id, String actionset) {
-        if (actionset != null && !actionset.equals("")) {
-            List list = this.getActionSet(actionset);
-            if (list == null) {
-                list = new ArrayList<String>();
-            }
+    private void addActionIdToActionSet(String id, String actionSet) {
+        if (actionSet != null && !actionSet.isEmpty()) {
+            List<String> list = Objects.requireNonNullElse(
+                    getActionSet(actionSet), new ArrayList<>());
             list.add(id);
-            this.addActionSet(actionset, list);
+            addActionSet(actionSet, list);
         }
     }
 
-    public Set getActionSetIDs() {
-        if (this.actionSetMap == null) {
-            this.actionSetMap = new HashMap();
+    public Set<Object> getActionSetIDs() {
+        if (actionSetMap == null) {
+            actionSetMap = new HashMap<>();
         }
-        return this.actionSetMap.keySet();
+
+        return actionSetMap.keySet();
     }
 
-    private List getActionSet(Object id) {
-        if (this.actionSetMap == null) {
-            this.actionSetMap = new HashMap();
+    private List<String> getActionSet(Object id) {
+        if (actionSetMap == null) {
+            actionSetMap = new HashMap<>();
         }
-        return (List) this.actionSetMap.get(id);
+
+        return (List<String>) actionSetMap.get(id);
     }
 
-    private void addActionSet(String key, List set) {
-        if (this.actionSetMap == null) {
-            this.actionSetMap = new HashMap();
+    private void addActionSet(String key, List<String> set) {
+        if (actionSetMap == null) {
+            actionSetMap = new HashMap<>();
         }
-        this.actionSetMap.put(key, set);
+
+        actionSetMap.put(key, set);
     }
 
     private void printException(String message, Exception ex) {
         System.out.println(message);
-        if (this.debug) {
-            ex.printStackTrace();
-        }
+        if (debug) ex.printStackTrace();
     }
 
-    class ActionHandler
-            extends DefaultHandler {
+    class ActionHandler extends DefaultHandler {
         private String element;
-        private Stack actionListStack;
-        private Stack actionSetStack;
-        private String actionset;
+        private Stack<ActionList> actionListStack;
+        private Stack<String> actionSetStack;
+        private String actionSet;
         private ActionList actionlist;
         private String action;
         private String group;
-        private List roles;
+        private List<Object> roles;
 
         ActionHandler() {
         }
 
         public void startDocument() {
-            this.element = "";
-            this.actionListStack = new Stack();
-            this.actionSetStack = new Stack();
-            this.actionset = null;
-            this.actionlist = null;
-            this.action = null;
-            this.group = null;
-            this.roles = null;
+            element = "";
+            actionListStack = new Stack<>();
+            actionSetStack = new Stack<>();
+            actionSet = null;
+            actionlist = null;
+            action = null;
+            group = null;
+            roles = null;
         }
 
         public void startElement(String nameSpace, String localName, String name, Attributes attributes) {
-            if (ActionXMLReader.this.debug) {
+            if (debug) {
                 System.out.print("startElement(" + nameSpace + "," + localName + "," + name + ",...)");
-                String id = attributes.getValue(ActionXMLReader.ATTRIBUTE_ID);
+                String id = attributes.getValue(ATTRIBUTE_ID);
                 System.out.println("id=" + id);
                 if (id != null && id.equals("inherit-action")) {
                     System.out.println("in");
                 }
             }
-            this.element = name;
-            if (ActionXMLReader.ELEMENT_ACTION_SET.equals(name)) {
-                String newSet = attributes.getValue(ActionXMLReader.ATTRIBUTE_ID);
-                if (this.actionset != null) {
-                    this.actionSetStack.push(this.actionset);
+
+            element = name;
+            if (ELEMENT_ACTION_SET.equals(name)) {
+                String newSet = attributes.getValue(ATTRIBUTE_ID);
+                if (actionSet != null) {
+                    actionSetStack.push(actionSet);
                 }
-                this.actionset = newSet;
-                String strWidth = attributes.getValue(ActionXMLReader.ATTRIBUTE_TOOLBAR_BUTTON_PREF_WIDTH);
-                String strHeight = attributes.getValue(ActionXMLReader.ATTRIBUTE_TOOLBAR_BUTTON_PREF_HEIGHT);
+                actionSet = newSet;
+
+                String strWidth = attributes.getValue(ATTRIBUTE_TOOLBAR_BUTTON_PREF_WIDTH);
+                String strHeight = attributes.getValue(ATTRIBUTE_TOOLBAR_BUTTON_PREF_HEIGHT);
                 if (strWidth != null && strHeight != null) {
                     int width = Integer.parseInt(strWidth);
                     int height = Integer.parseInt(strHeight);
@@ -333,210 +354,237 @@ public class ActionXMLReader {
                         ActionUIFactory.getInstance().setToolbarButtonPreferredSize(new Dimension(width, height));
                     }
                 }
-                ActionXMLReader.this.defaultActionClass = attributes.getValue(ActionXMLReader.ATTRIBUTE_DEFAULT_ACTION_CLASS);
-            } else if (ActionXMLReader.ELEMENT_ACTION_LIST.equals(name)) {
-                String listId = attributes.getValue(ActionXMLReader.ATTRIBUTE_ID);
-                String actionListRefId = attributes.getValue(ActionXMLReader.ATTRIBUTE_IDREF);
+
+                defaultActionClass = attributes.getValue(ATTRIBUTE_DEFAULT_ACTION_CLASS);
+            } else if (ELEMENT_ACTION_LIST.equals(name)) {
+                String listId = attributes.getValue(ATTRIBUTE_ID);
+                String actionListRefId = attributes.getValue(ATTRIBUTE_IDREF);
+
                 if (listId == null && actionListRefId == null) {
                     throw new IllegalArgumentException("Action lists require either an id or an idref.");
                 }
+
                 if (listId != null && actionListRefId != null) {
-                    throw new UnsupportedOperationException("Error with action-list named:" + listId + " The idref attribute in action-list elements would refer to inherited lists, but they are not yet supported.  If the idref is meant to refering to the action that triggers the list (menu/toolbar), then use triggerActionRefId instead (this differs from the original JDNC XML).");
+                    throw new UnsupportedOperationException("Error with action-list named:" + listId +
+                            " The idref attribute in action-list elements would refer to inherited lists, " +
+                            "but they are not yet supported.  If the idref is meant to refering to the action " +
+                            "that triggers the list (menu/toolbar), then use triggerActionRefId instead " +
+                            "(this differs from the original JDNC XML).");
                 }
-                String triggerActionRefId = attributes.getValue(ActionXMLReader.ATTRIBUTE_ACTION_LIST_TRIGGER_ACTION_REF_ID);
+
+                String triggerActionRefId = attributes.getValue(ATTRIBUTE_ACTION_LIST_TRIGGER_ACTION_REF_ID);
                 if (actionListRefId != null && triggerActionRefId != null) {
-                    throw new IllegalArgumentException("Action lists cannot use triggerActionRefId and idref, i.e. a list cannot tell another action-list what it's trigger is.");
+                    throw new IllegalArgumentException("Action lists cannot use triggerActionRefId and idref, " +
+                            "i.e. a list cannot tell another action-list what it's trigger is.");
                 }
+
                 if (triggerActionRefId == null && listId != null) {
                     triggerActionRefId = listId;
-                    ActionAttributes actionAtts = ActionXMLReader.this.actionManager.getPrototype(listId);
-                    if (actionAtts == null) {
-                        ActionXMLReader.this.addAttributes(attributes, this.actionset);
-                    }
+                    ActionAttributes actionAtts = actionManager.getPrototype(listId);
+                    if (actionAtts == null) addAttributes(attributes, actionSet);
                 }
+
                 ActionList newOrReferredToList = null;
                 if (actionListRefId == null) {
                     newOrReferredToList = new ActionList(listId, triggerActionRefId);
-                    String weight = attributes.getValue(ActionXMLReader.ATTRIBUTE_WEIGHT);
+                    String weight = attributes.getValue(ATTRIBUTE_WEIGHT);
                     if (weight != null) {
                         newOrReferredToList.setWeight(Double.valueOf(weight));
                     }
-                    ActionXMLReader.this.actionManager.registerActionIdList(newOrReferredToList);
-                    if (this.actionlist != null) {
-                        this.actionlist.add(newOrReferredToList);
+                    actionManager.registerActionIdList(newOrReferredToList);
+                    if (actionlist != null) {
+                        actionlist.add(newOrReferredToList);
                     }
                 } else {
-                    newOrReferredToList = ActionXMLReader.this.actionManager.getActionIdList(actionListRefId);
+                    newOrReferredToList = actionManager.getActionIdList(actionListRefId);
                     if (newOrReferredToList == null) {
                         throw new IllegalArgumentException("Action-list for idref " + actionListRefId + " does not exist.  " + "Note: You may need to migrate your XML if " + "you are changing ActionManager implementations.  " + "Mark Davidson's original ActionManager uses the " + "action-lists idref to point to actions.  Use " + "triggerActionIdRef to point to actions.  Action-list " + "idrefs are used to merge action-lists.");
                     }
                 }
-                if (this.actionlist != null) {
-                    this.actionListStack.push(this.actionlist);
+
+                if (actionlist != null) {
+                    actionListStack.push(actionlist);
                 }
-                this.actionlist = newOrReferredToList;
-            } else if (ActionXMLReader.ELEMENT_ACTION.equals(name)) {
-                this.action = attributes.getValue(ActionXMLReader.ATTRIBUTE_ID);
-                String inheritedAction = attributes.getValue(ActionXMLReader.ATTRIBUTE_IDREF);
-                this.validateAction(attributes, inheritedAction);
-                if (this.action != null) {
-                    this.addAttributesFromInheritedAction(attributes, inheritedAction);
+
+                actionlist = newOrReferredToList;
+            } else if (ELEMENT_ACTION.equals(name)) {
+                action = attributes.getValue(ATTRIBUTE_ID);
+                String inheritedAction = attributes.getValue(ATTRIBUTE_IDREF);
+                validateAction(attributes, inheritedAction);
+
+                if (action != null) {
+                    addAttributesFromInheritedAction(attributes, inheritedAction);
                 } else {
-                    this.action = inheritedAction;
+                    action = inheritedAction;
                 }
-                if (this.actionlist != null) {
+
+                if (actionlist != null) {
                     ActionAttributes actionAttrs;
-                    if (!this.actionlist.contains(this.action)) {
-                        this.actionlist.add(this.action);
+                    if (!actionlist.contains(action)) {
+                        actionlist.add(action);
                     }
-                    if (this.group != null && (actionAttrs = ActionXMLReader.this.actionManager.getPrototype(this.action)) != null) {
-                        actionAttrs.putValue("GROUP", this.group);
+                    if (group != null && (actionAttrs = actionManager.getPrototype(action)) != null) {
+                        actionAttrs.putValue("GROUP", group);
                     }
                 }
-            } else if (ActionXMLReader.ELEMENT_NAME_VALUE_PAIR.equals(name)) {
-                ActionAttributes actionAttrs = ActionXMLReader.this.actionManager.getPrototype(this.action);
+            } else if (ELEMENT_NAME_VALUE_PAIR.equals(name)) {
+                ActionAttributes actionAttrs = actionManager.getPrototype(action);
                 if (actionAttrs != null) {
-                    actionAttrs.putValue(attributes.getValue(ActionXMLReader.ATTRIBUTE_NAME), attributes.getValue("value"));
+                    actionAttrs.putValue(attributes.getValue(ATTRIBUTE_NAME), attributes.getValue("value"));
                 }
-            } else if (ActionXMLReader.ELEMENT_ROLE.equals(name)) {
-                if (this.roles == null) {
-                    this.roles = new ArrayList(3);
+            } else if (ELEMENT_ROLE.equals(name)) {
+                if (roles == null) {
+                    roles = new ArrayList(3);
                 }
-                this.roles.add(attributes.getValue(ActionXMLReader.ATTRIBUTE_NAME));
+                roles.add(attributes.getValue(ATTRIBUTE_NAME));
             } else if ("group".equals(name)) {
-                this.group = attributes.getValue(ActionXMLReader.ATTRIBUTE_ID);
-            } else if (ActionXMLReader.ELEMENT_SEPARATOR.equals(name) && this.actionlist != null) {
+                group = attributes.getValue(ATTRIBUTE_ID);
+            } else if (ELEMENT_SEPARATOR.equals(name) && actionlist != null) {
                 Number weight = null;
                 String weightStr = null;
+
                 try {
-                    weightStr = attributes.getValue(ActionXMLReader.ATTRIBUTE_WEIGHT);
+                    weightStr = attributes.getValue(ATTRIBUTE_WEIGHT);
                     if (weightStr != null) {
                         weight = Integer.valueOf(weightStr);
                     }
                 } catch (NumberFormatException ex) {
                     try {
                         weight = Double.valueOf(weightStr);
-                    } catch (NumberFormatException newOrReferredToList) {
-                        // empty catch block
+                    } catch (NumberFormatException ignored) {
                     }
                 }
+
                 boolean isLineVisible = true;
-                if (attributes.getValue(ActionXMLReader.ATTRIBUTE_LINE_VISIBLE) != null) {
-                    isLineVisible = Boolean.getBoolean(attributes.getValue(ActionXMLReader.ATTRIBUTE_LINE_VISIBLE));
+                if (attributes.getValue(ATTRIBUTE_LINE_VISIBLE) != null) {
+                    isLineVisible = Boolean.getBoolean(attributes.getValue(ATTRIBUTE_LINE_VISIBLE));
                 }
-                Separator separator = new Separator(attributes.getValue(ActionXMLReader.ATTRIBUTE_ID), weight, isLineVisible);
-                this.actionlist.add(separator);
+
+                Separator separator = new Separator(attributes.getValue(ATTRIBUTE_ID), weight, isLineVisible);
+                actionlist.add(separator);
             }
         }
 
         private void addAttributesFromInheritedAction(Attributes attributes, String inheritedAction) throws RuntimeException {
             if (inheritedAction == null) {
-                ActionXMLReader.this.addAttributes(attributes, this.actionset);
+                addAttributes(attributes, actionSet);
             } else {
-                ActionAttributes inheritedActionAtts = ActionXMLReader.this.actionManager.getPrototype(inheritedAction);
+                ActionAttributes inheritedActionAtts = actionManager.getPrototype(inheritedAction);
                 if (inheritedActionAtts == null) {
-                    throw new RuntimeException("Action " + this.action + " inherits from action " + inheritedAction + " but it is not yet defined.  Actions that inherit from others must be declared after the action they inherit from.");
+                    throw new RuntimeException("Action " + action + " inherits from action " + inheritedAction +
+                            " but it is not yet defined.  Actions that inherit from others must be declared " +
+                            "after the action they inherit from.");
                 }
-                ActionXMLReader.this.addAttributes(this.action, inheritedActionAtts, attributes, this.actionset);
+
+                addAttributes(action, inheritedActionAtts, attributes, actionSet);
             }
         }
 
         private void validateAction(Attributes attributes, String inheritedAction) throws RuntimeException {
-            if (this.action == null && inheritedAction == null) {
-                throw new RuntimeException("Actions must have an id or an idref defined. Element name:" + this.element + "Attributes:" + this.stringForAttributes(attributes));
+            if (action == null && inheritedAction == null) {
+                throw new RuntimeException("Actions must have an id or an idref defined. Element name:" + element +
+                        "Attributes:" + stringForAttributes(attributes));
             }
+
             int numOtherAtts = attributes.getLength();
-            if (this.action != null) {
-                --numOtherAtts;
-            }
-            if (inheritedAction != null) {
-                --numOtherAtts;
-            }
-            if (numOtherAtts > 0 && this.action == null) {
-                throw new RuntimeException("An action that defines an attribute must declare an id.  Inherited action:" + inheritedAction);
+            if (action != null) --numOtherAtts;
+            if (inheritedAction != null) --numOtherAtts;
+            if (numOtherAtts > 0 && action == null) {
+                throw new RuntimeException("An action that defines an attribute must declare an id.  " +
+                        "Inherited action:" + inheritedAction);
             }
         }
 
         private String stringForAttributes(Attributes attributes) {
-            if (attributes == null) {
-                return "null";
-            }
-            String result = "";
+            if (attributes == null) return "null";
+
+            StringBuilder result = new StringBuilder();
             int i = 0;
+
             while (i < attributes.getLength()) {
-                result = result + attributes.getLocalName(i) + "=" + attributes.getValue(i) + " ";
+                result.append(attributes.getLocalName(i))
+                        .append("=")
+                        .append(attributes.getValue(i))
+                        .append(" ");
                 ++i;
             }
-            return result;
+
+            return result.toString();
         }
 
+        @Override
         public void endElement(String nameSpace, String localName, String name) {
-            if (ActionXMLReader.this.debug) {
+            if (debug) {
                 System.out.println("endElement(" + nameSpace + "," + localName + "," + name + ")");
             }
-            if (ActionXMLReader.ELEMENT_ACTION_SET.equals(name)) {
+
+            if (ELEMENT_ACTION_SET.equals(name)) {
                 try {
-                    this.actionset = (String) this.actionSetStack.pop();
+                    actionSet = actionSetStack.pop();
                 } catch (EmptyStackException ex) {
-                    this.actionset = null;
+                    actionSet = null;
                 }
-            } else if (ActionXMLReader.ELEMENT_ACTION_LIST.equals(name)) {
+            } else if (ELEMENT_ACTION_LIST.equals(name)) {
                 try {
-                    if (this.roles != null) {
-                        this.actionlist.setRoles(this.roles);
+                    if (roles != null) {
+                        actionlist.setRoles(roles);
                     }
-                    this.roles = null;
-                    this.actionlist = (ActionList) this.actionListStack.pop();
+                    roles = null;
+                    actionlist = actionListStack.pop();
                 } catch (EmptyStackException ex) {
-                    this.actionlist = null;
+                    actionlist = null;
                 }
-            } else if (ActionXMLReader.ELEMENT_ACTION.equals(name)) {
-                if (this.roles != null) {
-                    ActionXMLReader.this.addRoles(this.action, this.roles);
+            } else if (ELEMENT_ACTION.equals(name)) {
+                if (roles != null) {
+                    addRoles(action, roles);
                 }
-                this.roles = null;
+                roles = null;
             } else if ("group".equals(name)) {
-                this.group = null;
+                group = null;
             }
         }
 
+        @Override
         public void endDocument() {
-            this.element = "";
-            this.actionListStack = new Stack();
-            this.actionSetStack = new Stack();
-            this.actionset = null;
-            this.actionlist = null;
-            this.action = null;
-            this.group = null;
+            element = "";
+            actionListStack = new Stack();
+            actionSetStack = new Stack();
+            actionSet = null;
+            actionlist = null;
+            action = null;
+            group = null;
         }
 
+        @Override
         public void error(SAXParseException ex) throws SAXException {
-            if (ActionXMLReader.this.printValidationErrors) {
+            if (printValidationErrors) {
                 System.out.println("**** validation error");
-                this.reportException(ex);
+                reportException(ex);
             }
         }
 
+        @Override
         public void warning(SAXParseException ex) throws SAXException {
-            if (ActionXMLReader.this.printValidationErrors) {
+            if (printValidationErrors) {
                 System.out.println("**** validation warning");
-                this.reportException(ex);
+                reportException(ex);
             }
         }
 
+        @Override
         public void fatalError(SAXParseException ex) throws SAXException {
-            if (ActionXMLReader.this.printValidationErrors) {
+            if (printValidationErrors) {
                 System.out.println("**** validation fatalError");
-                this.reportException(ex);
+                reportException(ex);
             }
         }
 
         private void reportException(SAXParseException ex) {
-            if (ActionXMLReader.this.printValidationErrors) {
+            if (printValidationErrors) {
                 System.out.println(ex.getLineNumber() + ":" + ex.getColumnNumber() + " " + ex.getMessage());
                 System.out.println("Public ID: " + ex.getPublicId() + "\t" + "System ID: " + ex.getSystemId());
             }
-            if (ActionXMLReader.this.debug) {
+            if (debug) {
                 ex.printStackTrace();
             }
         }

@@ -34,11 +34,11 @@ public class Separator {
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public Number getWeight() {
-        return this.weight;
+        return weight;
     }
 
     public void setWeight(Number weight) {
@@ -46,20 +46,21 @@ public class Separator {
     }
 
     public boolean isLineVisible() {
-        return this.lineVisible;
+        return lineVisible;
     }
 
     public boolean equals(Object obj) {
         if (obj instanceof Separator) {
             Separator s = (Separator) obj;
-            if (!Objects.equals(this.id, s.id)) {
+            if (!Objects.equals(id, s.id)) {
                 return false;
             }
-            if (!Objects.equals(this.weight, s.weight)) {
+            if (!Objects.equals(weight, s.weight)) {
                 return false;
             }
-            return this.lineVisible == s.lineVisible;
+            return lineVisible == s.lineVisible;
         }
+
         return false;
     }
 }

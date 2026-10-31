@@ -15,6 +15,6 @@ package org.bushe.swing.action;
 import javax.swing.*;
 
 public interface IconResolver {
-    Icon resolveIcon(String var1);
+    Icon resolveIcon(String str);
 }
 

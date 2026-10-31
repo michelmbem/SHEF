@@ -16,97 +16,71 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ActionUIFactory {
-    private static ActionUIFactory INSTANCE;
-    private static Map NAMED_INSTANCES;
-    private static final Object INSTANCE_LOCK;
-    private static final boolean sToolbarRequestFocusEnabled14;
-    private static final boolean sSetButtonSizeFor13;
-    private static final boolean DEBUG;
+    private static final Object INSTANCE_LOCK = new Object();
+    private static final boolean TOOLBAR_REQUEST_FOCUS_ENABLED_14 =
+            !System.getProperty("java.vm.version").contains("1.3");
+    private static final boolean SET_BUTTON_SIZE_FOR_13 =
+            System.getProperty("java.vm.version").contains("1.3");
+    private static final Map<String, ActionUIFactory> NAMED_INSTANCES =
+            Collections.synchronizedMap(new HashMap<>());
 
-    static {
-        INSTANCE_LOCK = new Object();
-        sToolbarRequestFocusEnabled14 = System.getProperty("java.vm.version").indexOf("1.3") <= -1;
-        sSetButtonSizeFor13 = System.getProperty("java.vm.version").indexOf("1.3") > -1;
-        DEBUG = false;
-    }
+    private static ActionUIFactory INSTANCE = new ActionUIFactory(ActionManager.getInstance());
 
     private Dimension toolbarButtonPreferredSize = null;
     private ActionManager actionManager;
 
     protected ActionUIFactory(ActionManager manager) {
-        if (manager == null) {
+        if (manager == null)
             manager = ActionManager.getInstance();
-        }
-        this.actionManager = manager;
+        actionManager = manager;
     }
 
     /*
-     * WARNING - Removed try catching itself - possible behaviour change.
+     * WARNING - Removed try catching itself - possible behavior change.
      */
     public static ActionUIFactory getInstance() {
-        Object object = INSTANCE_LOCK;
-        synchronized (object) {
-            if (INSTANCE == null) {
-                INSTANCE = new ActionUIFactory(ActionManager.getInstance());
-                ActionUIFactory.setInstance(null, INSTANCE);
+        return INSTANCE;
+    }
+
+    /*
+     * WARNING - Removed try catching itself - possible behavior change.
+     */
+    public static ActionUIFactory getInstance(String name) {
+        return name == null ? INSTANCE : NAMED_INSTANCES.get(name);
+    }
+
+    public static void setInstance(String name, ActionUIFactory factory) {
+        setInstance(name, factory, factory == null ? null : factory.actionManager);
+    }
+
+    /*
+     * WARNING - Removed try catching itself - possible behavior change.
+     */
+    public static void setInstance(String name, ActionUIFactory factory, ActionManager manager) {
+        synchronized (INSTANCE_LOCK) {
+            if (factory != null && factory.actionManager != manager) {
+                factory.actionManager = manager;
+            }
+
+            if (name == null) {
+                INSTANCE = factory;
+            } else {
+                NAMED_INSTANCES.put(name, factory);
             }
         }
-        return INSTANCE;
     }
 
     public static ActionUIFactory createNamedInstance(String name, ActionManager manager) {
         ActionUIFactory factory = new ActionUIFactory(manager);
-        ActionUIFactory.setInstance(name, factory);
+        setInstance(name, factory);
         return factory;
     }
 
-    public static void setInstance(String name, ActionUIFactory factory) {
-        ActionUIFactory.setInstance(name, factory, factory == null ? null : factory.actionManager);
-    }
-
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
-    public static void setInstance(String name, ActionUIFactory factory, ActionManager manager) {
-        Object object = INSTANCE_LOCK;
-        synchronized (object) {
-            if (NAMED_INSTANCES == null) {
-                NAMED_INSTANCES = Collections.synchronizedMap(new HashMap());
-            }
-            if (factory != null) {
-                factory.actionManager = manager;
-            }
-            NAMED_INSTANCES.put(name, factory);
-            if (name == null) {
-                INSTANCE = factory;
-            }
-        }
-    }
-
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
-    public static ActionUIFactory getInstance(String name) {
-        Object object = INSTANCE_LOCK;
-        synchronized (object) {
-            block5:
-            {
-                if (NAMED_INSTANCES != null) break block5;
-                if (name == null) {
-                    return ActionUIFactory.getInstance();
-                }
-                return null;
-            }
-            return (ActionUIFactory) NAMED_INSTANCES.get(name);
-        }
-    }
-
     public ActionManager getActionManager() {
-        return this.actionManager;
+        return actionManager;
     }
 
     public void setToolbarButtonPreferredSize(Dimension toolbarButtonPreferredSize) {
@@ -114,156 +88,157 @@ public class ActionUIFactory {
     }
 
     public JToolBar createToolBar(Object actionListId) {
-        ActionList actions = this.getActionManager().getActionList(actionListId);
-        if (actions == null) {
-            return null;
-        }
-        return this.createToolBar(actions);
+        ActionList actions = getActionManager().getActionList(actionListId);
+        return actions == null ? null : createToolBar(actions);
     }
 
     public JMenuBar createMenuBar(Object actionListId) {
-        ActionList list = this.getActionManager().getActionList(actionListId);
-        if (list == null) {
-            return null;
-        }
-        JMenuBar menubar = this.instantiateJMenuBar();
-        this.loadActions(list, menubar);
+        ActionList list = getActionManager().getActionList(actionListId);
+        if (list == null) return null;
+
+        JMenuBar menubar = instantiateJMenuBar();
+        loadActions(list, menubar);
         return menubar;
     }
 
     public JToolBar createToolBar(ActionList actions) {
-        JToolBar toolBar = this.instantiateJToolBar();
-        this.loadActions(actions, toolBar);
+        JToolBar toolBar = instantiateJToolBar();
+        loadActions(actions, toolBar);
         return toolBar;
     }
 
     public JMenuBar createMenuBar(ActionList actions) {
-        JMenuBar menuBar = this.instantiateJMenuBar();
-        this.loadActions(actions, menuBar);
+        JMenuBar menuBar = instantiateJMenuBar();
+        loadActions(actions, menuBar);
         return menuBar;
     }
 
     public JMenu createMenu(Object listId) {
-        return this.createMenu(this.getActionManager().getActionList(listId));
+        return createMenu(getActionManager().getActionList(listId));
     }
 
     public JMenu createMenu(ActionList actions) {
-        if (actions == null) {
-            return null;
-        }
-        Action triggerAction = this.getActionManager().getAction(actions.getTriggerActionId());
-        return this.createMenu(triggerAction, actions);
+        if (actions == null) return null;
+
+        Action triggerAction = getActionManager().getAction(actions.getTriggerActionId());
+        return createMenu(triggerAction, actions);
     }
 
     public JMenu createMenu(Action menuTriggerAction, ActionList actions) {
-        JMenu menu = this.instantiateJMenu(menuTriggerAction);
-        this.loadActions(menu, actions);
+        JMenu menu = instantiateJMenu(menuTriggerAction);
+        loadActions(menu, actions);
         return menu;
     }
 
     public JMenu createMenu(String menuName, ActionList actions) {
-        JMenu menu = this.instantiateJMenu(menuName);
-        this.loadActions(menu, actions);
+        JMenu menu = instantiateJMenu(menuName);
+        loadActions(menu, actions);
         return menu;
     }
 
     public JPopupMenu createPopupMenu(Object listId) {
-        ActionList actions = this.getActionManager().getActionList(listId);
-        if (actions == null) {
-            return null;
-        }
-        return this.createPopupMenu(actions);
+        ActionList actions = getActionManager().getActionList(listId);
+        return actions == null ? null : createPopupMenu(actions);
     }
 
     public JPopupMenu createPopupMenu(ActionList list) {
         JPopupMenu popup = new JPopupMenu();
-        this.loadActions(popup, list);
+        loadActions(popup, list);
         return popup;
     }
 
     private JMenuItem createMenuItem(Object id) {
-        Action action = this.getActionManager().getAction(id);
-        if (action == null) {
-            return null;
-        }
-        JMenuItem menuItem = this.createMenuItem(action);
-        return menuItem;
+        Action action = getActionManager().getAction(id);
+        return action == null ? null : createMenuItem(action);
     }
 
     public JMenuItem createMenuItem(Action action) {
         String buttonType = "" + action.getValue("BUTTON_TYPE");
-        JMenuItem menuItem = action.getValue("GROUP") != null ? this.instantiateCheckBoxMenuItem(action) : ("toggle".equals(buttonType) ? this.instantiateCheckBoxMenuItem(action) : ("radio".equals(buttonType) ? this.instantiateRadioButtonMenuItem(action) : ("checkbox".equals(buttonType) ? this.instantiateCheckBoxMenuItem(action) : this.instantiateJMenuItem(action))));
-        this.configureMenuItem(menuItem);
+        JMenuItem menuItem = action.getValue("GROUP") != null
+                ? instantiateCheckBoxMenuItem(action)
+                : ("toggle".equals(buttonType)
+                ? instantiateCheckBoxMenuItem(action)
+                : ("radio".equals(buttonType)
+                ? instantiateRadioButtonMenuItem(action)
+                : ("checkbox".equals(buttonType)
+                ? instantiateCheckBoxMenuItem(action)
+                : instantiateJMenuItem(action))));
+
+        configureMenuItem(menuItem);
         return menuItem;
     }
 
     public AbstractButton createButton(Object id) {
-        Action action = this.getActionManager().getAction(id);
-        if (action == null) {
-            return null;
-        }
-        return this.createButton(action);
+        Action action = getActionManager().getAction(id);
+        return action == null ? null : createButton(action);
     }
 
     public AbstractButton createButton(Action action) {
-        AbstractButton button = null;
         Object buttonType = action.getValue("BUTTON_TYPE");
-        button = action.getValue("GROUP") != null ? this.instantiateToggleButton(action) : ("toggle".equals(buttonType) ? this.instantiateToggleButton(action) : ("radio".equals(buttonType) ? this.instantiateRadioButton(action) : ("checkbox".equals(buttonType) ? this.instantiateJCheckBox(action) : this.instantiateJButton(action))));
-        this.configureToolBarButton(button);
+        AbstractButton button = action.getValue("GROUP") != null
+                ? instantiateToggleButton(action)
+                : ("toggle".equals(buttonType)
+                ? instantiateToggleButton(action)
+                : ("radio".equals(buttonType)
+                ? instantiateRadioButton(action)
+                : ("checkbox".equals(buttonType)
+                ? instantiateJCheckBox(action)
+                : instantiateJButton(action))));
+
+        configureToolBarButton(button);
         return button;
     }
 
     protected void configureToolBarButton(AbstractButton button) {
-        this.commonConfig(button);
+        commonConfig(button);
         button.setText("");
+
         Action action = button.getAction();
-        if (action != null) {
-            if (action.getValue("ShortDescription") == null) {
-                button.setToolTipText((String) action.getValue("Name"));
-            }
-            if (action instanceof BasicAction && !((BasicAction) action).getToolbarShowsText()) {
-                button.setText("");
-            }
+        if (action != null && action.getValue("ShortDescription") == null) {
+            button.setToolTipText((String) action.getValue("Name"));
         }
-        if (this.toolbarButtonPreferredSize != null) {
-            button.setPreferredSize(this.toolbarButtonPreferredSize);
-            button.setMaximumSize(this.toolbarButtonPreferredSize);
-        } else if (sSetButtonSizeFor13) {
-            button.setPreferredSize(new Dimension(32, 32));
-            button.setMaximumSize(new Dimension(32, 32));
+
+        if (toolbarButtonPreferredSize != null) {
+            button.setPreferredSize(toolbarButtonPreferredSize);
+            button.setMaximumSize(toolbarButtonPreferredSize);
+        } else if (SET_BUTTON_SIZE_FOR_13) {
+            final Dimension buttonSize = new Dimension(32, 32);
+            button.setPreferredSize(buttonSize);
+            button.setMaximumSize(buttonSize);
         }
-        if (sToolbarRequestFocusEnabled14) {
+
+        if (TOOLBAR_REQUEST_FOCUS_ENABLED_14) {
             button.setRequestFocusEnabled(false);
         }
     }
 
     protected void configureMenuItem(JMenuItem menuItem) {
-        this.commonConfig(menuItem);
+        commonConfig(menuItem);
         menuItem.setToolTipText(null);
+
         Action action = menuItem.getAction();
-        if (action == null) {
-            return;
-        }
+        if (action == null) return;
+
         try {
-            Boolean shows = (Boolean) action.getValue("MENU_SHOWS_ICON");
-            if (shows != null && !shows.booleanValue()) {
+            Boolean showsIcon = (Boolean) action.getValue("MENU_SHOWS_ICON");
+            if (showsIcon != null && !showsIcon) {
                 menuItem.setIcon(null);
             }
-        } catch (ClassCastException classCastException) {
-            // empty catch block
+        } catch (ClassCastException ignored) {
         }
     }
 
     private void commonConfig(AbstractButton buttonOrMenuItem) {
         Boolean selected;
+
         Action action = buttonOrMenuItem.getAction();
-        if (action == null) {
-            return;
-        }
+        if (action == null) return;
+
         buttonOrMenuItem.setActionCommand((String) action.getValue("ActionCommandKey"));
-        if (this.isShouldSyncSelectedProperty(buttonOrMenuItem, action)) {
-            ActionSelectionSynchronizer actionSelectionSynchronizer = new ActionSelectionSynchronizer(buttonOrMenuItem, action);
+        if (isShouldSyncSelectedProperty(buttonOrMenuItem, action)) {
+            new ActionSelectionSynchronizer(buttonOrMenuItem, action);
         }
+
         if ((selected = (Boolean) action.getValue("SELECTED")) != null) {
             buttonOrMenuItem.setSelected(selected);
         }
@@ -274,23 +249,19 @@ public class ActionUIFactory {
     }
 
     protected JToolBar instantiateJToolBar() {
-        JToolBar toolBar = new JToolBar();
-        return toolBar;
+        return new JToolBar();
     }
 
     protected JMenuBar instantiateJMenuBar() {
-        JMenuBar menubar = new JMenuBar();
-        return menubar;
+        return new JMenuBar();
     }
 
     protected JMenu instantiateJMenu(Action menuAction) {
-        JMenu menu = new JMenu(menuAction);
-        return menu;
+        return new JMenu(menuAction);
     }
 
     protected JMenu instantiateJMenu(String menuName) {
-        JMenu menu = new JMenu(menuName);
-        return menu;
+        return new JMenu(menuName);
     }
 
     protected JMenuItem instantiateJMenuItem(Action itemAction) {
@@ -310,8 +281,7 @@ public class ActionUIFactory {
     }
 
     protected JCheckBox instantiateJCheckBox(Action action) {
-        JCheckBox menu = new JCheckBox(action);
-        return menu;
+        return new JCheckBox(action);
     }
 
     protected JToggleButton instantiateToggleButton(Action action) {
@@ -328,133 +298,141 @@ public class ActionUIFactory {
 
     protected JSeparator instantiateInvisibleSeparator() {
         return new JToolBar.Separator(null) {
-
+            @Override
             public Color getForeground() {
-                return this.getBackground();
+                return getBackground();
             }
         };
     }
 
     public void loadActions(ActionList actions, JToolBar toolBar) {
-        if (actions == null) {
-            return;
-        }
-        HashMap<Object, ButtonGroup> buttonGroupsByGroupID = new HashMap<Object, ButtonGroup>();
-        Iterator iter = actions.iterator();
-        while (iter.hasNext()) {
-            Object elem = iter.next();
+        if (actions == null) return;
+
+        Map<Object, ButtonGroup> buttonGroupsByGroupId = new HashMap<>();
+
+        for (Object elem : actions) {
             if (elem == null || elem instanceof Separator) {
-                if (elem instanceof Separator && !((Separator) elem).isLineVisible()) {
-                    toolBar.add(this.instantiateSeparator());
-                    continue;
-                }
-                toolBar.add(this.instantiateInvisibleSeparator());
+                boolean lineVisible =
+                        elem != null && ((Separator) elem).isLineVisible();
+
+                toolBar.add(lineVisible
+                        ? instantiateInvisibleSeparator()
+                        : instantiateSeparator());
+
                 continue;
             }
+
             Action action = (Action) elem;
-            AbstractButton button = this.createButton(action);
+            AbstractButton button = createButton(action);
             toolBar.add(button);
-            if (action.getValue("GROUP") == null) continue;
-            ButtonGroup buttonGroup = buttonGroupsByGroupID.get(action.getValue("GROUP"));
-            if (buttonGroup == null) {
-                buttonGroup = new ButtonGroup();
-                buttonGroupsByGroupID.put(action.getValue("GROUP"), buttonGroup);
-            }
-            buttonGroup.add(button);
+
+            Object groupId = action.getValue("GROUP");
+            if (groupId == null) continue;
+
+            buttonGroupsByGroupId.computeIfAbsent(
+                    groupId, id -> new ButtonGroup())
+                    .add(button);
         }
-        if (sToolbarRequestFocusEnabled14) {
+
+        if (TOOLBAR_REQUEST_FOCUS_ENABLED_14) {
             toolBar.setRequestFocusEnabled(false);
         }
     }
 
     private void loadActions(ActionList list, JMenuBar menubar) {
         JMenu menu = null;
-        Iterator iter = list.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
+
+        for (Object element : list) {
             if (element == null || element instanceof Separator) {
-                if (menu == null) continue;
-                menu.addSeparator();
+                if (menu != null) {
+                    menu.addSeparator();
+                }
                 continue;
             }
+
             if (element instanceof ActionList) {
-                menu = this.createMenu((ActionList) element);
-                if (menu == null) continue;
-                menubar.add(menu);
+                menu = createMenu((ActionList) element);
+                if (menu != null) {
+                    menubar.add(menu);
+                }
                 continue;
             }
-            if (menu == null) continue;
-            if (element instanceof Action) {
-                menu.add(this.createMenuItem((Action) element));
+
+            if (menu == null) {
                 continue;
             }
-            menu.add(this.createMenuItem(element));
+
+            JMenuItem menuItem = element instanceof Action
+                    ? createMenuItem((Action) element)
+                    : createMenuItem(element);
+            menu.add(menuItem);
         }
     }
 
     private void loadActions(JMenu menu, ActionList actions) {
-        Iterator iter = actions.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
+        for (Object element : actions) {
             if (element == null || element instanceof Separator) {
                 menu.addSeparator();
                 continue;
             }
+
             if (element instanceof ActionList) {
-                JMenu newMenu = this.createMenu((ActionList) element);
-                if (newMenu == null) continue;
-                menu.add(newMenu);
+                JMenu newMenu = createMenu((ActionList) element);
+                if (newMenu != null) {
+                    menu.add(newMenu);
+                }
                 continue;
             }
-            if (element instanceof Action) {
-                menu.add(this.createMenuItem((Action) element));
-                continue;
-            }
-            menu.add(this.createMenuItem(element));
+
+            JMenuItem menuItem = element instanceof Action
+                    ? createMenuItem((Action) element)
+                    : createMenuItem(element);
+            menu.add(menuItem);
         }
     }
 
     private void loadActions(JPopupMenu popup, ActionList actions) {
-        HashMap buttonGroups = new HashMap();
-        Iterator iter = actions.iterator();
-        while (iter.hasNext()) {
-            JMenuItem mi;
-            Object element = iter.next();
+        Map<Object, ButtonGroup> buttonGroups = new HashMap<>();
+
+        for (Object element : actions) {
             if (element == null || element instanceof Separator) {
                 popup.addSeparator();
                 continue;
             }
+
             if (element instanceof ActionList) {
-                JMenu newMenu = this.createMenu((ActionList) element);
-                if (newMenu == null) continue;
-                popup.add(newMenu);
+                JMenu newMenu = createMenu((ActionList) element);
+                if (newMenu != null) {
+                    popup.add(newMenu);
+                }
                 continue;
             }
-            if (element instanceof Action) {
-                mi = this.createMenuItem((Action) element);
-                this.handleButtonGroups(mi, buttonGroups);
-                popup.add(mi);
-                continue;
-            }
-            mi = this.createMenuItem(element);
-            this.handleButtonGroups(mi, buttonGroups);
-            popup.add(mi);
+
+            JMenuItem menuItem = element instanceof Action
+                    ? createMenuItem((Action) element)
+                    : createMenuItem(element);
+
+            handleButtonGroups(menuItem, buttonGroups);
+            popup.add(menuItem);
         }
     }
 
-    private void handleButtonGroups(AbstractButton buttonOrMenu, Map buttonGroups) {
-        Object group;
-        if (buttonOrMenu == null) {
+    private void handleButtonGroups(
+            AbstractButton buttonOrMenu,
+            Map<Object, ButtonGroup> buttonGroups) {
+
+        if (buttonOrMenu == null || buttonOrMenu.getAction() == null) {
             return;
         }
-        if (buttonOrMenu.getAction() != null && (group = buttonOrMenu.getAction().getValue("GROUP")) != null) {
-            ButtonGroup bg = (ButtonGroup) buttonGroups.get(group);
-            if (bg == null) {
-                bg = new ButtonGroup();
-                buttonGroups.put(group, bg);
-            }
-            bg.add(buttonOrMenu);
+
+        Object groupId = buttonOrMenu.getAction().getValue("GROUP");
+        if (groupId == null) {
+            return;
         }
+
+        ButtonGroup buttonGroup =
+                buttonGroups.computeIfAbsent(groupId, id -> new ButtonGroup());
+        buttonGroup.add(buttonOrMenu);
     }
 }
 
