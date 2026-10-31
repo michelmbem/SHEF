@@ -1,0 +1,12 @@
+Swing Action Manager (SAM)
+Copyright 2005 Bushe Enterprises, Inc.
+
+The action manager core and its helper classes were mechanically decompiled
+from the project's lib/sam.jar using CFR 0.152. These reconstructed sources
+may differ from the original source files in formatting, comments, and
+constructs chosen by the decompiler. The optional exception dialog classes
+were not included because they depend on the separate Java Desktop Integration
+(JDIC) library and are not used by SHEF.
+
+Published source files for the same org.bushe.swing.action package carry the
+Apache License, Version 2.0 notice. See LICENSE-2.0.txt.
