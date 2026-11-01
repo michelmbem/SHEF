@@ -1,5 +1,6 @@
 package net.atlanticbb.tantlinger.ui.text.actions;
 
+import net.atlanticbb.tantlinger.ui.ImageHandlers;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.CompoundUndoManager;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
@@ -30,8 +31,8 @@ public class PasteAction extends HTMLTextEditAction {
         putValue(MNEMONIC_KEY, i18n.mnem("paste"));
         putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "paste.png"));
         putValue(ActionManager.LARGE_ICON, UIUtils.getIcon(UIUtils.X24, "paste.png"));
-        putValue(ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         addShouldBeEnabledDelegate(a -> true);
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
@@ -49,8 +50,31 @@ public class PasteAction extends HTMLTextEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
+    @Override
     protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         editor.paste();
+    }
+
+    /* (non-Javadoc)
+     * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#wysiwygEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
+     */
+    @Override
+    protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
+        HTMLDocument document = (HTMLDocument) editor.getDocument();
+        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        try {
+            CompoundUndoManager.beginCompoundEdit(document);
+
+            if (clip.isDataFlavorAvailable(DataFlavor.stringFlavor))
+                pasteText(editor);
+            else if (clip.isDataFlavorAvailable(DataFlavor.imageFlavor))
+                pasteImage(editor);
+        } catch (Exception ex) {
+            System.err.println(ex);
+        } finally {
+            CompoundUndoManager.endCompoundEdit(document);
+        }
     }
 
     private void pasteText(JEditorPane editor)
@@ -82,33 +106,13 @@ public class PasteAction extends HTMLTextEditAction {
         File tempFile = File.createTempFile("pastedImage", "png");
         ImageIO.write(bi, "png", tempFile);
 
-        StringBuilder tagText = new StringBuilder("<img src=\"file:")
-                .append(tempFile.getAbsolutePath()).append("\">");
+        StringBuilder tagText = new StringBuilder("<img src=\"")
+                .append(ImageHandlers.getCurrent().handleImage(tempFile))
+                .append("\">");
         if (editor.getCaretPosition() == editor.getDocument().getLength())
             tagText.append("&nbsp;");
+
         editor.replaceSelection("");
         HTMLUtils.insertHTML(tagText.toString(), HTML.Tag.IMG, editor);
-    }
-
-    /* (non-Javadoc)
-     * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#wysiwygEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
-     */
-    @Override
-    protected void wysiwygEditPerformed(ActionEvent e, JEditorPane editor) {
-        HTMLDocument document = (HTMLDocument) editor.getDocument();
-        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-
-        try {
-            CompoundUndoManager.beginCompoundEdit(document);
-
-            if (clip.isDataFlavorAvailable(DataFlavor.stringFlavor))
-                pasteText(editor);
-            else if (clip.isDataFlavorAvailable(DataFlavor.imageFlavor))
-                pasteImage(editor);
-        } catch (Exception ex) {
-            System.err.println(ex);
-        } finally {
-            CompoundUndoManager.endCompoundEdit(document);
-        }
     }
 }

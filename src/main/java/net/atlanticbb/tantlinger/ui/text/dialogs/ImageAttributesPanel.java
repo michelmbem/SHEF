@@ -1,5 +1,6 @@
 package net.atlanticbb.tantlinger.ui.text.dialogs;
 
+import net.atlanticbb.tantlinger.ui.ImageHandlers;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.TextEditPopupManager;
 
@@ -12,6 +13,11 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
     private static final long serialVersionUID = 1L;
     private static final String[] ALIGNMENTS = {
             "top", "middle", "bottom", "left", "right"
+    };
+    private static final String[] IMAGE_EXTENSIONS = {
+            "jpg", "jpeg", "png", "gif", "webp", "avif", "svg", "apng", "bmp",
+            "tif", "tiff", "ico", "jxl", "heif", "heic", "jp2", "j2k", "ppm",
+            "pgm", "pbm"
     };
 
     private JLabel imgUrlLabel = null;
@@ -245,16 +251,15 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
         selectFileButton.addActionListener(evt -> {
             JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
             chooser.setDialogTitle(i18n.str("select_image"));
-            chooser.addChoosableFileFilter(new FileNameExtensionFilter(i18n.str("image_files"),
-                    "jpg", "jpeg", "png", "gif", "webp", "avif", "svg", "apng", "bmp",
-                    "tif", "tiff", "ico", "jxl", "heif", "heic", "jp2", "j2k", "ppm", "pgm", "pbm"));
+            chooser.addChoosableFileFilter(new FileNameExtensionFilter(
+                    i18n.str("image_files"), IMAGE_EXTENSIONS));
             chooser.setAcceptAllFileFilterUsed(false);
 
             int rc = chooser.showDialog(ImageAttributesPanel.this, "Select");
             if (rc == JFileChooser.APPROVE_OPTION) {
                 File selected = chooser.getSelectedFile();
                 if (selected != null) {
-                    imgUrlField.setText("file:" + selected.getAbsolutePath());
+                    imgUrlField.setText(ImageHandlers.getCurrent().handleImage(selected));
                 }
             }
         });
@@ -618,5 +623,4 @@ public class ImageAttributesPanel extends HTMLAttributeEditorPanel {
 
         return spacerPanel;
     }
-
 }
