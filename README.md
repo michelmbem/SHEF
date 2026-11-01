@@ -59,6 +59,7 @@ This fork continues the kkieffer version and includes the following major change
 - Replaced `novarworx.syntax` with [RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea) for HTML source editing and syntax highlighting.
 - Replaced the SAM binary dependency with SAM source code recovered by decompiling the library, and integrated that code into the project. See [SAM documentation](SAM.md).
 - Modernized the source code across the project to use Java 8 syntax and conventions.
+- Added the `ImageHandler` interface to intercept images pasted from the clipboard or selected from the local disk, and provide a URL for the image before it is added to the document. The default implementation, `ImageHandlers.Default`, returns a URL pointing to the local image file. Custom handlers can instead generate a Data URL or upload the image to online storage and return its URL.
 
 The current `pom.xml` sets the Java compiler release to 11.
 
