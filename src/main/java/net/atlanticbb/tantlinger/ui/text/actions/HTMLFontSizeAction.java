@@ -5,6 +5,7 @@ import org.bushe.swing.action.ActionManager;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import java.awt.event.ActionEvent;
@@ -63,12 +64,12 @@ public class HTMLFontSizeAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void updateSourceContextState(JEditorPane ed) {
+    protected void updateSourceContextState(JTextComponent ed) {
         setSelected(false);
     }
 
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         String prefix = "<font size=" + (size + 1) + ">";
         String postfix = "</font>";
         String sel = editor.getSelectedText();

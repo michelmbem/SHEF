@@ -5,6 +5,7 @@ import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
 import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -42,7 +43,7 @@ public class IndentAction extends HTMLTextEditAction {
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         // Does nothing
     }
 

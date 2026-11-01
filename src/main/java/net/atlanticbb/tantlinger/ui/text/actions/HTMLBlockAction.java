@@ -9,6 +9,7 @@ import org.bushe.swing.action.ActionManager;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -106,11 +107,11 @@ public class HTMLBlockAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void updateSourceContextState(JEditorPane ed) {
+    protected void updateSourceContextState(JTextComponent ed) {
         setSelected(false);
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         String tag = getTag().toString();
         String prefix = "\n<" + tag + ">\n\t";
         String postfix = "\n</" + tag + ">\n";

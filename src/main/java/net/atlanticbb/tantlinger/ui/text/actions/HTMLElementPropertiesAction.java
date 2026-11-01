@@ -5,10 +5,7 @@ import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import net.atlanticbb.tantlinger.ui.text.dialogs.*;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
@@ -391,7 +388,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
      *
      * @return the element, or null of the element cant be retrieved
      */
-    private Element elementAtCaretPosition(JEditorPane ed) {
+    private Element elementAtCaretPosition(JTextComponent ed) {
         if (ed == null) return null;
 
         HTMLDocument doc = (HTMLDocument) ed.getDocument();
@@ -406,7 +403,7 @@ public class HTMLElementPropertiesAction extends HTMLTextEditAction {
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         // Does nothing
     }
 }

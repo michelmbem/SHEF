@@ -1,6 +1,7 @@
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.event.ActionEvent;
 
 /**
@@ -21,7 +22,7 @@ public abstract class BasicEditAction extends HTMLTextEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
-    protected final void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected final void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         doEdit(e, editor);
     }
 
@@ -32,9 +33,9 @@ public abstract class BasicEditAction extends HTMLTextEditAction {
         doEdit(e, editor);
     }
 
-    protected abstract void doEdit(ActionEvent e, JEditorPane editor);
+    protected abstract void doEdit(ActionEvent e, JTextComponent editor);
 
-    protected void updateContextState(JEditorPane editor) {
+    protected void updateContextState(JTextComponent editor) {
     }
 
     @Override
@@ -43,7 +44,7 @@ public abstract class BasicEditAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected final void updateSourceContextState(JEditorPane srcEditor) {
+    protected final void updateSourceContextState(JTextComponent srcEditor) {
         updateContextState(srcEditor);
     }
 }

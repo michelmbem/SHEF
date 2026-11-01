@@ -3,6 +3,7 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 import net.atlanticbb.tantlinger.ui.text.dialogs.TextFinderDialog;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -32,7 +33,7 @@ public class FindReplaceAction extends BasicEditAction {
      * @see net.atlanticbb.tantlinger.ui.text.actions.BasicEditAction#doEdit(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
     @Override
-    protected void doEdit(ActionEvent e, JEditorPane textComponent) {
+    protected void doEdit(ActionEvent e, JTextComponent textComponent) {
         Component c = SwingUtilities.getWindowAncestor(textComponent);
         if (dialog == null) {
             if (c instanceof Frame) {
@@ -55,7 +56,7 @@ public class FindReplaceAction extends BasicEditAction {
     }
 
     @Override
-    protected void updateContextState(JEditorPane editor) {
+    protected void updateContextState(JTextComponent editor) {
         if (dialog != null) {
             dialog.setMonitor(editor);
         }

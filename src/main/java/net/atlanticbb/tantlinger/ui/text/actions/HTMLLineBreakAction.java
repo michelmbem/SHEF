@@ -3,6 +3,7 @@ package net.atlanticbb.tantlinger.ui.text.actions;
 import net.atlanticbb.tantlinger.ui.UIUtils;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -26,7 +27,7 @@ public class HTMLLineBreakAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         editor.replaceSelection("<br>\n");
     }
 

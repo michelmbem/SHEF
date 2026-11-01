@@ -4,6 +4,7 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -25,7 +26,7 @@ public class HTMLHorizontalRuleAction extends HTMLTextEditAction {
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         editor.replaceSelection("<hr>");
     }
 

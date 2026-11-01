@@ -4,6 +4,7 @@ import net.atlanticbb.tantlinger.i18n.I18n;
 import net.atlanticbb.tantlinger.ui.DefaultAction;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.event.ActionEvent;
@@ -31,22 +32,24 @@ public abstract class HTMLTextEditAction extends DefaultAction {
     @Override
     public void execute(ActionEvent e) {
         if (getEditMode() == WYSIWYG)
-            wysiwygEditPerformed(e, getCurrentEditor());
+            wysiwygEditPerformed(e, (JEditorPane) getCurrentEditor());
         else if (getEditMode() == SOURCE)
             sourceEditPerformed(e, getCurrentEditor());
     }
 
     public int getEditMode() {
-        JEditorPane ep = getCurrentEditor();
-        if (ep == null) return DISABLED;
-        if (ep.getDocument() instanceof HTMLDocument &&
-                ep.getEditorKit() instanceof HTMLEditorKit) return WYSIWYG;
+        JTextComponent ed = getCurrentEditor();
+        if (ed == null) return DISABLED;
+        if (ed instanceof JEditorPane &&
+                ed.getDocument() instanceof HTMLDocument &&
+                ((JEditorPane) ed).getEditorKit() instanceof HTMLEditorKit)
+            return WYSIWYG;
         return SOURCE;
     }
 
-    protected JEditorPane getCurrentEditor() {
+    protected JTextComponent getCurrentEditor() {
         try {
-            return (JEditorPane) getContextValue(EDITOR);
+            return (JTextComponent) getContextValue(EDITOR);
         } catch (ClassCastException ignored) {
         }
 
@@ -56,7 +59,7 @@ public abstract class HTMLTextEditAction extends DefaultAction {
     @Override
     protected void contextChanged() {
         if (getEditMode() == WYSIWYG)
-            updateWysiwygContextState(getCurrentEditor());
+            updateWysiwygContextState((JEditorPane) getCurrentEditor());
         else if (getEditMode() == SOURCE)
             updateSourceContextState(getCurrentEditor());
     }
@@ -64,11 +67,11 @@ public abstract class HTMLTextEditAction extends DefaultAction {
     protected void updateWysiwygContextState(JEditorPane wysEditor) {
     }
 
-    protected void updateSourceContextState(JEditorPane srcEditor) {
+    protected void updateSourceContextState(JTextComponent srcEditor) {
     }
 
     protected abstract void wysiwygEditPerformed(ActionEvent e, JEditorPane editor);
 
-    protected abstract void sourceEditPerformed(ActionEvent e, JEditorPane editor);
+    protected abstract void sourceEditPerformed(ActionEvent e, JTextComponent editor);
 
 }

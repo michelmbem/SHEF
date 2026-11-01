@@ -25,7 +25,7 @@ public class HTMLImageAction extends HTMLTextEditAction {
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         ImageDialog d = createDialog(editor);
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);

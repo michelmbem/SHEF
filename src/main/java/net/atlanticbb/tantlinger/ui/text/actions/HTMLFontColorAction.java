@@ -4,6 +4,7 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +25,7 @@ public class HTMLFontColorAction extends HTMLTextEditAction {
         this.putValue(SMALL_ICON, UIUtils.getIcon(UIUtils.X16, "color.png"));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         Color c = getColorFromUser(editor);
         if (c == null) return;
 

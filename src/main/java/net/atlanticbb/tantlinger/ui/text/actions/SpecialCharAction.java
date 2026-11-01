@@ -4,6 +4,7 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import net.atlanticbb.tantlinger.ui.text.dialogs.SpecialCharDialog;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -17,7 +18,7 @@ public class SpecialCharAction extends BasicEditAction {
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
-    protected void doEdit(ActionEvent e, JEditorPane ed) {
+    protected void doEdit(ActionEvent e, JTextComponent ed) {
         Component c = SwingUtilities.getWindowAncestor(ed);
         if (dialog == null) {
             if (c instanceof Frame) {
@@ -36,7 +37,7 @@ public class SpecialCharAction extends BasicEditAction {
     }
 
     @Override
-    protected void updateContextState(JEditorPane editor) {
+    protected void updateContextState(JTextComponent editor) {
         if (dialog != null) {
             dialog.setInsertEntity(getEditMode() == SOURCE);
             dialog.setJTextComponent(editor);

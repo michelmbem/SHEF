@@ -30,7 +30,7 @@ public class HTMLTableAction extends HTMLTextEditAction {
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         NewTableDialog dlg = createNewTableDialog(editor);
         if (dlg == null) return;
 

@@ -1,6 +1,7 @@
 package net.atlanticbb.tantlinger.ui.text.actions;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -24,7 +25,7 @@ public class SelectAllAction extends BasicEditAction {
      * @see net.atlanticbb.tantlinger.ui.text.actions.BasicEditAction#doEdit(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
     @Override
-    protected void doEdit(ActionEvent e, JEditorPane editor) {
+    protected void doEdit(ActionEvent e, JTextComponent editor) {
         editor.selectAll();
     }
 }

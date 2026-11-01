@@ -27,7 +27,7 @@ public class HTMLLinkAction extends HTMLTextEditAction {
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         HyperlinkDialog dlg = createDialog(editor);
         if (dlg == null) return;
 

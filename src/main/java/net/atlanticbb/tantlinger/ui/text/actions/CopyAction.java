@@ -4,6 +4,7 @@ import net.atlanticbb.tantlinger.ui.UIUtils;
 import org.bushe.swing.action.ActionManager;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -25,9 +26,8 @@ public class CopyAction extends BasicEditAction {
                 KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         putValue(MNEMONIC_KEY, i18n.mnem("copy"));
         addShouldBeEnabledDelegate(a -> {
-            JEditorPane ed = getCurrentEditor();
+            JTextComponent ed = getCurrentEditor();
             return ed != null && ed.getSelectionStart() != ed.getSelectionEnd();
-            //return true;
         });
         putValue(Action.SHORT_DESCRIPTION, getValue(Action.NAME));
     }
@@ -35,7 +35,7 @@ public class CopyAction extends BasicEditAction {
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.BasicEditAction#doEdit(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
-    protected void doEdit(ActionEvent e, JEditorPane editor) {
+    protected void doEdit(ActionEvent e, JTextComponent editor) {
         editor.copy();
     }
 

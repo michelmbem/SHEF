@@ -8,6 +8,7 @@ import org.bushe.swing.action.ActionManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -41,14 +42,14 @@ public class PasteAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void updateSourceContextState(JEditorPane srcEditor) {
+    protected void updateSourceContextState(JTextComponent srcEditor) {
         this.updateEnabledState();
     }
 
     /* (non-Javadoc)
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         editor.paste();
     }
 

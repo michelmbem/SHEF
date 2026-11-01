@@ -23,7 +23,7 @@ public class HTMLFontAction extends HTMLTextEditAction {
         super(i18n.str("font_"));
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         HTMLFontDialog d = createDialog(editor);
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);

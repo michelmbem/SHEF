@@ -6,10 +6,7 @@ import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import org.bushe.swing.action.ActionManager;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import javax.swing.text.html.CSS;
 import javax.swing.text.html.HTML;
 import java.awt.*;
@@ -101,7 +98,7 @@ public class HTMLInlineAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         HTML.Tag tag = getTag();
         String prefix = "<" + tag + ">";
         String suffix = "</" + tag + ">";
@@ -202,7 +199,7 @@ public class HTMLInlineAction extends HTMLTextEditAction {
     }
 
     @Override
-    protected void updateSourceContextState(JEditorPane ed) {
+    protected void updateSourceContextState(JTextComponent ed) {
         setSelected(false);
     }
 }

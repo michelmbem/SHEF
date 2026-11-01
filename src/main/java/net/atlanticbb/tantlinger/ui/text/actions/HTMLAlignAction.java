@@ -6,10 +6,7 @@ import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import org.bushe.swing.action.ActionManager;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.Element;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
@@ -143,7 +140,7 @@ public class HTMLAlignAction extends HTMLTextEditAction {
         }
     }
 
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         String prefix = "<p align=\"" + ALIGNMENTS[align] + "\">";
         String postfix = "</p>";
         String sel = editor.getSelectedText();

@@ -5,10 +5,7 @@ import net.atlanticbb.tantlinger.ui.text.ElementWriter;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
+import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
@@ -242,7 +239,7 @@ public class TableEditAction extends HTMLTextEditAction {
         return trTag.append("</tr>").toString();
     }
 
-    private boolean isInTD(JEditorPane tc) {
+    private boolean isInTD(JTextComponent tc) {
         Element td = null;
         if (tc != null) {
             HTMLDocument doc = (HTMLDocument) tc.getDocument();
@@ -267,7 +264,7 @@ public class TableEditAction extends HTMLTextEditAction {
      * @see net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction#sourceEditPerformed(java.awt.event.ActionEvent, javax.swing.JEditorPane)
      */
     @Override
-    protected void sourceEditPerformed(ActionEvent e, JEditorPane editor) {
+    protected void sourceEditPerformed(ActionEvent e, JTextComponent editor) {
         // Does nothing
     }
 }
