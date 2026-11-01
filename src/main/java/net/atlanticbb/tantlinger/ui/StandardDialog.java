@@ -29,6 +29,7 @@ public class StandardDialog extends JDialog {
     public static final int BUTTONS_RIGHT = FlowLayout.RIGHT;
     private static final long serialVersionUID = 1L;
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
+
     /**
      * The spacing between components in pixels
      */

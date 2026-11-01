@@ -24,12 +24,15 @@ public class DefaultAction extends BasicAction implements EnabledUpdater {
         this(id, id, id, mnemonic, accelerator, icon);
     }
 
-    public DefaultAction(String id, String shortDesc, String longDesc, Integer mnemonic, KeyStroke accelerator, Icon icon) {
+    public DefaultAction(String id, String shortDesc, String longDesc,
+                         Integer mnemonic, KeyStroke accelerator, Icon icon) {
+
         this(id, id, id, shortDesc, longDesc, mnemonic, accelerator, icon);
     }
 
     public DefaultAction(String id, String actionName, String actionCommandName, String shortDesc,
                          String longDesc, Integer mnemonic, KeyStroke accelerator, Icon icon) {
+
         this(id, actionName, actionCommandName, shortDesc, longDesc,
                 mnemonic, accelerator, icon, false, true);
     }
@@ -37,6 +40,7 @@ public class DefaultAction extends BasicAction implements EnabledUpdater {
     public DefaultAction(String id, String actionName, String actionCommandName,
                          String shortDesc, String longDesc, Integer mnemonic, KeyStroke accelerator,
                          Icon icon, boolean toolbarShowsText, boolean menuShowsIcon) {
+
         super(id, actionName, actionCommandName, shortDesc, longDesc, mnemonic,
                 accelerator, icon, toolbarShowsText, menuShowsIcon);
     }

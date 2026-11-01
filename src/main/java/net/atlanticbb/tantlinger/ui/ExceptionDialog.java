@@ -9,10 +9,9 @@ import java.io.PrintStream;
 
 public class ExceptionDialog extends JDialog {
     private static final I18n i18n = I18n.getInstance("net.atlanticbb.tantlinger.ui");
-
     private static final long serialVersionUID = 1L;
     private static final int PREFERRED_WIDTH = 450;
-    private static final String DEFAULT_TITLE = i18n.str("error");  //  @jve:decl-index=0:
+    private static final String DEFAULT_TITLE = i18n.str("error");
 
     private JPanel jContentPane = null;
     private JLabel iconLabel = null;
@@ -28,16 +27,11 @@ public class ExceptionDialog extends JDialog {
     public ExceptionDialog() {
         super();
         init(new Exception());
-
     }
 
-    /**
-     * @param owner
-     */
     public ExceptionDialog(Frame owner, Throwable th) {
         super(owner, DEFAULT_TITLE);
         init(th);
-
     }
 
     public ExceptionDialog(Dialog owner, Throwable th) {
@@ -56,7 +50,7 @@ public class ExceptionDialog extends JDialog {
      * This method initializes this
      */
     private void initialize() {
-        this.setContentPane(getJContentPane());
+        setContentPane(getJContentPane());
         getRootPane().setDefaultButton(getOkButton());
     }
 
@@ -67,64 +61,66 @@ public class ExceptionDialog extends JDialog {
      */
     private JPanel getJContentPane() {
         if (jContentPane == null) {
-            GridBagConstraints gbc4 = new GridBagConstraints();
-            gbc4.gridx = 0;
-            gbc4.gridwidth = 3;
-            gbc4.fill = GridBagConstraints.HORIZONTAL;
-            gbc4.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc4.insets = new Insets(0, 0, 0, 0);
-            gbc4.gridy = 3;
-            GridBagConstraints gbc11 = new GridBagConstraints();
-            gbc11.fill = GridBagConstraints.BOTH;
-            gbc11.gridy = 4;
-            gbc11.weightx = 1.0;
-            gbc11.weighty = 1.0;
-            gbc11.gridwidth = 3;
-            gbc11.insets = new Insets(0, 0, 0, 0);
-            gbc11.gridx = 0;
-            GridBagConstraints gbc3 = new GridBagConstraints();
-            gbc3.gridx = 2;
-            gbc3.fill = GridBagConstraints.VERTICAL;
-            gbc3.gridheight = 3;
-            gbc3.insets = new Insets(0, 0, 10, 0);
-            gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc3.gridy = 0;
-            GridBagConstraints gbc2 = new GridBagConstraints();
-            gbc2.gridx = 1;
-            gbc2.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc2.insets = new Insets(0, 20, 5, 5);
-            gbc2.gridy = 1;
-            msgLabel = new JLabel();
-            msgLabel.setText("");
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = gbc.gridy = 0;
+            gbc.gridheight = 3;
+            gbc.anchor = GridBagConstraints.PAGE_START;
+
             GridBagConstraints gbc1 = new GridBagConstraints();
             gbc1.gridx = 1;
-            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
-            gbc1.insets = new Insets(0, 10, 5, 5);
-            gbc1.fill = GridBagConstraints.NONE;
-            gbc1.weightx = 1.0;
             gbc1.gridy = 0;
-            titleLabel = new JLabel();
-            titleLabel.setText(i18n.str("error_prompt"));
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridheight = 3;
-            gbc.anchor = GridBagConstraints.NORTH;
-            gbc.weighty = 0.0;
-            gbc.insets = new Insets(0, 0, 0, 0);
-            gbc.gridy = 0;
-            iconLabel = new JLabel();
-            iconLabel.setText("");
-            iconLabel.setIcon(UIManager.getIcon("OptionPane.errorIcon"));
-            jContentPane = new JPanel();
-            jContentPane.setLayout(new GridBagLayout());
+            gbc1.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc1.fill = GridBagConstraints.HORIZONTAL;
+            gbc1.insets = new Insets(0, 10, 5, 5);
+
+            GridBagConstraints gbc2 = new GridBagConstraints();
+            gbc2.gridx = 2;
+            gbc2.gridy = 0;
+            gbc2.gridheight = 3;
+            gbc2.anchor = GridBagConstraints.PAGE_START;
+            gbc2.fill = GridBagConstraints.HORIZONTAL;
+            gbc2.insets = new Insets(0, 0, 10, 0);
+
+            GridBagConstraints gbc3 = new GridBagConstraints();
+            gbc3.gridx = gbc3.gridy = 1;
+            gbc3.gridheight = 2;
+            gbc3.anchor = GridBagConstraints.BASELINE_LEADING;
+            gbc3.fill = GridBagConstraints.BOTH;
+            gbc3.insets = new Insets(0, 10, 10, 5);
+
+            GridBagConstraints gbc4 = new GridBagConstraints();
+            gbc4.gridx = 0;
+            gbc4.gridy = 3;
+            gbc4.gridwidth = 3;
+            gbc4.fill = GridBagConstraints.BOTH;
+
+            GridBagConstraints gbc5 = new GridBagConstraints();
+            gbc5.gridx = 0;
+            gbc5.gridy = 4;
+            gbc5.gridwidth = 3;
+            gbc5.fill = GridBagConstraints.BOTH;
+
+            iconLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
+            titleLabel = new JLabel(i18n.str("error_prompt"));
+            msgLabel = new JLabel();
+
+            Font titleFont = titleLabel.getFont();
+            titleLabel.setFont(titleFont.deriveFont(Font.BOLD, titleFont.getSize() + 2f));
+
+            GridBagLayout gbl = new GridBagLayout();
+            gbl.columnWeights = new double[] {0.0, 1.0, 0.0};
+            gbl.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0};
+
+            jContentPane = new JPanel(gbl);
             jContentPane.setBorder(BorderFactory.createEmptyBorder(12, 5, 10, 5));
             jContentPane.add(iconLabel, gbc);
             jContentPane.add(titleLabel, gbc1);
-            jContentPane.add(msgLabel, gbc2);
-            jContentPane.add(getButtonPanel(), gbc3);
-            jContentPane.add(getScrollPane(), gbc11);
+            jContentPane.add(getButtonPanel(), gbc2);
+            jContentPane.add(msgLabel, gbc3);
             jContentPane.add(getSeparator(), gbc4);
+            jContentPane.add(getScrollPane(), gbc5);
         }
+
         return jContentPane;
     }
 
@@ -135,16 +131,12 @@ public class ExceptionDialog extends JDialog {
      */
     private JPanel getButtonPanel() {
         if (buttonPanel == null) {
-            GridLayout gridLayout = new GridLayout();
-            gridLayout.setRows(2);
-            gridLayout.setHgap(0);
-            gridLayout.setVgap(5);
-            gridLayout.setColumns(1);
-            buttonPanel = new JPanel();
-            buttonPanel.setLayout(gridLayout);
-            buttonPanel.add(getOkButton(), null);
-            buttonPanel.add(getDetailsButton(), null);
+            GridLayout gl = new GridLayout(2, 1, 0, 5);
+            buttonPanel = new JPanel(gl);
+            buttonPanel.add(getOkButton());
+            buttonPanel.add(getDetailsButton());
         }
+
         return buttonPanel;
     }
 
@@ -155,10 +147,10 @@ public class ExceptionDialog extends JDialog {
      */
     private JButton getOkButton() {
         if (okButton == null) {
-            okButton = new JButton();
-            okButton.setText(i18n.str("ok"));
+            okButton = new JButton(i18n.str("ok"));
             okButton.addActionListener(e -> dispose());
         }
+
         return okButton;
     }
 
@@ -169,10 +161,10 @@ public class ExceptionDialog extends JDialog {
      */
     private JButton getDetailsButton() {
         if (detailsButton == null) {
-            detailsButton = new JButton();
-            detailsButton.setText(i18n.str("_details"));
+            detailsButton = new JButton(i18n.str("_details"));
             detailsButton.addActionListener(e -> toggleDetails());
         }
+
         return detailsButton;
     }
 
@@ -205,10 +197,11 @@ public class ExceptionDialog extends JDialog {
         if (th.getLocalizedMessage() != null && !th.getLocalizedMessage().isEmpty())
             msg = th.getLocalizedMessage();
         msgLabel.setText(msg);
+
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         th.printStackTrace(new PrintStream(bout));
+        String stackTrace = bout.toString();
 
-        String stackTrace = new String(bout.toByteArray());
         textArea.setText(stackTrace);
         textArea.setCaretPosition(0);
     }
@@ -236,6 +229,7 @@ public class ExceptionDialog extends JDialog {
             scrollPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, 200));
             scrollPane.setViewportView(getTextArea());
         }
+
         return scrollPane;
     }
 
@@ -251,6 +245,7 @@ public class ExceptionDialog extends JDialog {
             textArea.setEditable(false);
             textArea.setOpaque(false);
         }
+
         return textArea;
     }
 }
