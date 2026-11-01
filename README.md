@@ -51,7 +51,7 @@ added several editor improvements:
 - The font selector displays WYSIWYG fonts.
 - Images can be pasted from the system clipboard.
 
-### Michel Mbem fork
+### This fork
 
 This fork continues the kkieffer version and includes the following major changes:
 
@@ -65,7 +65,7 @@ The current `pom.xml` sets the Java compiler release to 11.
 ## License
 
 This project retains the original [GNU Lesser General Public License, version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
-See [LICENSE-lgpl-2.1.txt](LICENSE-lgpl-2.1.txt) for the license text.
+See [LICENSE](LICENSE) for the license text.
 
 ## Project Links
 
