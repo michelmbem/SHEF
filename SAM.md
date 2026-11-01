@@ -927,7 +927,9 @@ Merging can be done at any &lt;action-list&gt; level by specifying the hierarchy
      foo
      bar
      baz
-     and another with
+
+and another with:
+
      subBazBarFoo
      ---baz
      ---bar
