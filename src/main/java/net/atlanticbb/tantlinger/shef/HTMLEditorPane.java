@@ -26,9 +26,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -61,6 +60,7 @@ public class HTMLEditorPane extends JPanel {
     private JToolBar formatToolBar;
     private JComboBox<Font> fontFamilyCombo;
     private JComboBox<Action> paragraphCombo;
+    private final Map<String, Component> toolbarItems = new LinkedHashMap<>();
     private boolean wysiwygTextChanged;
 
     public HTMLEditorPane() {
@@ -103,6 +103,43 @@ public class HTMLEditorPane extends JPanel {
     
     public JToolBar getFormatToolBar() {
         return formatToolBar;
+    }
+
+    public String getToolbarMask() {
+        return String.join(" ", toolbarItems.keySet());
+    }
+
+    public void setToolbarMask(String toolbarMask) {
+        toolbarMask = Objects.requireNonNullElse(toolbarMask, "");
+        Set<String> visibleItems = Stream.of(toolbarMask.split("\\s+"))
+                .filter(s -> !s.isEmpty())
+                .map(s -> s.toLowerCase(Locale.ROOT))
+                .collect(Collectors.toSet());
+
+        for (Map.Entry<String, Component> entry : toolbarItems.entrySet()) {
+            entry.getValue().setVisible(visibleItems.contains(entry.getKey()));
+        }
+
+        Component[] components = formatToolBar.getComponents();
+        int previousVisibleItem = -1;
+        int pendingSeparator = -1;
+
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] instanceof JToolBar.Separator) {
+                components[i].setVisible(false);
+                pendingSeparator = i;
+            } else if (components[i].isVisible()) {
+                if (previousVisibleItem >= 0 && pendingSeparator >= 0) {
+                    components[pendingSeparator].setVisible(true);
+                }
+
+                previousVisibleItem = i;
+                pendingSeparator = -1;
+            }
+        }
+
+        formatToolBar.revalidate();
+        formatToolBar.repaint();
     }
     
     public JEditorPane getWysiwygEditor() {
@@ -176,8 +213,8 @@ public class HTMLEditorPane extends JPanel {
         RTextScrollPane sourceScrollPane = new RTextScrollPane(sourceEditor);
         sourceScrollPane.setLineNumbersEnabled(true);
 
-        tabbedPane.addTab("Edit", new JScrollPane(wysiwygEditor));
-        tabbedPane.addTab("HTML", sourceScrollPane);
+        tabbedPane.addTab(I18N.str("edit"), new JScrollPane(wysiwygEditor));
+        tabbedPane.addTab(I18N.str("html"), sourceScrollPane);
         tabbedPane.addChangeListener(e -> updateEditView());
     }
 
@@ -363,6 +400,8 @@ public class HTMLEditorPane extends JPanel {
         paragraphCombo.addActionListener(paragraphComboHandler);
         paragraphCombo.setRenderer(new ParagraphComboCellRenderer());
         formatToolBar.add(paragraphCombo);
+        toolbarItems.put("para", paragraphCombo);
+
         formatToolBar.addSeparator();
 
         java.util.List<String> fonts = new ArrayList<>();
@@ -383,6 +422,7 @@ public class HTMLEditorPane extends JPanel {
         fontFamilyCombo.addActionListener(fontChangeHandler);
         fontFamilyCombo.setRenderer(new FontComboCellRenderer());
         formatToolBar.add(fontFamilyCombo);
+        toolbarItems.put("font", fontFamilyCombo);
 
         final JButton fontSizeButton = new JButton(UIUtils.getIcon(UIUtils.X16, "fontsize.png"));
         final JPopupMenu sizePopup = ActionUIFactory.getInstance().createPopupMenu(fontSizeActs);
@@ -390,63 +430,73 @@ public class HTMLEditorPane extends JPanel {
         fontSizeButton.addActionListener(al);
         configToolbarButton(fontSizeButton);
         formatToolBar.add(fontSizeButton);
+        toolbarItems.put("size", fontSizeButton);
 
         Action act = new HTMLFontColorAction();
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "color");
+
         formatToolBar.addSeparator();
 
         act = new HTMLInlineAction(HTMLInlineAction.BOLD);
         act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "bold");
 
         act = new HTMLInlineAction(HTMLInlineAction.ITALIC);
         act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "italic");
 
         act = new HTMLInlineAction(HTMLInlineAction.UNDERLINE);
         act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "underline");
+
         formatToolBar.addSeparator();
 
         ActionList list = HTMLEditorActionFactory.createListElementActionList();
+        String[] listNames = {"ul", "ol"};
+        int itemIndex = 0;
         for (Object o : list) {
             act = (Action) o;
             act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
             actionList.add(act);
-            addToToolBar(formatToolBar, act);
+            addToToolBar(formatToolBar, act, listNames[itemIndex++]);
         }
+
         formatToolBar.addSeparator();
 
         list = HTMLEditorActionFactory.createAlignActionList();
+        String[] alignNames = {"left", "center", "right", "justify"};
+        itemIndex = 0;
         for (Object o : list) {
             act = (Action) o;
             act.putValue(ActionManager.BUTTON_TYPE, ActionManager.BUTTON_TYPE_VALUE_TOGGLE);
             actionList.add(act);
-            addToToolBar(formatToolBar, act);
+            addToToolBar(formatToolBar, act, alignNames[itemIndex++]);
         }
+
         formatToolBar.addSeparator();
 
         act = new HTMLLinkAction();
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "link");
 
         act = new HTMLImageAction();
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "image");
 
         act = new HTMLTableAction();
         actionList.add(act);
-        addToToolBar(formatToolBar, act);
+        addToToolBar(formatToolBar, act, "table");
     }
 
-    private void addToToolBar(JToolBar toolbar, Action act) {
+    private void addToToolBar(JToolBar toolbar, Action act, String name) {
         AbstractButton button = ActionUIFactory.getInstance().createButton(act);
         configToolbarButton(button);
         toolbar.add(button);
+        toolbarItems.put(name, button);
     }
 
     /**
