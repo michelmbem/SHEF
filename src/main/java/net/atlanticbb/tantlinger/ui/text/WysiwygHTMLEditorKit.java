@@ -449,7 +449,7 @@ public class WysiwygHTMLEditorKit extends HTMLEditorKit {
                     monitoredViews.add(v);
                     return v;
                 } else if (kind == HTML.Tag.IMG) {
-                    ResizableView v = new ResizableView(super.create(elem));
+                    ResizableView v = new ResizableView(new CachedImageView(elem));
                     monitoredViews.add(v);
                     return v;
                 } else if (kind == HTML.Tag.COMMENT) {

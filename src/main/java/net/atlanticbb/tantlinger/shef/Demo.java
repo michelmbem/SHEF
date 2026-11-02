@@ -1,6 +1,7 @@
 package net.atlanticbb.tantlinger.shef;
 
 import net.atlanticbb.tantlinger.io.IOUtils;
+import net.atlanticbb.tantlinger.ui.ImageHandlers;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -43,6 +44,10 @@ public class Demo {
     }
 
     public static void main(String[] args) throws InterruptedException, InvocationTargetException {
+        // Configure the handler before creating or displaying any HTMLEditorPane
+        // so all pasted and selected images are intercepted by this handler.
+        ImageHandlers.setCurrent(new ImageHandlers.DataURL());
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignore) {
