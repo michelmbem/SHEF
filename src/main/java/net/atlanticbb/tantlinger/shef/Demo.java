@@ -2,7 +2,6 @@ package net.atlanticbb.tantlinger.shef;
 
 import net.atlanticbb.tantlinger.io.IOUtils;
 import net.atlanticbb.tantlinger.ui.ImageHandlers;
-import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
 import java.io.IOException;
