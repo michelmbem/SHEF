@@ -46,6 +46,7 @@ public class HTMLEditorPane extends JPanel {
     private final ActionListener paragraphComboHandler = new ParagraphComboHandler();
     private final CaretListener caretHandler = new CaretHandler();
     private final MouseListener popupHandler = new PopupHandler();
+    private final Map<String, Component> toolbarItems = new LinkedHashMap<>();
 
     private JTabbedPane tabbedPane;
     private JEditorPane wysiwygEditor;
@@ -60,7 +61,6 @@ public class HTMLEditorPane extends JPanel {
     private JToolBar formatToolBar;
     private JComboBox<Font> fontFamilyCombo;
     private JComboBox<Action> paragraphCombo;
-    private final Map<String, Component> toolbarItems = new LinkedHashMap<>();
     private boolean wysiwygTextChanged;
 
     public HTMLEditorPane() {
