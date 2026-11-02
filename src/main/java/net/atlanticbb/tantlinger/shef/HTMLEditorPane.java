@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 /**
  * A Java Swing HTML WYSIWYG editor
@@ -62,37 +63,30 @@ public class HTMLEditorPane extends JPanel {
     private JComboBox<Action> paragraphCombo;
     private boolean wysiwygTextChanged;
 
-    public HTMLEditorPane(boolean showHTMLEditor) {
-        initUI(showHTMLEditor);
+    public HTMLEditorPane() {
+        this(true);
     }
 
-    public void setCaretPosition(int pos) {
-        switch (tabbedPane.getSelectedIndex()) {
-            case 0:
-                wysiwygEditor.setCaretPosition(pos);
-                wysiwygEditor.requestFocusInWindow();
-                break;
-            case 1:
-                sourceEditor.setCaretPosition(pos);
-                sourceEditor.requestFocusInWindow();
-                break;
-        }
-    }
-
-    public void setSelectedTab(int i) {
-        tabbedPane.setSelectedIndex(i);
+    public HTMLEditorPane(boolean showSourceEditor) {
+        initUI(showSourceEditor);
     }
 
     public void dispose() {
-        wysiwygEditor.removeAll();
-        wysiwygEditor.removeCaretListener(caretHandler);
-        wysiwygEditor.removeFocusListener(focusHandler);
-        wysiwygEditor.getDocument().removeDocumentListener(textChangedHandler);
+        Stream.of(wysiwygEditor, sourceEditor)
+                .forEach(editor -> {
+                    editor.removeAll();
+                    editor.removeCaretListener(caretHandler);
+                    editor.removeFocusListener(focusHandler);
+                    editor.getDocument().removeDocumentListener(textChangedHandler);
+                });
+    }
+    
+    public int getSelectedTab() {
+        return tabbedPane.getSelectedIndex();
+    }
 
-        sourceEditor.removeAll();
-        sourceEditor.removeCaretListener(caretHandler);
-        sourceEditor.removeFocusListener(focusHandler);
-        sourceEditor.getDocument().removeDocumentListener(textChangedHandler);
+    public void setSelectedTab(int tab) {
+        tabbedPane.setSelectedIndex(tab);
     }
 
     public JMenu getEditMenu() {
@@ -106,29 +100,78 @@ public class HTMLEditorPane extends JPanel {
     public JMenu getInsertMenu() {
         return insertMenu;
     }
+    
+    public JToolBar getFormatToolBar() {
+        return formatToolBar;
+    }
+    
+    public JEditorPane getWysiwygEditor() {
+        return wysiwygEditor;
+    }
+    
+    public SourceCodeEditor getSourceEditor() {
+        return sourceEditor;
+    }
+    
+    public JTextComponent getActiveEditor() {
+        return activeEditor;
+    }
+    
+    public int getCaretPosition() {
+        return activeEditor.getCaretPosition();
+    }
 
-    private void initUI(boolean showHTMLEditor) {
-        createEditorTabs(showHTMLEditor);
-        createEditorActions(showHTMLEditor);
+    public void setCaretPosition(int pos) {
+        activeEditor.setCaretPosition(pos);
+        activeEditor.requestFocusInWindow();
+    }
+
+    public String getText() {
+        String text = removeInvalidTags(activeEditor.getText());
+        return tabbedPane.getSelectedIndex() == 1
+                ? Entities.HTML40.unescapeUnknownEntities(deIndent(text))
+                : text;
+    }
+
+    public void setText(String text) {
+        String topText = removeInvalidTags(text);
+
+        if (tabbedPane.getSelectedIndex() == 0) {
+            wysiwygEditor.setText("");
+            insertHTML(wysiwygEditor, topText, 0);
+            CompoundUndoManager.discardAllEdits(wysiwygEditor.getDocument());
+        } else {
+            String t = Entities.HTML40.unescapeUnknownEntities(deIndent(topText));
+            sourceEditor.setText(t);
+            CompoundUndoManager.discardAllEdits(sourceEditor.getDocument());
+        }
+    }
+
+    public HTMLDocument getHTMLDocument() {
+        return (HTMLDocument) wysiwygEditor.getDocument();
+    }
+
+    public WysiwygHTMLEditorKit getHtmlEditorKit() {
+        return (WysiwygHTMLEditorKit) wysiwygEditor.getEditorKit();
+    }
+
+    private void initUI(boolean showSourceEditor) {
+        createEditorTabs(showSourceEditor);
+        createEditorActions(showSourceEditor);
         setLayout(new BorderLayout());
         add(formatToolBar, BorderLayout.PAGE_START);
         add(tabbedPane, BorderLayout.CENTER);
     }
 
-    private void createEditorTabs(boolean showHTMLEditor) {
+    private void createEditorTabs(boolean showSourceEditor) {
         tabbedPane = new JTabbedPane(SwingConstants.BOTTOM);
-        if (!showHTMLEditor) {
-            // set the tab height to zero to hide them from the panel
-            tabbedPane.setUI(new BasicTabbedPaneUI() {
-                @Override
-                protected int calculateTabAreaHeight(int tabPlacement, int runCount, int maxTabHeight) {
-                    return 0;
-                }
-            });
+        if (!showSourceEditor) {
+            tabbedPane.setUI(new HiddenTabsTabbedPaneUI());
         }
 
         wysiwygEditor = createWysiwygEditor();
         sourceEditor = createSourceEditor();
+        activeEditor = wysiwygEditor;
 
         RTextScrollPane sourceScrollPane = new RTextScrollPane(sourceEditor);
         sourceScrollPane.setLineNumbersEnabled(true);
@@ -289,11 +332,14 @@ public class HTMLEditorPane extends JPanel {
     }
 
     private void createFormatToolBar(ActionList blockActs, ActionList fontSizeActs) {
+        final int comboHeight = 22;
+        final int fontSize = 14;
+
         formatToolBar = new JToolBar();
         formatToolBar.setFloatable(false);
         formatToolBar.setFocusable(false);
 
-        Font comboFont = new Font("Dialog", Font.PLAIN, 12);
+        Font comboFont = new Font("Dialog", Font.PLAIN, fontSize);
         PropertyChangeListener propLst = evt -> {
             if (evt.getPropertyName().equals("selected") &&
                     evt.getNewValue().equals(Boolean.TRUE)) {
@@ -308,14 +354,14 @@ public class HTMLEditorPane extends JPanel {
                 ((DefaultAction) o).addPropertyChangeListener(propLst);
         }
 
-        final Dimension paragraphComboSize = new Dimension(120, 22);
+        final Dimension paragraphComboSize = new Dimension(150, comboHeight);
         paragraphCombo = new JComboBox<>(toArray(blockActs));
         paragraphCombo.setPreferredSize(paragraphComboSize);
         paragraphCombo.setMinimumSize(paragraphComboSize);
         paragraphCombo.setMaximumSize(paragraphComboSize);
         paragraphCombo.setFont(comboFont);
         paragraphCombo.addActionListener(paragraphComboHandler);
-        paragraphCombo.setRenderer(new ParagraphComboRenderer());
+        paragraphCombo.setRenderer(new ParagraphComboCellRenderer());
         formatToolBar.add(paragraphCombo);
         formatToolBar.addSeparator();
 
@@ -327,33 +373,15 @@ public class HTMLEditorPane extends JPanel {
         GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
         fonts.addAll(Arrays.asList(gEnv.getAvailableFontFamilyNames()));
 
-        final Dimension fontFamilyComboSize = new Dimension(150, 22);
+        final Dimension fontFamilyComboSize = new Dimension(160, comboHeight);
         fontFamilyCombo = new JComboBox<>();
+        fonts.stream().map(f -> new Font(f, Font.PLAIN, fontSize)).forEach(fontFamilyCombo::addItem);
         fontFamilyCombo.setPreferredSize(fontFamilyComboSize);
         fontFamilyCombo.setMinimumSize(fontFamilyComboSize);
         fontFamilyCombo.setMaximumSize(fontFamilyComboSize);
         fontFamilyCombo.setFont(comboFont);
         fontFamilyCombo.addActionListener(fontChangeHandler);
-
-        for (String f : fonts) {
-            fontFamilyCombo.addItem(new Font(f, Font.PLAIN, 12));
-        }
-
-        fontFamilyCombo.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(
-                    JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-
-                JLabel renderer = (JLabel) super.getListCellRendererComponent(
-                        list, value, index, isSelected, cellHasFocus);
-                Font font = (Font) value;
-                renderer.setFont(font);
-                renderer.setText(font.getFontName());
-                fontFamilyCombo.setFont(font);
-                return renderer;
-            }
-        });
-
+        fontFamilyCombo.setRenderer(new FontComboCellRenderer());
         formatToolBar.add(fontFamilyCombo);
 
         final JButton fontSizeButton = new JButton(UIUtils.getIcon(UIUtils.X16, "fontsize.png"));
@@ -465,7 +493,10 @@ public class HTMLEditorPane extends JPanel {
     }
 
     private void updateEditView() {
+        boolean enableToolbarCombos = false;
+
         if (tabbedPane.getSelectedIndex() == 0) {
+            enableToolbarCombos = true;
             String html = removeInvalidTags(sourceEditor.getText());
             wysiwygEditor.setText("");
             insertHTML(wysiwygEditor, html, 0);
@@ -481,38 +512,26 @@ public class HTMLEditorPane extends JPanel {
         }
 
         wysiwygTextChanged = false;
-        paragraphCombo.setEnabled(tabbedPane.getSelectedIndex() == 0);
-        fontFamilyCombo.setEnabled(tabbedPane.getSelectedIndex() == 0);
+        paragraphCombo.setEnabled(enableToolbarCombos);
+        fontFamilyCombo.setEnabled(enableToolbarCombos);
         updateState();
     }
 
-    public String getText() {
-        String topText;
+    private void updateState() {
+        if (activeEditor == wysiwygEditor) {
+            fontFamilyCombo.removeActionListener(fontChangeHandler);
 
-        if (tabbedPane.getSelectedIndex() == 0) {
-            topText = removeInvalidTags(wysiwygEditor.getText());
-        } else {
-            topText = removeInvalidTags(sourceEditor.getText());
-            topText = deIndent(removeInvalidTags(topText));
-            topText = Entities.HTML40.unescapeUnknownEntities(topText);
+            String fontName = HTMLUtils.getFontFamily(wysiwygEditor);
+            if (fontName == null)
+                fontFamilyCombo.setSelectedIndex(0);
+            else
+                fontFamilyCombo.setSelectedItem(new Font(fontName, Font.PLAIN, 12));
+
+            fontFamilyCombo.addActionListener(fontChangeHandler);
         }
 
-        return topText;
-    }
-
-    public void setText(String text) {
-        String topText = removeInvalidTags(text);
-
-        if (tabbedPane.getSelectedIndex() == 0) {
-            wysiwygEditor.setText("");
-            insertHTML(wysiwygEditor, topText, 0);
-            CompoundUndoManager.discardAllEdits(wysiwygEditor.getDocument());
-        } else {
-            String t = deIndent(removeInvalidTags(topText));
-            t = Entities.HTML40.unescapeUnknownEntities(t);
-            sourceEditor.setText(t);
-            CompoundUndoManager.discardAllEdits(sourceEditor.getDocument());
-        }
+        actionList.putContextValueForAll(HTMLTextEditAction.EDITOR, activeEditor);
+        actionList.updateEnabledForAll();
     }
 
     /* *******************************************************************
@@ -554,24 +573,16 @@ public class HTMLEditorPane extends JPanel {
     }
     /* ************************************* */
 
-    private void updateState() {
-        if (activeEditor == wysiwygEditor) {
-            fontFamilyCombo.removeActionListener(fontChangeHandler);
-            String fontName = HTMLUtils.getFontFamily(wysiwygEditor);
-            if (fontName == null)
-                fontFamilyCombo.setSelectedIndex(0);
-            else
-                fontFamilyCombo.setSelectedItem(new Font(fontName, Font.PLAIN, 12));
-            fontFamilyCombo.addActionListener(fontChangeHandler);
-        }
+    //<editor-fold defaultstate="collapsed" desc="Inner classes">
 
-        actionList.putContextValueForAll(HTMLTextEditAction.EDITOR, activeEditor);
-        actionList.updateEnabledForAll();
+    private static class HiddenTabsTabbedPaneUI extends BasicTabbedPaneUI {
+        @Override
+        protected int calculateTabAreaHeight(int tabPlacement, int runCount, int maxTabHeight) {
+            return 0;
+        }
     }
 
-    private static class ParagraphComboRenderer extends DefaultListCellRenderer {
-        private static final long serialVersionUID = 1L;
-
+    private static class ParagraphComboCellRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
@@ -580,6 +591,20 @@ public class HTMLEditorPane extends JPanel {
             }
 
             return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        }
+    }
+
+    private class FontComboCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                      boolean isSelected, boolean cellHasFocus) {
+
+            Font font = (Font) value;
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            super.setFont(font);
+            super.setText(font.getFontName());
+            fontFamilyCombo.setFont(font);
+            return this;
         }
     }
 
@@ -701,8 +726,9 @@ public class HTMLEditorPane extends JPanel {
                 CompoundUndoManager.beginCompoundEdit(document);
 
                 if (fontFamilyCombo.getSelectedIndex() != 0) {
-                    HTMLUtils.setFontFamily(wysiwygEditor,
-                            ((Font) fontFamilyCombo.getSelectedItem()).getFamily());
+                    String fontFamily = ((Font) fontFamilyCombo.getSelectedItem()).getFamily();
+                    HTMLUtils.setFontFamily(wysiwygEditor, fontFamily);
+                    fontFamilyCombo.setToolTipText(fontFamily);
                 } else {
                     HTMLUtils.setFontFamily(wysiwygEditor, null);
                 }
@@ -711,4 +737,6 @@ public class HTMLEditorPane extends JPanel {
             }
         }
     }
+
+    //</editor-fold>
 }

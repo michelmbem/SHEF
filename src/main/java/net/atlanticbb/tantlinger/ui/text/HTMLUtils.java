@@ -7,10 +7,7 @@ import org.w3c.tidy.Tidy;
 
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.text.html.CSS;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -21,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A collection of static convenience methods for working with HTML,
@@ -859,6 +857,24 @@ public final class HTMLUtils {
         }
 
         System.err.println("----------------------------------------------------------------");
+    }
+
+    public static void dumpStyleSheet(StyleSheet styleSheet) {
+        for (Enumeration<?> styleNames = styleSheet.getStyleNames(); styleNames.hasMoreElements(); ) {
+            String styleName = styleNames.nextElement().toString();
+            Style style = styleSheet.getStyle(styleName);
+            System.err.printf("%s {%n", styleName);
+
+            for (Enumeration<?> attributeNames = style.getAttributeNames(); attributeNames.hasMoreElements(); ) {
+                String attributeName = attributeNames.nextElement().toString();
+                if ("name".equals(attributeName)) continue;
+
+                Object attribute = style.getAttribute(attributeName);
+                System.err.printf("\t%s : %s;%n", attributeName, attribute);
+            }
+
+            System.err.println("}\n");
+        }
     }
 
     private static class CharStyleToken {

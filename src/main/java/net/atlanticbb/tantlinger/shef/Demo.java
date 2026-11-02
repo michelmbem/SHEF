@@ -2,6 +2,7 @@ package net.atlanticbb.tantlinger.shef;
 
 import net.atlanticbb.tantlinger.io.IOUtils;
 import net.atlanticbb.tantlinger.ui.ImageHandlers;
+import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class Demo {
     private final HTMLEditorPane editor;
 
     public Demo() {
-        editor = new HTMLEditorPane(true);
+        editor = new HTMLEditorPane();
 
         try (InputStream in = Demo.class.getResourceAsStream(HTMLSNIP)) {
             editor.setText(IOUtils.read(in));
